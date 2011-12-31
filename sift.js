@@ -9,6 +9,8 @@
 
 
 (function() {
+
+
 	
 
 	var _queryParser = new (function() {
@@ -21,9 +23,12 @@
 
 			var exprs = statement.exprs;
 
-			for(var i = exprs.length; i--;) {
+
+			//generally, expressions are ordered from least efficient, to most efficient.
+			for(var i = 0, n = exprs.length; i < n; i++) {
 
 				var expr = exprs[i];
+
 
 				if(!expr.e(expr.v, _comparable(data), data)) return false;
 
@@ -379,6 +384,8 @@
 			 }
 		};
 
+
+
 		var _getExpr = function(type, key, value) {
 
 			var v = _comparable(value);
@@ -386,7 +393,7 @@
 			return { 
 
 				//type
-				t: type,
+				// t: type,
 
 				//k key
 				k: key, 

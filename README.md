@@ -3,7 +3,7 @@
 
 ## Features:
 
-- supported operators: $in, $nin, $exists, $gte, $gt, $lte, $lt, $eq, $neq, $mod, $all, $and, $or, $size, $type
+- Supported operators: $in, $nin, $exists, $gte, $gt, $lte, $lt, $eq, $neq, $mod, $all, $and, $or, $size, $type
 - Regexp searches
 - Function filtering
 - Deep object searching

@@ -52,34 +52,105 @@ Here's another example. This acts more like the $or operator:
 sift({ location: : { $in: ['Costa Rica','Brazil'] } }, { name: 'Craig', location: 'Brazil' });
 ```
 
-
 ### $nin
 
+Oppositve of $in:
+
+```javascript
+sift({ $in: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']); // ['Haiti','Peru','Chile']
+``` 
+
 ### $exists
+
+Checks if whether a value exists:
+
+```javascript
+sift({ $exists: true }, ['Craig',null,'Tim']); // ['Craig','Tim']
+``` 
+
+You can also filter out values that don't exist
+
+```javascript
+sift({ city: { $exists: false } }, [ { name: 'Craig', city: 'Minneapolis' }, { name: 'Tim' }]); //[{ name: 'Craig', city: 'Minneapolis' }]
+```
 
 ### $gte
 
+Checks if a number is >= value:
+
+```javascript
+sift({ $gte: 2 }, [0, 1, 2, 3]); //[2, 3]
+```
+
 ### $gt
+
+Checks if a number is > value:
+
+```javascript
+sift({ $gt: 2 }, [0, 1, 2, 3]); //[3]
+```
 
 ### $lte
 
+Checks if a number is <= value.
+
 ### $lt
 
-### $ne
+Checks if number is < value.
 
 ### $eq
 
-### $exists
+Checks if query != value. Note that **$eq can be omitted**.
+
+```javascript
+sift({ state: {$eq: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); //[{ state: 'MN' }]
+```
+
+
+### $ne
+
+Checks if query == value.
+
+```javascript
+sift({ state: {$ne: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); //[{ state: 'CA' }, { state: 'WI'}]
+```
 
 ### $mod
 
+Modulus:
+
+```javascript
+sift({ $mod: [3, 0] }, [100, 200, 300, 400, 500, 600]); //[300,600]
+```
+
 ### $all
+
+values must match **everything** in array:
+
+```javascript
+sift({ tags: {$all: ['books','programming'] }}, { tags: ['books','programming','travel' ] }, { tags: ['travel','cooking'] }); //[ { tags: ['books','programming','travel' ]} ]
+```
 
 ### $and
 
+ability to use an array of expressions. All expressions must test true.
+
+sift({ $and: [ { name: 'Craig' }, { state: 'MN' } ] }, [ { name: 'Craig', state: 'MN' }, { name: 'Tim', state: 'MN' }, { name: 'Joe', state: 'CA' } ]); //[ { name: 'Craig', state: 'MN' }]
+
 ### $or
 
+OR array of expressions.
+
+
+sift({ $or: [ { name: 'Craig' }, { state: 'MN' } ] }, [ { name: 'Craig', state: 'MN' }, { name: 'Tim', state: 'MN' }, { name: 'Joe', state: 'CA' } ]); //[ { name: 'Craig', state: 'MN' }, { name: 'Tim', state: 'MN' }]
+
 ### $size
+
+Matches an array - must match given size:
+
+```javascript
+sift({ tags: { $size: 2 } }, [ { tags: ['food','cooking'] }, { tags: ['traveling'] }]); //['food','cooking']
+```
 
 
 ## Deep Searching Example:

@@ -403,9 +403,7 @@
 
 	})();
 
-
-	//sifts a given array
-	var sift = function(query, target) {
+	var sifter = function(query) {
 
 		//build the filter for the sifter
 		var filter = _queryParser.parse( query );
@@ -429,11 +427,21 @@
 		//set the test function incase the sifter isn't needed
 		self.test = filter.test;
 
+		return self;
+	}
+
+
+	//sifts a given array
+	var sift = function(query, target) {
+
+
+		var sft = sifter(query);
+
 		//target given? sift through it and return the filtered result
-		if(target) return self(target);
+		if(target) return sft(target);
 
 		//otherwise return the sifter func
-		return self;
+		return sft;
 
 	}
 

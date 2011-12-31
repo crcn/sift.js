@@ -26,6 +26,7 @@
 				var expr = exprs[i];
 
 				if(!expr.e(expr.v, _comparable(data), data)) return false;
+
 			}
 
 			return true;
@@ -43,7 +44,6 @@
 			if(statement)
 			//if the statement is an object, then we're looking at something like: { key: match }
 			if(statement.constructor == Object) {
-				
 
 				for(var k in statement) {
 
@@ -71,17 +71,17 @@
 									
 							}
 
-							// _orderExprs(exprValue);
-
 						//otherwise we're dealing with $trav
 						} else {
 							
 							exprValue = parse(statement[k], k);
+
 						}
 					} 
 					
 
 					testers.push(_getExpr(operator, k, exprValue));
+
 				}
 								
 
@@ -92,13 +92,16 @@
 
 			}
 
-			var stmt =  { exprs: testers,
+			var stmt =  { 
+
+				exprs: testers,
 				k: key,
 				test: function(value) {
 					
 					return test(stmt, value);
 
 				} 
+
 			};
 			
 			return stmt;
@@ -108,9 +111,11 @@
 
 		//traversable statements
 		var TRAV_OP = {
+
 			$and: true,
 			$or: true,
-			$trav: true,
+			$trav: true
+
 		}
 
 
@@ -321,6 +326,7 @@
 
 
 						if(subb[a.k] && test(a, subb[a.k])) return true;
+						
 					}
 
 					return false;

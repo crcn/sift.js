@@ -38,6 +38,11 @@ siftPeople([{
 	name: 'jake'
 }]);
 
+
+//test values against sifter
+siftPeople.test({ name: 'sarah' }); //true
+siftPeople.test({ name: 'tim' }); //false
+
 ```
 
 ## API

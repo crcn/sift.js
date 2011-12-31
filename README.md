@@ -1,18 +1,11 @@
 
-### Example
+### Simple Example
 
 ```javascript
 
 var sift = require('sift');
 
-//$or
 var sifted = sift({$in: ['hello','world']}, ['hello','sifted','array!']); //['hello']
-
-//this works too
-var sifter = sift({$in: ['hello','world']});
-sifter(['hello','sifted','array!']) //[hello]
-
-
 
 ```
 

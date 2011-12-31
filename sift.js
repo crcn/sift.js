@@ -324,9 +324,8 @@
 						
 						var subb = b[i];
 
-
 						if(subb[a.k] && test(a, subb[a.k])) return true;
-						
+
 					}
 
 					return false;

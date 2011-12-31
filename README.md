@@ -252,6 +252,6 @@ var people = [{
 	}
 }];
 
-var sifted = sift({ address: { state: 'Minneapolis' }}, people); // count = 1
+var sifted = sift({ address: { city: 'Minneapolis' }}, people); // count = 1
 ```
 

@@ -93,15 +93,15 @@
 			}
 
 			var stmt =  { exprs: testers,
-	            k: key,
-	            test: function(value) {
-	            	
-	                return test(stmt, value);
+				k: key,
+				test: function(value) {
+					
+					return test(stmt, value);
 
-	            } 
-        	};
-            
-            return stmt;
+				} 
+			};
+			
+			return stmt;
 		
 		}
 
@@ -368,9 +368,9 @@
 			
 			/**
 			 */
-			 	
+				
 			 $ne: function(a) {
-			 	return _prepare.$eq(a);
+				return _prepare.$eq(a);
 			 }
 		};
 
@@ -404,7 +404,7 @@
 
 		//build the filter for the sifter
 		var filter = _queryParser.parse( query );
-		 	
+			
 		//the function used to sift through the given array
 		var self = function(target) {
 				

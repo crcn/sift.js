@@ -5,9 +5,13 @@
 
 var sift = require('sift');
 
-
-//intersect
+//$or
 var sifted = sift({$in: ['hello','world']}, ['hello','sifted','array!']); //['hello']
+
+//this works too
+var sifter = sift({$in: ['hello','world']});
+sifter(['hello','sifted','array!']) //[hello]
+
 
 
 ```

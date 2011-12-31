@@ -44,7 +44,7 @@ siftPeople([{
 }]);
 
 
-//you can also test *single values* against your custom sifter
+//you can test *single values* against your custom sifter
 siftPeople.test({ name: 'sarah' }); //true
 siftPeople.test({ name: 'tim' }); //false
 

@@ -235,7 +235,7 @@ sift({ $type: String }, [new Date(), 4342, 'hello world']); //returns ['hello wo
 ```
 
 
-## Deep Searching Example:
+## Deep Searching
 
 
 ```javascript

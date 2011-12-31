@@ -53,12 +53,19 @@ With an array:
 sift({$exists:true}, ['craig',null]); //['craig']
 ```
 
-Without an array:
+Without an array, a sifter is returned:
 
 ```javascript
 var siftExists = sift({$exists:true});
 
 siftExists(['craig',null]); //['craig']
+```
+
+With your sifter, you can also **test** values:
+
+```javascript
+siftExists.test(null); //false
+siftExists.test('craig'); //true
 ```
 
 

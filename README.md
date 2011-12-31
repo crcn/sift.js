@@ -17,7 +17,7 @@ sifter(['hello','sifted','array!']) //[hello]
 ```
 
 
-## Supported operators:
+### Supported operators:
 
 
 #### $in

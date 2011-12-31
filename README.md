@@ -51,70 +51,25 @@ sifter(['hello','sifted','array!']) //[hello]
 #### $size
 
 
-### Deep Searching:
+### Deep Searching Example:
 
 
 ```javascript
 
 var people = [{
 	name: 'craig',
-	age: 90001,
 	address: {
-		city: 'Minneapolis',
-		state: 'MN',
-		phone: '9999999999'
-	},
-	hobbies: [{
-		name: 'programming',
-		description: 'some desc'	
-	},
-	{
-		name: 'cooking'
-	},
-	{
-		name: 'photography',
-		places: ['haiti','brazil','costa rica']
-	},
-	{
-		name: 'backpacking'
-	}]
+		city: 'Minneapolis'
+	}
 },
 {
 	name: 'tim',
-	age: 90001,
 	address: {
-		city: 'St. Paul',
-		state: 'MN',
-		phone: '765765756765'
-	},
-	hobbies: [{
-		name: 'biking',
-		description: 'some desc'	
-	},
-	{
-		name: 'DJ'
-	},
-	{
-		name: 'photography',
-		places: ['costa rica']
-	}]
+		city: 'St. Paul'
+	}
 }];
 
-
-
-
-var sifted = sift({		
-
-	hobbies: {
-		name: 'photography',
-		places: {$in: ['brazil']}
-	},
-
-	address: {
-		state: 'MN'
-	}
-
-}, topic);
+var sifted = sift({ address: { state: 'Minneapolis' }}, people); // count = 1
 
 ```
 

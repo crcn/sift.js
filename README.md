@@ -5,7 +5,7 @@
 
 ## Features:
 
-- Supported operators: $in, $nin, $exists, $gte, $gt, $lte, $lt, $eq, $neq, $mod, $all, $and, $or, $size, $type
+- Supported operators: $in, $nin, $exists, $gte, $gt, $lte, $lt, $eq, $neq, $mod, $all, $and, $or, $nor, $size, $type
 - Regexp searches
 - Function filtering
 - Deep object searching
@@ -215,6 +215,19 @@ sift({ $or: [ { name: 'Craig' }, { state: 'MN' } ] }, [
 { name: 'Tim', state: 'MN' }, 
 { name: 'Joe', state: 'CA' } ]); 
 ```
+
+### $nor
+
+oppositve of or:
+
+```javascript
+//filtered: [ { name: 'Tim', state: 'MN' }, { name: 'Joe', state: 'CA' }]
+sift({ $or: [ { name: 'Craig' }, { state: 'MN' } ] }, [ 
+{ name: 'Craig', state: 'MN' }, 
+{ name: 'Tim', state: 'MN' }, 
+{ name: 'Joe', state: 'CA' } ]); 
+```
+
 
 ### $size
 

@@ -119,6 +119,7 @@
 
 			$and: true,
 			$or: true,
+			$nor: true,
 			$trav: true
 
 		}
@@ -290,6 +291,25 @@
 				for(var i = a.length; i--;) {
 
 					if(test(a[i], b)) {
+
+						return true;
+
+					}
+
+				}
+
+				return false;
+
+			},
+
+			/**
+			 */
+
+			$nor: function(a, b) {
+
+				for(var i = a.length; i--;) {
+
+					if(!test(a[i], b)) {
 
 						return true;
 

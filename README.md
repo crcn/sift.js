@@ -31,18 +31,6 @@ siftExists(['craig',null]); //['craig']
 ```
 
 
-### stmt .parse(filter)
-
-- `filter` - the filter to parse
-
-
-## stmt api
-
-### .test(value)
-
-returns `true` if success against filter
-
-
 ## Supported Operators:
 
 

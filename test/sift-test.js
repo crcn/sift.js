@@ -50,6 +50,10 @@ vows.describe('Sifter').addBatch({
 				assert.isTrue(sift({$or:topic}, topic).length == 5);
 			},
 
+			'has a sifted $nor count of 5': function(topic) {
+				assert.isTrue(sift({$or:['craig','john']}, topic).length == 2);
+			},
+
 			'has a sifted $size of 2': function(topic) {
 				assert.isTrue(sift({$size:4}, topic).length == 2);
 			}

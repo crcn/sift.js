@@ -1,5 +1,13 @@
 ![Alt travis status](https://secure.travis-ci.org/crcn/sift.js.png)
 
+
+## Features:
+
+- supported operators: $in, $nin, $exists, $gte, $gt, $lte, $lt, $eq, $neq, $mod, $all, $and, $or, $size, $type
+- Regexp searches
+- Function filtering
+- Deep object searching
+
 ## Simple Examples
 
 ```javascript
@@ -229,16 +237,6 @@ var people = [{
 
 var sifted = sift({ address: { state: 'Minneapolis' }}, people); // count = 1
 ```
-
-
-
-## RegExp tests:
-
-
-
-## Function tests:
-
-
 
 
 

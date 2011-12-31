@@ -20,8 +20,11 @@ var sifted = sift({ $in: ['hello','world'] }, ['hello','sifted','array!']); //['
 //regexp filter
 var sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']
 
-//function filter
+
+//A *sifter* is returned if the second parameter is omited
 var siftPeople = sift({
+
+	//you can also filter against functions
 	name: function(value) {
 		return name.length == 5;
 	}
@@ -39,7 +42,7 @@ siftPeople([{
 }]);
 
 
-//test values against sifter
+//you can also test values against your custom sifter
 siftPeople.test({ name: 'sarah' }); //true
 siftPeople.test({ name: 'tim' }); //false
 

@@ -18,7 +18,34 @@ var sifted = sift({$in: ['hello','world']}, ['hello','sifted','array!']); //['he
 
 ### $in
 
+### $nin
+
+### $exists
+
+### $gte
+
+### $gt
+
+### $lte
+
+### $lt
+
+### $ne
+
+### $eq
+
 ### $or
 
-###
+### $exists
+
+### $mod
+
+### $all
+
+### $and
+
+
+### $size
+
+
 

@@ -9,7 +9,8 @@
   "dependencies": {
   },
   "devDependencies": {
-    "vows":"*"
+    "vows":"*",
+    "underscore":"*"
   },
   "main":"./lib/index.js"
 }

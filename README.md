@@ -20,41 +20,110 @@ sifter(['hello','sifted','array!']) //[hello]
 ## Supported operators:
 
 
-### $in
+#### $in
 
-### $nin
+#### $nin
 
-### $exists
+#### $exists
 
-### $gte
+#### $gte
 
-### $gt
+#### $gt
 
-### $lte
+#### $lte
 
-### $lt
+#### $lt
 
-### $ne
+#### $ne
 
-### $eq
+#### $eq
 
-### $exists
+#### $exists
 
-### $mod
+#### $mod
 
-### $all
+#### $all
 
-### $and
+#### $and
 
-### $or
+#### $or
+
+#### $size
 
 
-### $size
+### Deep Searching:
 
 
-## ToDo
+```javascript
+
+var people = [{
+	name: 'craig',
+	age: 90001,
+	address: {
+		city: 'Minneapolis',
+		state: 'MN',
+		phone: '9999999999'
+	},
+	hobbies: [{
+		name: 'programming',
+		description: 'some desc'	
+	},
+	{
+		name: 'cooking'
+	},
+	{
+		name: 'photography',
+		places: ['haiti','brazil','costa rica']
+	},
+	{
+		name: 'backpacking'
+	}]
+},
+{
+	name: 'tim',
+	age: 90001,
+	address: {
+		city: 'St. Paul',
+		state: 'MN',
+		phone: '765765756765'
+	},
+	hobbies: [{
+		name: 'biking',
+		description: 'some desc'	
+	},
+	{
+		name: 'DJ'
+	},
+	{
+		name: 'photography',
+		places: ['costa rica']
+	}]
+}];
+
+
+
+
+var sifted = sift({		
+
+	hobbies: {
+		name: 'photography',
+		places: {$in: ['brazil']}
+	},
+
+	address: {
+		state: 'MN'
+	}
+
+}, topic);
+
+```
+
+
+### To Do
 
 - $type
+- regexp 
+- function testing
 
 
 

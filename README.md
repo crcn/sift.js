@@ -138,7 +138,9 @@ values must match **everything** in array:
 
 ```javascript
 //filtered: [ { tags: ['books','programming','travel' ]} ]
-sift({ tags: {$all: ['books','programming'] }}, { tags: ['books','programming','travel' ] }, { tags: ['travel','cooking'] }); 
+sift({ tags: {$all: ['books','programming'] }}, [
+{ tags: ['books','programming','travel' ] }, 
+{ tags: ['travel','cooking'] } ]); 
 ```
 
 ### $and
@@ -147,7 +149,11 @@ ability to use an array of expressions. All expressions must test true.
 
 ```javascript
 //filtered: [ { name: 'Craig', state: 'MN' }]
-sift({ $and: [ { name: 'Craig' }, { state: 'MN' } ] }, [ { name: 'Craig', state: 'MN' }, { name: 'Tim', state: 'MN' }, { name: 'Joe', state: 'CA' } ]); 
+
+sift({ $and: [ { name: 'Craig' }, { state: 'MN' } ] }, [ 
+{ name: 'Craig', state: 'MN' }, 
+{ name: 'Tim', state: 'MN' }, 
+{ name: 'Joe', state: 'CA' } ]); 
 ```
 
 ### $or
@@ -156,7 +162,10 @@ OR array of expressions.
 
 ```javascript
 //filtered: [ { name: 'Craig', state: 'MN' }, { name: 'Tim', state: 'MN' }]
-sift({ $or: [ { name: 'Craig' }, { state: 'MN' } ] }, [ { name: 'Craig', state: 'MN' }, { name: 'Tim', state: 'MN' }, { name: 'Joe', state: 'CA' } ]); 
+sift({ $or: [ { name: 'Craig' }, { state: 'MN' } ] }, [ 
+{ name: 'Craig', state: 'MN' }, 
+{ name: 'Tim', state: 'MN' }, 
+{ name: 'Joe', state: 'CA' } ]); 
 ```
 
 ### $size

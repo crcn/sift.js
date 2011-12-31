@@ -147,9 +147,19 @@ sift({ $gt: 2 }, [0, 1, 2, 3]);
 
 Checks if a number is <= value.
 
+```javascript
+//filtered: [0, 1, 2]
+sift({ $lte: 2 }, [0, 1, 2, 3]); 
+```
+
 ### $lt
 
 Checks if number is < value.
+
+```javascript
+//filtered: [0, 1]
+sift({ $lt: 2 }, [0, 1, 2, 3]); 
+```
 
 ### $eq
 

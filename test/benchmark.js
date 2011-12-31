@@ -10,8 +10,6 @@ for(var i = 1000; i--;) {
 	numbers.push(i * 10);
 }
 
-var siftIntersect = sift({$in: [1000, 500]});
-
 suite.add('Controlled array $in', function() {
 	
 	var $in = [1000,500], sifted = [];
@@ -24,7 +22,7 @@ suite.add('Controlled array $in', function() {
 
 }).
 add('Sift $in intersect', function() {
-	siftIntersect(numbers);
+	sift({$in: [1000, 500]}, numbers)
 }).
 add('Sift $gt and $lt', function() {
 	sift({ $gt: 100, $lt: 1000 }, numbers);

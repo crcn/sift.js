@@ -16,7 +16,7 @@
 
 var sift = require('sift');
 
-//interesecting arrays
+//intersecting arrays
 var sifted = sift({ $in: ['hello','world'] }, ['hello','sifted','array!']); //['hello']
 
 //regexp filter

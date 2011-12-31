@@ -1,12 +1,34 @@
 ![Alt travis status](https://secure.travis-ci.org/crcn/sift.js.png)
 
-## Simple Example
+## Simple Examples
 
 ```javascript
 
 var sift = require('sift');
 
+//interesecting arrays
 var sifted = sift({ $in: ['hello','world'] }, ['hello','sifted','array!']); //['hello']
+
+//regexp filter
+var sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']
+
+//function filter
+var siftPeople = sift({
+	name: function(value) {
+		return name.length == 5;
+	}
+});
+
+//filtered: [{ name: 'craig' }]
+siftPeople([{
+	name: 'craig',
+},
+{
+	name: 'john'
+},
+{
+	name: 'jake'
+}]);
 
 ```
 

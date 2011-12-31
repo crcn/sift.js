@@ -24,7 +24,7 @@
 			for(var i = exprs.length; i--;) {
 
 				var expr = exprs[i];
-				
+
 				if(!expr.e(expr.v, _comparable(data))) return false;
 			}
 
@@ -38,7 +38,7 @@
 
 		var parse = this.parse = function(statement, key) {
 
-			var testers = [];//, weight = 0;
+			var testers = [];
 				
 			if(statement)
 			//if the statement is an object, then we're looking at something like: { key: match }
@@ -92,17 +92,8 @@
 
 			}
 
-			//combine the tester weights so we can order based on speed.
-			/*for(var i = testers.length; i--;) {
-
-				weight += testers[i].w;	
-
-			}*/
-
-
-			var stmt =  { exprs: testers, //_orderExprs(testers), 
+			var stmt =  { exprs: testers,
 	            k: key,
-	            // w: weight,
 	            test: function(value) {
 	            	
 	                return test(stmt, value);
@@ -114,33 +105,6 @@
 		
 		}
 
-		/** 
-		 * hydrates a statement with the most recent data
-		 */
-
-		/*var hydrate = this.hydrate = function(statement, data) {
-			//TODO
-		}*/
-
-		/*var WEIGHT_FACTOR = {
-			$eq: 1,
-			$ne: 2,
-			$exists: 2,
-			$lt: 2,
-			$lte: 2,
-			$gt: 2,
-			$gte: 2,
-			$size: 3,
-			$mod: 3,
-			// $type: 4,
-			$in: 4,
-			$nin: 4,
-			$all: 5,
-			$or: 6,
-			$nor: 6,
-			$and: 7,
-			$trav: 8
-		};*/
 
 		//traversable statements
 		var TRAV_OP = {
@@ -164,82 +128,6 @@
 		}
 
 
-		/*var weigh = {
-
-			'undefined': function() {
-
-				return 0;
-
-			},
-
-			//regexp
-			'function': function() {
-
-				return 100;
-			
-			},
-
-			'boolean': function(value) {
-				
-				return 0;
-			
-			},
-
-			'string': function(value) {
-
-				return value.length;
-			
-			},
-
-			'number': function(value) {
-
-				return value;
-
-			},
-
-			'object': function(value) {
-
-				if(value instanceof Array) {
-
-					return weigh.array(value);
-
-				} else {
-
-					return weigh.complex(value);
-
-				}
-
-			},
-
-			'array': function(value) {
-
-				var total = 0;
-
-				for(var i = value.length; i--;) {
-
-					total += weight(value[i]);
-
-				}
-
-				return total;
-
-			},
-
-			'complex': function(value) {
-
-				return value ? value.w : 0;
-
-			}
-		};
-
-
-		function weight(value) {
-
-			return weigh[typeof value](value);
-
-		}*/
-
-
 		var _testers = {
 
 			/**
@@ -247,7 +135,7 @@
 
 			$eq: function(a, b) {
 
-				return a == b;
+				return a.test(b);
 
 			},
 
@@ -256,7 +144,7 @@
 
 			$ne: function(a, b) {
 
-				return a != b;
+				return !a.test(b);
 
 			},
 
@@ -434,13 +322,53 @@
 			}
 		}
 
+		var _prepare = {
+			
+			/**
+			 */
+
+			$eq: function(a) {
+				
+				var fn;
+
+				if(a instanceof RegExp) {
+
+					return a;
+
+				} else if (a instanceof Function) {
+
+					fn = a;
+
+				} else {
+					
+					fn = function(b) {
+
+						return a == b;
+					}
+
+				}
+
+				return {
+
+					test: fn
+
+				}
+				
+			},
+			
+			/**
+			 */
+			 	
+			 $ne: function(a) {
+			 	return _prepare.$eq(a);
+			 }
+		};
 
 		var _getExpr = function(type, key, value) {
 
-			return { 
+			var v = _comparable(value);
 
-				//weight
-				//w: WEIGHT_FACTOR[type] * 100 + weight(value), 
+			return { 
 
 				//type
 				t: type,
@@ -449,7 +377,7 @@
 				k: key, 
 
 				//v value
-				v: _comparable(value), 
+				v: _prepare[type] ? _prepare[type](v) : v, 
 
 				//e eval
 				e: _testers[type] 
@@ -457,19 +385,6 @@
 
 		}
 
-		/*var _orderExprs = function(stmt) {
-
-			return stmt;
-
-			stmt.sort(function(a, b) {
-
-				//if a weight is < than b weight, shift a to the end (executed first)
-				return a.w < b.w ? 1 : -1;
-
-			});
-
-			return stmt;
-		}*/
 
 	})();
 
@@ -521,15 +436,6 @@
 		window.sift = sift;
 
 	}
-
-	/**
-		Array.prototype.sift = function() {
-
-			return sift(search, this);
-
-		}
-	 */
-
 
 })();
 

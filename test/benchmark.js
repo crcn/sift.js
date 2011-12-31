@@ -22,16 +22,6 @@ suite.add('Controlled array $in', function() {
 	}	
 
 }).
-add('Controlled object $in', function() {
-
-	var $in = {1000:1,500:1};
-
-	for(var i = numbers; i--;) {
-
-		if($in[numbers[i]]) sifted.push(numbers[i]);
-
-	}	
-}).
 add('Sift $in intersect', function() {
 	sift({ $in: [1000,500]}, numbers);
 }).

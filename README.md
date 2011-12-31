@@ -23,7 +23,7 @@ var sifted = sift({ $in: ['hello','world'] }, ['hello','sifted','array!']); //['
 var sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']
 
 
-//A *sifter* is returned if the second parameter is omited
+//A *sifter* is returned if the second parameter is omitted
 var siftPeople = sift({
 
 	//you can also filter against functions

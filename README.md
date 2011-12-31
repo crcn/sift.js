@@ -170,7 +170,12 @@ Checks if query != value. Note that **$eq can be omitted**. For **$eq**, and **$
 sift({ state: {$eq: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); 
 ```
 
+Or:
 
+```javascript
+//filtered: [{ state: 'MN' }]
+sift({ state: 'MN' }, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); 
+```
 
 ### $ne
 

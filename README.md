@@ -1,4 +1,6 @@
-![Alt travis status](https://secure.travis-ci.org/crcn/sift.js.png)
+## MongoDB inspired array filtering
+
+[![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)
 
 
 ## Features:

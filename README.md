@@ -1,5 +1,5 @@
 
-### Simple Example
+## Simple Example
 
 ```javascript
 
@@ -9,42 +9,75 @@ var sifted = sift({$in: ['hello','world']}, ['hello','sifted','array!']); //['he
 
 ```
 
+## API
 
-### Supported Operators:
+### .sift(filter[, array])
 
+- `filter` - the filter to use against the target array
+- `array` - sifts against target array. Without this, a function is returned
 
-#### $in
+With an array:
 
-#### $nin
+```javascript
+sift({$exists:true}, ['craig',null]); //['craig']
+```
 
-#### $exists
+Without an array:
 
-#### $gte
+```javascript
+var siftExists = sift({$exists:true});
 
-#### $gt
-
-#### $lte
-
-#### $lt
-
-#### $ne
-
-#### $eq
-
-#### $exists
-
-#### $mod
-
-#### $all
-
-#### $and
-
-#### $or
-
-#### $size
+siftExists(['craig',null]); //['craig']
+```
 
 
-### Deep Searching Example:
+### stmt .parse(filter)
+
+- `filter` - the filter to parse
+
+
+## stmt api
+
+### .test(value)
+
+returns `true` if success against filter
+
+
+## Supported Operators:
+
+
+### $in
+
+### $nin
+
+### $exists
+
+### $gte
+
+### $gt
+
+### $lte
+
+### $lt
+
+### $ne
+
+### $eq
+
+### $exists
+
+### $mod
+
+### $all
+
+### $and
+
+### $or
+
+### $size
+
+
+## Deep Searching Example:
 
 
 ```javascript
@@ -68,41 +101,10 @@ var sifted = sift({ address: { state: 'Minneapolis' }}, people); // count = 1
 
 
 
-### api
-
-#### .sift(filter[, array])
-
-- `filter` - the filter to use against the target array
-- `array` - sifts against target array. Without this, a function is returned
-
-With an array:
-
-```javascript
-sift({$exists:true}, ['craig',null]); //['craig']
-```
-
-Without an array:
-
-```javascript
-var siftExists = sift({$exists:true});
-
-siftExists(['craig',null]); //['craig']
-```
 
 
-#### stmt .parse(filter)
 
-- `filter` - the filter to parse
-
-
-### stmt api
-
-#### .test(value)
-
-returns `true` if success against filter
-
-
-### To Do
+## To Do
 
 - $type
 - regexp 

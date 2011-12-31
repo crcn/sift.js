@@ -102,11 +102,11 @@ sift({ location: { $in: ['Costa Rica','Brazil'] } }, { name: 'Craig', location: 
 
 ### $nin
 
-Oppositve of $in:
+Opposite of $in:
 
 ```javascript
 //filtered: ['Haiti','Peru','Chile']
-sift({ $in: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']); 
+sift({ $nin: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']); 
 ``` 
 
 ### $exists

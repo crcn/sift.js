@@ -24,6 +24,7 @@
 			for(var i = exprs.length; i--;) {
 
 				var expr = exprs[i];
+				
 				if(!expr.e(expr.v, _comparable(data))) return false;
 			}
 
@@ -37,7 +38,7 @@
 
 		var parse = this.parse = function(statement, key) {
 
-			var testers = [], weight = 0;
+			var testers = [];//, weight = 0;
 				
 			if(statement)
 			//if the statement is an object, then we're looking at something like: { key: match }
@@ -48,7 +49,7 @@
 
 					//find the apropriate operator. If one doesn't exist, then it's a property, which means
 					//we create a new statement (traversing) 
-					var operator = WEIGHT_FACTOR[k] ?  k : '$trav',
+					var operator = !!_testers[k] ?  k : '$trav',
 
 					//value of given statement (the match)
 					value = statement[k],
@@ -70,7 +71,7 @@
 									
 							}
 
-							_orderExprs(exprValue);
+							// _orderExprs(exprValue);
 
 						//otherwise we're dealing with $trav
 						} else {
@@ -92,16 +93,16 @@
 			}
 
 			//combine the tester weights so we can order based on speed.
-			for(var i = testers.length; i--;) {
+			/*for(var i = testers.length; i--;) {
 
 				weight += testers[i].w;	
 
-			}
+			}*/
 
 
-			var stmt =  { exprs: _orderExprs(testers), 
+			var stmt =  { exprs: testers, //_orderExprs(testers), 
 	            k: key,
-	            w: weight,
+	            // w: weight,
 	            test: function(value) {
 	            	
 	                return test(stmt, value);
@@ -121,7 +122,7 @@
 			//TODO
 		}*/
 
-		var WEIGHT_FACTOR = {
+		/*var WEIGHT_FACTOR = {
 			$eq: 1,
 			$ne: 2,
 			$exists: 2,
@@ -139,7 +140,7 @@
 			$nor: 6,
 			$and: 7,
 			$trav: 8
-		};
+		};*/
 
 		//traversable statements
 		var TRAV_OP = {
@@ -163,7 +164,7 @@
 		}
 
 
-		var weigh = {
+		/*var weigh = {
 
 			'undefined': function() {
 
@@ -236,7 +237,7 @@
 
 			return weigh[typeof value](value);
 
-		}
+		}*/
 
 
 		var _testers = {
@@ -439,7 +440,7 @@
 			return { 
 
 				//weight
-				w: WEIGHT_FACTOR[type] * 100 + weight(value), 
+				//w: WEIGHT_FACTOR[type] * 100 + weight(value), 
 
 				//type
 				t: type,
@@ -456,7 +457,9 @@
 
 		}
 
-		var _orderExprs = function(stmt) {
+		/*var _orderExprs = function(stmt) {
+
+			return stmt;
 
 			stmt.sort(function(a, b) {
 
@@ -466,7 +469,7 @@
 			});
 
 			return stmt;
-		}
+		}*/
 
 	})();
 

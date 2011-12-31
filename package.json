@@ -10,7 +10,12 @@
   },
   "devDependencies": {
     "vows":"*",
-    "underscore":"*"
+    "underscore":"*",
+    "colors":"*",
+    "benchmark":"*"
   },
-  "main":"./sift.js"
+  "main":"./sift.js",
+  "scripts": {
+    "test": "vows --spec"
+  }
 }

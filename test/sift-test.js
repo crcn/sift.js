@@ -201,4 +201,4 @@ vows.describe('Sifter').addBatch({
 			}
 		}
 	}
-}).run();
+}).export(module);

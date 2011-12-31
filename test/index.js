@@ -157,6 +157,16 @@ vows.describe('Sifter').addBatch({
 
 			},
 
+			'has a sifted hobbies of photography, cooking, or biking count of 2': function(topic) {
+				var sifted = sift({
+					hobbies: {
+						name: {$in: ['photography','cooking','biking']}
+					}
+				}, topic);
+				
+				assert.isTrue(sifted.length == 2);	
+			},
+
 			'has sifted to complex count of 2': function(topic) {
 			
 				var sifted = sift({

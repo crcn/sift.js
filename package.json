@@ -12,5 +12,5 @@
     "vows":"*",
     "underscore":"*"
   },
-  "main":"./lib/index.js"
+  "main":"./sift.js"
 }

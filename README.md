@@ -5,7 +5,7 @@
 
 var sift = require('sift');
 
-var sifted = sift({$in: ['hello','world']}, ['hello','sifted','array!']); //['hello']
+var sifted = sift({ $in: ['hello','world'] }, ['hello','sifted','array!']); //['hello']
 
 ```
 
@@ -36,6 +36,21 @@ siftExists(['craig',null]); //['craig']
 See MonboDB's [advanced queries](http://www.mongodb.org/display/DOCS/Advanced+Queries) for more info.
 
 ### $in
+
+array value must be *$in* the given query:
+
+Intersecting two arrays:
+ 
+```javascript
+sift({ $in: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']); // ['Brazil']
+``` 
+
+Here's another example. This acts more like the $or operator:
+
+```javascript
+sift({ location: : { $in: ['Costa Rica','Brazil'] } }, { name: 'Craig', location: 'Brazil' });
+```
+
 
 ### $nin
 

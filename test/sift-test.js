@@ -42,6 +42,10 @@ vows.describe('Sifter').addBatch({
 				assert.isTrue(sift(function(value) { return value && value.length == 4 }, topic).length == 2);
 			},
 
+			'has a sifted type string of 4': function(topic) {
+				assert.isTrue(sift({ $type: String }, topic).length == 4);
+			},
+
 			'has a sifted $or count of 5': function(topic) {
 				assert.isTrue(sift({$or:topic}, topic).length == 5);
 			},
@@ -80,11 +84,15 @@ vows.describe('Sifter').addBatch({
 		},
 
 		'with simple dates': {
-			topic: [new Date(), new Date(1325314860361), new Date(Date.now()+1000), , new Date(Date.now()+2000)],
+			topic: [new Date(), new Date(1325314860361), new Date(Date.now()+1000), new Date(Date.now()+2000)],
 
 			'has $eq date count of 1': function(topic) {
 
 				assert.isTrue(sift(new Date(1325314860361), topic).length == 1);
+			},
+
+			'has $type count of 4': function(topic) {
+				assert.isTrue(sift({ $type: Date }, topic).length == 4);
 			},
 
 			'has $gt date count of 2': function(topic) {

@@ -25,7 +25,7 @@
 
 				var expr = exprs[i];
 
-				if(!expr.e(expr.v, _comparable(data))) return false;
+				if(!expr.e(expr.v, _comparable(data), data)) return false;
 			}
 
 			return true;
@@ -219,6 +219,16 @@
 			/**
 			 */
 
+			$type: function(a, b, org) {
+
+				//instanceof doesn't work for strings / boolean. instanceof works with inheritance
+				return org ? org instanceof a || org.constructor == a : false;
+
+			},
+
+			/**
+			 */
+
 
 			$nin: function(a, b) {
 
@@ -353,7 +363,7 @@
 					test: fn
 
 				}
-				
+
 			},
 			
 			/**

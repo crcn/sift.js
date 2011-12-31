@@ -128,12 +128,13 @@ Checks if number is < value.
 
 ### $eq
 
-Checks if query != value. Note that **$eq can be omitted**.
+Checks if query != value. Note that **$eq can be omitted**. For **$eq**, and **$neq**
 
 ```javascript
 //filtered: [{ state: 'MN' }]
 sift({ state: {$eq: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); 
 ```
+
 
 
 ### $ne
@@ -199,12 +200,20 @@ Matches an array - must match given size:
 sift({ tags: { $size: 2 } }, [ { tags: ['food','cooking'] }, { tags: ['traveling'] }]); 
 ```
 
+### $type
+
+Matches a values based on the type
+
+```javascript
+sift({ $type: Date }, [new Date(), 4342, 'hello world']); //returns single date
+sift({ $type: String }, [new Date(), 4342, 'hello world']); //returns ['hello world']
+```
+
 
 ## Deep Searching Example:
 
 
 ```javascript
-
 var people = [{
 	name: 'craig',
 	address: {
@@ -219,8 +228,15 @@ var people = [{
 }];
 
 var sifted = sift({ address: { state: 'Minneapolis' }}, people); // count = 1
-
 ```
+
+
+
+## RegExp tests:
+
+
+
+## Function tests:
 
 
 
@@ -230,8 +246,6 @@ var sifted = sift({ address: { state: 'Minneapolis' }}, people); // count = 1
 ## To Do
 
 - $type
-- regexp 
-- function testing
 
 
 

@@ -34,8 +34,6 @@ var sifted = sift({$in: ['hello','world']}, ['hello','sifted','array!']); //['he
 
 ### $eq
 
-### $or
-
 ### $exists
 
 ### $mod
@@ -44,8 +42,15 @@ var sifted = sift({$in: ['hello','world']}, ['hello','sifted','array!']); //['he
 
 ### $and
 
+### $or
+
 
 ### $size
+
+
+## ToDo
+
+- $type
 
 
 

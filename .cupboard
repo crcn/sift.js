@@ -1,0 +1,3 @@
+[commands]
+start = node .
+proj = subl --project project.sublime-project

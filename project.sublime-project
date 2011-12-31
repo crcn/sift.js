@@ -1,0 +1,23 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"build_systems":
+	[
+		{
+			"name":"cbd make",
+			"cmd":["cbd","make","sift.js"]
+		},
+		{
+			"name":"cbd start",
+			"cmd":["cbd","start","sift.js"]
+		},
+		{
+			"name":"cbd make+start",
+			"cmd":["cbd","make+start","sift.js"]
+		}
+	]
+}

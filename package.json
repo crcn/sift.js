@@ -1,0 +1,15 @@
+{
+  "name": "sift",
+  "description": "mongodb query style array filtering",
+  "version": "0.0.1",
+  "repository": {
+  },
+  "engines": {
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "vows":"*"
+  },
+  "main":"./lib/index.js"
+}

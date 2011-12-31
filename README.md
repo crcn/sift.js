@@ -33,7 +33,7 @@ siftExists(['craig',null]); //['craig']
 
 ## Supported Operators:
 
-see Monbodb's [advanced queries](http://www.mongodb.org/display/DOCS/Advanced+Queries) for more info.
+See MonboDB's [advanced queries](http://www.mongodb.org/display/DOCS/Advanced+Queries) for more info.
 
 ### $in
 

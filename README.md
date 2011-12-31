@@ -1,4 +1,4 @@
-[!Alt travis status](https://secure.travis-ci.org/crcn/sift.js.png)
+![Alt travis status](https://secure.travis-ci.org/crcn/sift.js.png)
 
 ## Simple Example
 

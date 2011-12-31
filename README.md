@@ -245,12 +245,3 @@ var people = [{
 var sifted = sift({ address: { state: 'Minneapolis' }}, people); // count = 1
 ```
 
-
-
-
-## To Do
-
-- $type
-
-
-

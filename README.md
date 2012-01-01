@@ -5,7 +5,7 @@
 
 ## Features:
 
-- Supported operators: $in, $nin, $exists, $gte, $gt, $lte, $lt, $eq, $neq, $mod, $all, $and, $or, $nor, $size, $type
+- Supported operators: $in, $nin, $exists, $gte, $gt, $lte, $lt, $eq, $neq, $mod, $all, $and, $or, $nor, $not, $size, $type
 - Regexp searches
 - Function filtering
 - Deep object searching
@@ -262,6 +262,13 @@ sift({ $type: Date }, [new Date(), 4342, 'hello world']); //returns single date
 sift({ $type: String }, [new Date(), 4342, 'hello world']); //returns ['hello world']
 ```
 
+### $not
+
+Not expression:
+
+```javascript
+sift({$not:{$in:['craig','tim']}}, ['craig','tim','jake']); //['jake']
+```
 
 ## Deep Searching
 

@@ -268,6 +268,7 @@ Not expression:
 
 ```javascript
 sift({$not:{$in:['craig','tim']}}, ['craig','tim','jake']); //['jake']
+sift({$not:{$size:5}}, ['craig','tim','jake']); //['tim','jake']
 ```
 
 ## Deep Searching

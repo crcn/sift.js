@@ -46,12 +46,16 @@ vows.describe('Sifter').addBatch({
 				assert.isTrue(sift({ $type: String }, topic).length == 4);
 			},
 
-			'has a sifted $or count of 5': function(topic) {
-				assert.isTrue(sift({$or:topic}, topic).length == 5);
+			'has a sifted $or count of 2': function(topic) {
+				assert.isTrue(sift({$or:['craig','jake']}, topic).length == 2);
 			},
 
 			'has a sifted $nor count of 5': function(topic) {
-				assert.isTrue(sift({$or:['craig','john']}, topic).length == 2);
+				assert.isTrue(sift({$nor:topic}, topic).length == 5);
+			},
+
+			'has a sifted $not count of 3': function(topic) {
+				assert.isTrue(sift({$not:{$in:['craig','john']}}, topic).length == 3);	
 			},
 
 			'has a sifted $size of 2': function(topic) {

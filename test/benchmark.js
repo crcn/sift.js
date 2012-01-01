@@ -41,7 +41,6 @@ for(i = 1000; i--;) {
 }
 
 
-
 console.log('Starting benchmark');
 
 

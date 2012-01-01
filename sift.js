@@ -120,7 +120,8 @@
 			$and: true,
 			$or: true,
 			$nor: true,
-			$trav: true
+			$trav: true,
+			$not: true
 
 		}
 
@@ -230,6 +231,13 @@
 			/**
 			 */
 
+			$not: function(a, b) {
+				return !a.test(b);
+			},
+
+			/**
+			 */
+
 			$type: function(a, b, org) {
 
 				//instanceof doesn't work for strings / boolean. instanceof works with inheritance
@@ -306,6 +314,7 @@
 			 */
 
 			$nor: function(a, b) {
+
 
 				for(var i = a.length; i--;) {
 

@@ -7,8 +7,8 @@ Sift is the write less, do more filtering library which uses mongodb queries.
 
 ## Use Cases:
 
-- realtime API - (guava)[https://github.com/crcn/guava]
-- node.js database - (gumbo)[https://github.com/crcn/gumbo]
+- realtime API - [guava](https://github.com/crcn/guava)
+- node.js database - [gumbo](https://github.com/crcn/gumbo)
 
 
 ## Features:

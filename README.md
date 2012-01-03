@@ -1,8 +1,7 @@
-## MongoDB inspired array filtering
+## MongoDB inspired array filtering [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)
 
 Sift is the write less, do more filtering library which uses mongodb queries. 
 
-[![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)
 
 
 ## Use Cases:

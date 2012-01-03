@@ -56,7 +56,7 @@ srv.get('/people/add', function(req, res) {
 	res.send('Added person');
 });
 
-srv.get('/people/find', function(req, res) {
+srv.get('/people/realtimeSearch', function(req, res) {
 	res.header('Content-Type', 'application/json');
 
 	
@@ -73,4 +73,6 @@ srv.get('/people/find', function(req, res) {
 srv.listen(9090);
 
 console.log('Listening on port 8080');
-console.log('APIs: /people/add, /people/find');
+console.log('APIs: /people/add, /people/realtimeSearch\n');
+console.log('First call /people/realtimeSearch?state=MN - keep it open')
+console.log('Next call /people/add?name=Sarah&state=MN');

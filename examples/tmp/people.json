@@ -1,0 +1,37 @@
+[
+  {
+    "name": "tim",
+    "city": "eagan",
+    "state": "MN"
+  },
+  {
+    "name": "craig",
+    "city": "apple valley",
+    "state": "MN"
+  },
+  {
+    "name": "jake",
+    "city": "SF",
+    "state": "California"
+  },
+  {
+    "state": "MN",
+    "name": "Joel",
+    "city": "Minneapolis"
+  },
+  {
+    "state": "MN",
+    "name": "Nick",
+    "city": "Minneapolis"
+  },
+  {
+    "state": "MN",
+    "name": "Josh",
+    "city": "Minneapolis"
+  },
+  {
+    "state": "MN",
+    "name": "Tom",
+    "city": "Minneapolis"
+  }
+]

@@ -12,7 +12,9 @@
     "vows":"*",
     "underscore":"*",
     "colors":"*",
-    "benchmark":"*"
+    "benchmark":"*",
+    "express":"*",
+    "validator":"*"
   },
   "main":"./sift.js",
   "scripts": {

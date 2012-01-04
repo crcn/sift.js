@@ -15,6 +15,7 @@ Sift is the write less, do more filtering library which uses mongodb queries.
 - Regexp searches
 - Function filtering
 - Deep object searching
+- Supports node.js
 
 ## Simple Examples
 

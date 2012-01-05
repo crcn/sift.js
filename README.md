@@ -170,7 +170,7 @@ sift({ $lt: 2 }, [0, 1, 2, 3]);
 
 ### $eq
 
-Checks if query != value. Note that **$eq can be omitted**. For **$eq**, and **$neq**
+Checks if query == value. Note that **$eq can be omitted**. For **$eq**, and **$neq**
 
 ```javascript
 //filtered: [{ state: 'MN' }]
@@ -186,7 +186,7 @@ sift({ state: 'MN' }, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' });
 
 ### $ne
 
-Checks if query == value.
+Checks if query != value.
 
 ```javascript
 //filtered: [{ state: 'CA' }, { state: 'WI'}] 

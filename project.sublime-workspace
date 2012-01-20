@@ -19,7 +19,7 @@
 			"file": "README.md",
 			"settings":
 			{
-				"buffer_size": 5961,
+				"buffer_size": 5980,
 				"line_ending": "Unix"
 			}
 		},
@@ -89,6 +89,14 @@
 		},
 		{
 			"file": "/tmp/subl stdin e7271b.txt",
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/tmp/subl stdin 20SwgP.txt",
 			"settings":
 			{
 				"buffer_size": 0,
@@ -356,7 +364,7 @@
 	"groups":
 	[
 		{
-			"selected": 10,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -390,15 +398,15 @@
 					"file": "README.md",
 					"settings":
 					{
-						"buffer_size": 5961,
+						"buffer_size": 5980,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								397,
-								397
+								626,
+								626
 							]
 						],
 						"settings":
@@ -529,8 +537,8 @@
 						"selection":
 						[
 							[
-								303,
-								303
+								304,
+								304
 							]
 						],
 						"settings":
@@ -654,6 +662,32 @@
 				},
 				{
 					"buffer": 11,
+					"file": "/tmp/subl stdin 20SwgP.txt",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 12,
 					"file": "examples/realtime-people.js",
 					"settings":
 					{
@@ -670,7 +704,8 @@
 						],
 						"settings":
 						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 373.0,
@@ -679,7 +714,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 12,
+					"buffer": 13,
 					"file": ".gitignore",
 					"settings":
 					{

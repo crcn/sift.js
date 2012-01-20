@@ -296,7 +296,9 @@
 
 			$or: function(a, b) {
 
-				for(var i = a.length; i--;) {
+				var i = a.length, n = i;
+
+				for(; i--;) {
 
 					if(test(a[i], b)) {
 
@@ -306,7 +308,7 @@
 
 				}
 
-				return false;
+				return !n || false;
 
 			},
 
@@ -315,8 +317,9 @@
 
 			$nor: function(a, b) {
 
+				var i = a.length, n = i;
 
-				for(var i = a.length; i--;) {
+				for(; i--;) {
 
 					if(!test(a[i], b)) {
 
@@ -326,7 +329,7 @@
 
 				}
 
-				return false;
+				return !n || false;
 
 			},
 

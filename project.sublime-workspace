@@ -24,6 +24,14 @@
 			}
 		},
 		{
+			"file": "/tmp/subl stdin 1e76Ju.txt",
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "examples/realtime.js",
 			"settings":
 			{
@@ -83,7 +91,7 @@
 			"file": "sift.js",
 			"settings":
 			{
-				"buffer_size": 6268,
+				"buffer_size": 6307,
 				"line_ending": "Unix"
 			}
 		},
@@ -116,6 +124,14 @@
 			"settings":
 			{
 				"buffer_size": 22,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": ".travis.yml",
+			"settings":
+			{
+				"buffer_size": 97,
 				"line_ending": "Unix"
 			}
 		}
@@ -364,7 +380,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 10,
 			"sheets":
 			[
 				{
@@ -422,6 +438,32 @@
 				},
 				{
 					"buffer": 2,
+					"file": "/tmp/subl stdin 1e76Ju.txt",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
 					"file": "examples/realtime.js",
 					"settings":
 					{
@@ -447,7 +489,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 4,
 					"file": "lib/stmt.js",
 					"settings":
 					{
@@ -474,7 +516,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 5,
 					"file": "test/index.js",
 					"settings":
 					{
@@ -500,7 +542,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 6,
 					"file": "lib/index.js",
 					"settings":
 					{
@@ -526,7 +568,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 7,
 					"file": "package.json",
 					"settings":
 					{
@@ -554,7 +596,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 8,
 					"file": "test/sift-test.js",
 					"settings":
 					{
@@ -575,13 +617,13 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 135.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 9,
 					"file": "test/benchmark.js",
 					"settings":
 					{
@@ -608,19 +650,19 @@
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 10,
 					"file": "sift.js",
 					"settings":
 					{
-						"buffer_size": 6268,
+						"buffer_size": 6307,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								119,
-								119
+								4152,
+								3789
 							]
 						],
 						"settings":
@@ -629,13 +671,13 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 4335.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 11,
 					"file": "/tmp/subl stdin e7271b.txt",
 					"settings":
 					{
@@ -661,7 +703,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 12,
 					"file": "/tmp/subl stdin 20SwgP.txt",
 					"settings":
 					{
@@ -687,7 +729,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 12,
+					"buffer": 13,
 					"file": "examples/realtime-people.js",
 					"settings":
 					{
@@ -714,7 +756,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 13,
+					"buffer": 14,
 					"file": ".gitignore",
 					"settings":
 					{
@@ -732,6 +774,32 @@
 						"settings":
 						{
 							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"file": ".travis.yml",
+					"settings":
+					{
+						"buffer_size": 97,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/YAML/YAML.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,

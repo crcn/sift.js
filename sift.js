@@ -308,7 +308,7 @@
 
 				}
 
-				return !n || false;
+				return !n;
 
 			},
 
@@ -329,7 +329,7 @@
 
 				}
 
-				return !n || false;
+				return !n;
 
 			},
 

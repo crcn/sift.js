@@ -35,7 +35,7 @@ var siftPeople = sift({
 
 	//you can also filter against functions
 	name: function(value) {
-		return name.length == 5;
+		return value.length == 5;
 	}
 });
 

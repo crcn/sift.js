@@ -1,0 +1,43 @@
+<html>
+<head>
+<script src="https://raw.github.com/crcn/sift.js/master/sift.js" type="text/javascript"></script>
+<script type="text/javascript">
+    
+    //intersecting arrays
+	var sifted = sift({ $in: ['hello','world'] }, ['hello','sifted','array!']); //['hello']
+
+	console.log(sifted);
+
+	//regexp filter
+	var sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']
+
+	console.log(sifted);
+
+	//A *sifter* is returned if the second parameter is omitted
+	var siftPeople = sift({
+
+	    //you can also filter against functions
+	    name: function(value) {
+	        return value.length == 5;
+	    }
+	});
+
+	//filtered: [{ name: 'craig' }]
+	siftPeople([{
+	    name: 'craig',
+	},
+	{
+	    name: 'john'
+	},
+	{
+	    name: 'jake'
+	}]);
+
+
+	//you can test *single values* against your custom sifter
+	console.log(siftPeople.test({ name: 'sarah' })); //true
+	console.log(siftPeople.test({ name: 'tim' })); //false
+</script>
+</head>
+<body>
+</body>

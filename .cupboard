@@ -1,4 +1,5 @@
 [commands]
 start = node .
 proj = subl --project project.sublime-project
+publish = closure --js=sift.js --js_output_file=sift.min.js, npm publish --force, git add -A, git commit -m "$@", git push origin master
 sync = git pull

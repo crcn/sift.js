@@ -24,6 +24,17 @@
 			}
 		},
 		{
+			"contents": "",
+			"file": "/tmp/subl stdin 4qu4qf.txt",
+			"file_size": -1,
+			"file_write_time": -1,
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "/tmp/subl stdin 1e76Ju.txt",
 			"settings":
 			{
@@ -67,7 +78,7 @@
 			"file": "package.json",
 			"settings":
 			{
-				"buffer_size": 379,
+				"buffer_size": 426,
 				"line_ending": "Unix"
 			}
 		},
@@ -91,7 +102,23 @@
 			"file": "sift.js",
 			"settings":
 			{
-				"buffer_size": 6307,
+				"buffer_size": 6289,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/tmp/subl stdin 75YbAj.txt",
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/tmp/subl stdin MF78KF.txt",
+			"settings":
+			{
+				"buffer_size": 0,
 				"line_ending": "Unix"
 			}
 		},
@@ -380,7 +407,7 @@
 	"groups":
 	[
 		{
-			"selected": 10,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -421,8 +448,8 @@
 						"selection":
 						[
 							[
-								626,
-								626
+								239,
+								239
 							]
 						],
 						"settings":
@@ -438,7 +465,7 @@
 				},
 				{
 					"buffer": 2,
-					"file": "/tmp/subl stdin 1e76Ju.txt",
+					"file": "/tmp/subl stdin 4qu4qf.txt",
 					"settings":
 					{
 						"buffer_size": 0,
@@ -464,6 +491,32 @@
 				},
 				{
 					"buffer": 3,
+					"file": "/tmp/subl stdin 1e76Ju.txt",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
 					"file": "examples/realtime.js",
 					"settings":
 					{
@@ -489,7 +542,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 5,
 					"file": "lib/stmt.js",
 					"settings":
 					{
@@ -516,7 +569,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 6,
 					"file": "test/index.js",
 					"settings":
 					{
@@ -542,7 +595,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 7,
 					"file": "lib/index.js",
 					"settings":
 					{
@@ -568,25 +621,25 @@
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 8,
 					"file": "package.json",
 					"settings":
 					{
-						"buffer_size": 379,
+						"buffer_size": 426,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								304,
-								304
+								0,
+								0
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/JavaScript/JSON.tmLanguage",
-							"tab_size": 2,
+							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
@@ -596,7 +649,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 9,
 					"file": "test/sift-test.js",
 					"settings":
 					{
@@ -623,7 +676,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 10,
 					"file": "test/benchmark.js",
 					"settings":
 					{
@@ -634,8 +687,8 @@
 						"selection":
 						[
 							[
-								887,
-								887
+								885,
+								885
 							]
 						],
 						"settings":
@@ -645,66 +698,40 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "sift.js",
-					"settings":
-					{
-						"buffer_size": 6307,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4152,
-								3789
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 4335.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 11,
-					"file": "/tmp/subl stdin e7271b.txt",
+					"file": "sift.js",
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 6289,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								4127,
+								4127
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 4080.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 12,
-					"file": "/tmp/subl stdin 20SwgP.txt",
+					"file": "/tmp/subl stdin 75YbAj.txt",
 					"settings":
 					{
 						"buffer_size": 0,
@@ -730,6 +757,84 @@
 				},
 				{
 					"buffer": 13,
+					"file": "/tmp/subl stdin MF78KF.txt",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "/tmp/subl stdin e7271b.txt",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"file": "/tmp/subl stdin 20SwgP.txt",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 16,
 					"file": "examples/realtime-people.js",
 					"settings":
 					{
@@ -756,7 +861,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 14,
+					"buffer": 17,
 					"file": ".gitignore",
 					"settings":
 					{
@@ -782,7 +887,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 15,
+					"buffer": 18,
 					"file": ".travis.yml",
 					"settings":
 					{

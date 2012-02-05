@@ -1,6 +1,6 @@
 ## MongoDB inspired array filtering [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)
 
-Sift is the write less, do more filtering library which uses mongodb queries. 
+Sift is a small (2 kb minified), write less, do more filtering library which uses mongodb queries. 
 
 
 ## Use Cases:
@@ -11,7 +11,6 @@ Sift is the write less, do more filtering library which uses mongodb queries.
 
 ## Features:
 
-- 2 kb minified
 - Supported operators: $in, $nin, $exists, $gte, $gt, $lte, $lt, $eq, $neq, $mod, $all, $and, $or, $nor, $not, $size, $type
 - Regexp searches
 - Function filtering

@@ -464,7 +464,8 @@
 		}
 
 		//set the test function incase the sifter isn't needed
-		self.test = filter.test;
+		self.test   = filter.test;
+		self.query  = query;
 
 		return self;
 	}

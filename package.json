@@ -2,6 +2,10 @@
   "name": "sift",
   "description": "mongodb query style array filtering",
   "version": "0.0.3",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/crcn/sift.js.git"
+  },
   "repository": {},
   "engines": {},
   "dependencies": {},

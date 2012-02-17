@@ -19,7 +19,15 @@
 			"file": "README.md",
 			"settings":
 			{
-				"buffer_size": 5980,
+				"buffer_size": 6002,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/tmp/subl stdin 0w4h4I.txt",
+			"settings":
+			{
+				"buffer_size": 0,
 				"line_ending": "Unix"
 			}
 		},
@@ -31,6 +39,22 @@
 			"settings":
 			{
 				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/tmp/subl stdin YG1pRP.txt",
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "examples/test.html",
+			"settings":
+			{
+				"buffer_size": 937,
 				"line_ending": "Unix"
 			}
 		},
@@ -102,7 +126,7 @@
 			"file": "sift.js",
 			"settings":
 			{
-				"buffer_size": 6289,
+				"buffer_size": 6314,
 				"line_ending": "Unix"
 			}
 		},
@@ -159,6 +183,14 @@
 			"settings":
 			{
 				"buffer_size": 97,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": ".cupboard",
+			"settings":
+			{
+				"buffer_size": 225,
 				"line_ending": "Unix"
 			}
 		}
@@ -407,7 +439,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 11,
 			"sheets":
 			[
 				{
@@ -441,15 +473,15 @@
 					"file": "README.md",
 					"settings":
 					{
-						"buffer_size": 5980,
+						"buffer_size": 6002,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								239,
-								239
+								954,
+								954
 							]
 						],
 						"settings":
@@ -465,7 +497,7 @@
 				},
 				{
 					"buffer": 2,
-					"file": "/tmp/subl stdin 4qu4qf.txt",
+					"file": "/tmp/subl stdin 0w4h4I.txt",
 					"settings":
 					{
 						"buffer_size": 0,
@@ -491,7 +523,7 @@
 				},
 				{
 					"buffer": 3,
-					"file": "/tmp/subl stdin 1e76Ju.txt",
+					"file": "/tmp/subl stdin 4qu4qf.txt",
 					"settings":
 					{
 						"buffer_size": 0,
@@ -517,6 +549,85 @@
 				},
 				{
 					"buffer": 4,
+					"file": "/tmp/subl stdin YG1pRP.txt",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "examples/test.html",
+					"settings":
+					{
+						"buffer_size": 937,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								580,
+								580
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/tmp/subl stdin 1e76Ju.txt",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
 					"file": "examples/realtime.js",
 					"settings":
 					{
@@ -542,7 +653,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 8,
 					"file": "lib/stmt.js",
 					"settings":
 					{
@@ -569,7 +680,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 9,
 					"file": "test/index.js",
 					"settings":
 					{
@@ -595,7 +706,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 10,
 					"file": "lib/index.js",
 					"settings":
 					{
@@ -621,7 +732,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 11,
 					"file": "package.json",
 					"settings":
 					{
@@ -632,8 +743,8 @@
 						"selection":
 						[
 							[
-								0,
-								0
+								125,
+								125
 							]
 						],
 						"settings":
@@ -649,7 +760,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 12,
 					"file": "test/sift-test.js",
 					"settings":
 					{
@@ -676,7 +787,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 13,
 					"file": "test/benchmark.js",
 					"settings":
 					{
@@ -703,19 +814,19 @@
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 14,
 					"file": "sift.js",
 					"settings":
 					{
-						"buffer_size": 6289,
+						"buffer_size": 6314,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4127,
-								4127
+								5829,
+								5829
 							]
 						],
 						"settings":
@@ -724,13 +835,13 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 4080.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 12,
+					"buffer": 15,
 					"file": "/tmp/subl stdin 75YbAj.txt",
 					"settings":
 					{
@@ -756,7 +867,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 13,
+					"buffer": 16,
 					"file": "/tmp/subl stdin MF78KF.txt",
 					"settings":
 					{
@@ -782,7 +893,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 14,
+					"buffer": 17,
 					"file": "/tmp/subl stdin e7271b.txt",
 					"settings":
 					{
@@ -808,7 +919,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 15,
+					"buffer": 18,
 					"file": "/tmp/subl stdin 20SwgP.txt",
 					"settings":
 					{
@@ -834,7 +945,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 16,
+					"buffer": 19,
 					"file": "examples/realtime-people.js",
 					"settings":
 					{
@@ -861,7 +972,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 17,
+					"buffer": 20,
 					"file": ".gitignore",
 					"settings":
 					{
@@ -887,7 +998,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 18,
+					"buffer": 21,
 					"file": ".travis.yml",
 					"settings":
 					{
@@ -905,6 +1016,32 @@
 						"settings":
 						{
 							"syntax": "Packages/YAML/YAML.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 22,
+					"file": ".cupboard",
+					"settings":
+					{
+						"buffer_size": 225,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								208,
+								208
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,

@@ -1,20 +1,20 @@
 {
-    "name": "sift",
-    "description": "mongodb query style array filtering",
-    "version": "0.0.3",
-    "repository": {},
-    "engines": {},
-    "dependencies": {},
-    "devDependencies": {
-        "vows": "*",
-        "underscore": "*",
-        "colors": "*",
-        "benchmark": "*",
-        "express": "*",
-        "validator": "*"
-    },
-    "main": "./sift.js",
-    "scripts": {
-        "test": "vows --spec"
-    }
+  "name": "sift",
+  "description": "mongodb query style array filtering",
+  "version": "0.0.3",
+  "repository": {},
+  "engines": {},
+  "dependencies": {},
+  "devDependencies": {
+    "vows": "*",
+    "underscore": "*",
+    "colors": "*",
+    "benchmark": "*",
+    "express": "*",
+    "validator": "*"
+  },
+  "main": "./sift.js",
+  "scripts": {
+    "test": "vows --spec"
+  }
 }

@@ -425,7 +425,7 @@
 						
 						if(b instanceof Array) {
 							
-							return !!~b.indexOf(a);
+							return b.indexOf(a) > -1;
 							
 						}else{
 							

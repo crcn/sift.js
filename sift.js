@@ -11,7 +11,25 @@
 (function() {
 
 
-	
+	/**
+	 */
+
+	var _convertDotToSubObject = function(keyParts, value) {
+
+		var subObject = {},
+		currentValue = subObject;
+
+		for(var i = 0, n = keyParts.length - 1; i < n; i++) {
+			currentValue = currentValue[keyParts[i]] = {};
+		}
+
+		currentValue[keyParts[i]] = value;
+		
+		return subObject;
+	}
+
+	/**
+	 */
 
 	var _queryParser = new (function() {
 
@@ -46,7 +64,7 @@
 
 			var testers = [];
 				
-			if(statement)
+			if(statement) 
 			//if the statement is an object, then we're looking at something like: { key: match }
 			if(statement.constructor == Object) {
 
@@ -64,6 +82,16 @@
 
 					//if we're working with a traversable operator, then set the expr value
 					if(TRAV_OP[operator]) {
+
+
+						//using dot notation? convert into a sub-object
+						if(k.indexOf(".") > -1) {
+							var keyParts = k.split(".");
+							k = keyParts.shift(); //we're using the first key, so remove it
+
+							//embed the value into the sub object, and pull
+							value = _convertDotToSubObject(keyParts, value);
+						}
 						
 						//*if* the value is an array, then we're dealing with something like: $or, $and
 						if(value instanceof Array) {

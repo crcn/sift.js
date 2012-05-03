@@ -14,8 +14,10 @@ Sift is a small (2 kb minified), write less, do more filtering library which use
 - Supported operators: $in, $nin, $exists, $gte, $gt, $lte, $lt, $eq, $neq, $mod, $all, $and, $or, $nor, $not, $size, $type
 - Regexp searches
 - Function filtering
-- Deep object searching
+- sub object searching
+- dot notiation searching
 - Supports node.js
+
 
 ## Simple Examples
 
@@ -278,7 +280,7 @@ sift({$not:{$in:['craig','tim']}}, ['craig','tim','jake']); //['jake']
 sift({$not:{$size:5}}, ['craig','tim','jake']); //['tim','jake']
 ```
 
-## Deep Searching
+## sub object Searching
 
 
 ```javascript
@@ -296,5 +298,8 @@ var people = [{
 }];
 
 var sifted = sift({ address: { city: 'Minneapolis' }}, people); // count = 1
+
+//or
+var sifted = sift({'address.city': 'minneapolis', people});//count = 1
 ```
 

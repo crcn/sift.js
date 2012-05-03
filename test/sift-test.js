@@ -181,6 +181,7 @@ vows.describe('Sifter').addBatch({
 
 			},
 
+
 			'has a sifted hobbies of photography, cooking, or biking count of 2': function(topic) {
 				var sifted = sift({
 					hobbies: {
@@ -188,7 +189,7 @@ vows.describe('Sifter').addBatch({
 					}
 				}, topic);
 				
-				assert.isTrue(sifted.length == 2);	
+				assert.equal(sifted.length, 2);	
 			},
 
 			'has sifted to complex count of 2': function(topic) {
@@ -222,7 +223,41 @@ vows.describe('Sifter').addBatch({
 
 
 				assert.isTrue(sifted.length == 0);
-			}
+			},
+
+
+			'has sifted subobject hobbies count of 3': function(topic) {
+				var sifted = sift({
+					"hobbies.name": "photography"
+				}, topic);
+
+				assert.equal(sifted.length, 2);
+
+			},
+
+
+			'has sifted dot-notation hobbies of photography, cooking, and biking count of 3': function(topic) {
+				var sifted = sift({
+					"hobbies.name": {$in: ['photography','cooking','biking']}
+				}, topic);
+
+				assert.equal(sifted.length, 2);
+
+			},
+
+			'has sifted to complex dot-search count of 2': function(topic) {
+				var sifted = sift({
+					"hobbies.name": "photography",
+					"hobbies.places": {$in:['costa rica']},
+					"address.state": "MN",
+					"address.phone": {$exists:true}
+				}, topic);
+
+				assert.equal(sifted.length, 2);
+
+			},
+
+
 		}
 	}
 }).export(module);

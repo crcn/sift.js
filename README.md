@@ -1,7 +1,5 @@
 ## MongoDB inspired array filtering [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)
 
-Sift is a small (2 kb minified), write less, do more filtering library which uses mongodb queries. 
-
 
 ## Use Cases:
 
@@ -16,7 +14,8 @@ Sift is a small (2 kb minified), write less, do more filtering library which use
 - Function filtering
 - sub object searching
 - dot notiation searching
-- Supports node.js
+- Supports node.js, and web
+- Small (2 kb minified) library 
 
 
 ## Simple Examples

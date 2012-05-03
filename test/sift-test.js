@@ -4,6 +4,8 @@ vows = require('vows'),
 assert = require('assert');
 
 
+
+
 vows.describe('Sifter').addBatch({
 	
 	'An array': {
@@ -113,6 +115,7 @@ vows.describe('Sifter').addBatch({
 			topic: [{
 				name: 'craig',
 				age: 90001,
+				tags:['coder', 'programmer', 'traveler', 'photographer'],
 				address: {
 					city: 'Minneapolis',
 					state: 'MN',
@@ -136,6 +139,7 @@ vows.describe('Sifter').addBatch({
 			{
 				name: 'tim',
 				age: 90001,
+				tags: ['traveler', 'photographer'],
 				address: {
 					city: 'St. Paul',
 					state: 'MN',
@@ -256,6 +260,14 @@ vows.describe('Sifter').addBatch({
 				assert.equal(sifted.length, 2);
 
 			},
+
+			'has places sift count of 1': function(topic) {
+				var sifted = sift({
+					'tags': 'photographer'
+				}, topic);
+
+				assert.equal(sifted.length, 2);
+			}
 
 
 		}

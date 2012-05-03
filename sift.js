@@ -89,12 +89,11 @@
 							var keyParts = k.split(".");
 							k = keyParts.shift(); //we're using the first key, so remove it
 
-							//embed the value into the sub object, and pull
-							value = _convertDotToSubObject(keyParts, value);
+							exprValue = value = _convertDotToSubObject(keyParts, value);
 						}
 						
 						//*if* the value is an array, then we're dealing with something like: $or, $and
-						if(value instanceof Array) {
+						if(exprValue instanceof Array) {
 							
 							exprValue = [];
 
@@ -107,7 +106,7 @@
 						//otherwise we're dealing with $trav
 						} else {
 							
-							exprValue = parse(statement[k], k);
+							exprValue = parse(value, k);
 
 						}
 					} 
@@ -422,8 +421,17 @@
 				} else {
 					
 					fn = function(b) {
+						
+						if(b instanceof Array) {
+							
+							return b.indexOf(a) > -1;
+							
+						}else{
+							
+							return a == b;
+							
+						}
 
-						return a == b;
 					}
 
 				}

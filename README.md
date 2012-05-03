@@ -18,7 +18,7 @@
 - Small (2 kb minified) library 
 
 
-## Simple Examples
+## Node.js Examples
 
 ```javascript
 
@@ -54,8 +54,22 @@ siftPeople([{
 
 //you can test *single values* against your custom sifter
 siftPeople.test({ name: 'sarah' }); //true
-siftPeople.test({ name: 'tim' }); //false
+siftPeople.test({ name: 'tim' }); //false\
+```
 
+## Browser Examples
+```html
+<html>
+	<head>
+		<script src="https://raw.github.com/crcn/sift.js/master/sift.min.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			//regexp filter
+			var sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']
+		</script>
+	</head>
+	<body>
+	</body>
+</html>
 ```
 
 ## API

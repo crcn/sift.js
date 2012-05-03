@@ -93,7 +93,7 @@
 						}
 						
 						//*if* the value is an array, then we're dealing with something like: $or, $and
-						if(exprValue instanceof Array) {
+						if(value instanceof Array) {
 							
 							exprValue = [];
 

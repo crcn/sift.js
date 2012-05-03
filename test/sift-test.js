@@ -121,6 +121,7 @@ vows.describe('Sifter').addBatch({
 					state: 'MN',
 					phone: '9999999999'
 				},
+				tags: ['photos','cook'],
 				hobbies: [{
 					name: 'programming',
 					description: 'some desc'	
@@ -145,6 +146,7 @@ vows.describe('Sifter').addBatch({
 					state: 'MN',
 					phone: '765765756765'
 				},
+				tags: ['dj'],
 				hobbies: [{
 					name: 'biking',
 					description: 'some desc'	
@@ -259,16 +261,7 @@ vows.describe('Sifter').addBatch({
 
 				assert.equal(sifted.length, 2);
 
-			},
-
-			'has places sift count of 1': function(topic) {
-				var sifted = sift({
-					'tags': 'photographer'
-				}, topic);
-
-				assert.equal(sifted.length, 2);
 			}
-
 
 		}
 	}

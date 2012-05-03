@@ -422,8 +422,17 @@
 				} else {
 					
 					fn = function(b) {
+						
+						if(b instanceof Array) {
+							
+							return !!~b.indexOf(a);
+							
+						}else{
+							
+							return a == b;
+							
+						}
 
-						return a == b;
 					}
 
 				}

@@ -118,6 +118,7 @@ vows.describe('Sifter').addBatch({
 					state: 'MN',
 					phone: '9999999999'
 				},
+				tags: ['photos','cook'],
 				hobbies: [{
 					name: 'programming',
 					description: 'some desc'	
@@ -141,6 +142,7 @@ vows.describe('Sifter').addBatch({
 					state: 'MN',
 					phone: '765765756765'
 				},
+				tags: ['dj'],
 				hobbies: [{
 					name: 'biking',
 					description: 'some desc'	
@@ -256,6 +258,14 @@ vows.describe('Sifter').addBatch({
 				assert.equal(sifted.length, 2);
 
 			},
+
+			'has sifted based on existance of item in a list': function(topic) {
+				var sifted = sift({
+					tags:'dj'
+				}, topic);
+
+				assert.equal(sifted.length, 1);
+			}
 
 
 		}

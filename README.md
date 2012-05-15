@@ -74,10 +74,11 @@ siftPeople.test({ name: 'tim' }); //false\
 
 ## API
 
-### .sift(filter[, array])
+### .sift(filter[, array][, selectorFn])
 
 - `filter` - the filter to use against the target array
 - `array` - sifts against target array. Without this, a function is returned
+- `selectorFn` - selector for the values within the array. 
 
 With an array:
 
@@ -91,6 +92,24 @@ Without an array, a sifter is returned:
 var siftExists = sift({$exists:true});
 
 siftExists(['craig',null]); //['craig']
+```
+
+With a selector:
+
+```javascript
+var sifter = sift({$exists:true}, function(user) {
+	return !!user.name;
+});
+
+
+sifter([
+	{
+		name: "Craig"
+	},
+	{
+		name: null
+	}
+])
 ```
 
 With your sifter, you can also **test** values:

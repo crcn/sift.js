@@ -448,6 +448,7 @@
 			 */
 				
 			 $ne: function(a) {
+
 				return _prepare.$eq(a);
 			 }
 		};
@@ -478,7 +479,38 @@
 
 	})();
 
-	var sifter = function(query) {
+
+	var getSelector = function(selector) {
+
+		if(!selector) {
+
+			return function(value) {
+
+				return value;
+
+			};
+
+		} else 
+		/*if(typeof selector == 'string') {
+
+			return function(value) {
+
+				return value[selector];
+
+			};
+
+		} else */
+		if(typeof selector == 'function') {
+
+			return selector;
+
+		}
+
+		throw new Error("Unknown sift selector " + selector);
+	}
+
+	var sifter = function(query, selector) {
+
 
 		//build the filter for the sifter
 		var filter = _queryParser.parse( query );
@@ -486,13 +518,16 @@
 		//the function used to sift through the given array
 		var self = function(target) {
 				
-			var sifted = [];
+			var sifted = [], value;
 
 			//I'll typically start from the end, but in this case we need to keep the order
 			//of the array the same.
 			for(var i = 0, n = target.length; i < n; i++) {
 
-				if(filter.test( target[i] )) sifted.push(target[i]);
+
+				value = selector(target[i]);
+
+				if(filter.test( value )) sifted.push(value);
 
 			}
 
@@ -507,11 +542,23 @@
 	}
 
 
-	//sifts a given array
-	var sift = function(query, target) {
+	/**
+	 * sifts the given function
+	 * @param query the mongodb query
+	 * @param target the target array
+	 * @param rawSelector the selector for plucking data from the given target
+	 */
+
+	var sift = function(query, target, rawSelector) {
+
+		//must be an array
+		if(typeof target != "object") {
+			rawSelector = target;
+			target = undefined;
+		}
 
 
-		var sft = sifter(query);
+		var sft  = sifter(query, getSelector(rawSelector));
 
 		//target given? sift through it and return the filtered result
 		if(target) return sft(target);

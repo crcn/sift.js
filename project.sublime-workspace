@@ -3,6 +3,10 @@
 	{
 		"selected_items":
 		[
+			[
+				"photograp",
+				"photographer"
+			]
 		]
 	},
 	"buffers":
@@ -16,10 +20,13 @@
 			}
 		},
 		{
+			"contents": "## MongoDB inspired array filtering [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)\n\n\n## Use Cases:\n\n- realtime API (pub/sub for mongodb) - [guava](https://github.com/crcn/guava)\n- node.js database - [gumbo](https://github.com/crcn/gumbo)\n- Caching mongodb queries \n\n## Features:\n\n- Supported operators: $in, $nin, $exists, $gte, $gt, $lte, $lt, $eq, $neq, $mod, $all, $and, $or, $nor, $not, $size, $type\n- Regexp searches\n- Function filtering\n- sub object searching\n- dot notiation searching\n- Supports node.js, and web\n- Small (2 kb minified) library \n\n\n## Node.js Examples\n\n```javascript\n\nvar sift = require('sift');\n\n//intersecting arrays\nvar sifted = sift({ $in: ['hello','world'] }, ['hello','sifted','array!']); //['hello']\n\n//regexp filter\nvar sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']\n\n\n//A *sifter* is returned if the second parameter is omitted\nvar siftPeople = sift({\n\n	//you can also filter against functions\n	name: function(value) {\n		return value.length == 5;\n	}\n});\n\n//filtered: [{ name: 'craig' }]\nsiftPeople([{\n	name: 'craig',\n},\n{\n	name: 'john'\n},\n{\n	name: 'jake'\n}]);\n\n\n//you can test *single values* against your custom sifter\nsiftPeople.test({ name: 'sarah' }); //true\nsiftPeople.test({ name: 'tim' }); //false\\\n```\n\n## Browser Examples\n```html\n<html>\n	<head>\n		<script src=\"https://raw.github.com/crcn/sift.js/master/sift.min.js\" type=\"text/javascript\"></script>\n		<script type=\"text/javascript\">\n			//regexp filter\n			var sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']\n		</script>\n	</head>\n	<body>\n	</body>\n</html>\n```\n\n## API\n\n### .sift(filter[, array])\n\n- `filter` - the filter to use against the target array\n- `array` - sifts against target array. Without this, a function is returned\n\nWith an array:\n\n```javascript\nsift({$exists:true}, ['craig',null]); //['craig']\n```\n\nWithout an array, a sifter is returned:\n\n```javascript\nvar siftExists = sift({$exists:true});\n\nsiftExists(['craig',null]); //['craig']\n```\n\nWith your sifter, you can also **test** values:\n\n```javascript\nsiftExists.test(null); //false\nsiftExists.test('craig'); //true\n```\n\n\n## Supported Operators:\n\nSee MonboDB's [advanced queries](http://www.mongodb.org/display/DOCS/Advanced+Queries) for more info.\n\n### $in\n\narray value must be *$in* the given query:\n\nIntersecting two arrays:\n \n```javascript\n//filtered: ['Brazil']\nsift({ $in: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']); \n``` \n\nHere's another example. This acts more like the $or operator:\n\n```javascript\nsift({ location: { $in: ['Costa Rica','Brazil'] } }, { name: 'Craig', location: 'Brazil' });\n```\n\n### $nin\n\nOpposite of $in:\n\n```javascript\n//filtered: ['Haiti','Peru','Chile']\nsift({ $nin: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']); \n``` \n\n### $exists\n\nChecks if whether a value exists:\n\n```javascript\n//filtered: ['Craig','Tim']\nsift({ $exists: true }, ['Craig',null,'Tim']); \n``` \n\nYou can also filter out values that don't exist\n\n```javascript\n//filtered: [{ name: 'Craig', city: 'Minneapolis' }]\nsift({ city: { $exists: false } }, [ { name: 'Craig', city: 'Minneapolis' }, { name: 'Tim' }]); \n```\n\n### $gte\n\nChecks if a number is >= value:\n\n```javascript\n//filtered: [2, 3]\nsift({ $gte: 2 }, [0, 1, 2, 3]); \n```\n\n### $gt\n\nChecks if a number is > value:\n\n```javascript\n//filtered: [3]\nsift({ $gt: 2 }, [0, 1, 2, 3]); \n```\n\n### $lte\n\nChecks if a number is <= value.\n\n```javascript\n//filtered: [0, 1, 2]\nsift({ $lte: 2 }, [0, 1, 2, 3]); \n```\n\n### $lt\n\nChecks if number is < value.\n\n```javascript\n//filtered: [0, 1]\nsift({ $lt: 2 }, [0, 1, 2, 3]); \n```\n\n### $eq\n\nChecks if query == value. Note that **$eq can be omitted**. For **$eq**, and **$neq**\n\n```javascript\n//filtered: [{ state: 'MN' }]\nsift({ state: {$eq: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); \n```\n\nOr:\n\n```javascript\n//filtered: [{ state: 'MN' }]\nsift({ state: 'MN' }, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); \n```\n\n### $ne\n\nChecks if query != value.\n\n```javascript\n//filtered: [{ state: 'CA' }, { state: 'WI'}] \nsift({ state: {$ne: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); \n```\n\n### $mod\n\nModulus:\n\n```javascript\n//filtered: [300, 600]\nsift({ $mod: [3, 0] }, [100, 200, 300, 400, 500, 600]); \n```\n\n### $all\n\nvalues must match **everything** in array:\n\n```javascript\n//filtered: [ { tags: ['books','programming','travel' ]} ]\nsift({ tags: {$all: ['books','programming'] }}, [\n{ tags: ['books','programming','travel' ] }, \n{ tags: ['travel','cooking'] } ]); \n```\n\n### $and\n\nability to use an array of expressions. All expressions must test true.\n\n```javascript\n//filtered: [ { name: 'Craig', state: 'MN' }]\n\nsift({ $and: [ { name: 'Craig' }, { state: 'MN' } ] }, [ \n{ name: 'Craig', state: 'MN' }, \n{ name: 'Tim', state: 'MN' }, \n{ name: 'Joe', state: 'CA' } ]); \n```\n\n### $or\n\nOR array of expressions.\n\n```javascript\n//filtered: [ { name: 'Craig', state: 'MN' }, { name: 'Tim', state: 'MN' }]\nsift({ $or: [ { name: 'Craig' }, { state: 'MN' } ] }, [ \n{ name: 'Craig', state: 'MN' }, \n{ name: 'Tim', state: 'MN' }, \n{ name: 'Joe', state: 'CA' } ]); \n```\n\n### $nor\n\noppositve of or:\n\n```javascript\n//filtered: [ { name: 'Tim', state: 'MN' }, { name: 'Joe', state: 'CA' }]\nsift({ $or: [ { name: 'Craig' }, { state: 'MN' } ] }, [ \n{ name: 'Craig', state: 'MN' }, \n{ name: 'Tim', state: 'MN' }, \n{ name: 'Joe', state: 'CA' } ]); \n```\n\n\n### $size\n\nMatches an array - must match given size:\n\n```javascript\n//filtered: ['food','cooking']\nsift({ tags: { $size: 2 } }, [ { tags: ['food','cooking'] }, { tags: ['traveling'] }]); \n```\n\n### $type\n\nMatches a values based on the type\n\n```javascript\nsift({ $type: Date }, [new Date(), 4342, 'hello world']); //returns single date\nsift({ $type: String }, [new Date(), 4342, 'hello world']); //returns ['hello world']\n```\n\n### $not\n\nNot expression:\n\n```javascript\nsift({$not:{$in:['craig','tim']}}, ['craig','tim','jake']); //['jake']\nsift({$not:{$size:5}}, ['craig','tim','jake']); //['tim','jake']\n```\n\n## sub object Searching\n\n\n```javascript\nvar people = [{\n	name: 'craig',\n	address: {\n		city: 'Minneapolis'\n	}\n},\n{\n	name: 'tim',\n	address: {\n		city: 'St. Paul'\n	}\n}];\n\nvar sifted = sift({ address: { city: 'Minneapolis' }}, people); // count = 1\n\n//or\nvar sifted = sift({'address.city': 'minneapolis', people});//count = 1\n```\n\n",
 			"file": "README.md",
+			"file_size": 6374,
+			"file_write_time": 1336063534000000,
 			"settings":
 			{
-				"buffer_size": 6002,
+				"buffer_size": 6375,
 				"line_ending": "Unix"
 			}
 		},
@@ -126,7 +133,7 @@
 			"file": "test/sift-test.js",
 			"settings":
 			{
-				"buffer_size": 5040,
+				"buffer_size": 5924,
 				"line_ending": "Unix"
 			}
 		},
@@ -135,14 +142,6 @@
 			"settings":
 			{
 				"buffer_size": 1773,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "sift.js",
-			"settings":
-			{
-				"buffer_size": 6314,
 				"line_ending": "Unix"
 			}
 		},
@@ -187,6 +186,14 @@
 			}
 		},
 		{
+			"file": "examples/ex1.js",
+			"settings":
+			{
+				"buffer_size": 934,
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": ".gitignore",
 			"settings":
 			{
@@ -207,6 +214,14 @@
 			"settings":
 			{
 				"buffer_size": 267,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/tmp/subl stdin RybGlr.txt",
+			"settings":
+			{
+				"buffer_size": 0,
 				"line_ending": "Unix"
 			}
 		},
@@ -251,6 +266,7 @@
 	},
 	"file_history":
 	[
+		"/Users/craig/Developer/Public/sift.js/sift.js",
 		"/tmp/subl stdin jqYsBL.txt",
 		"/Volumes/minimac/Users/craig/Dropbox/Developer/Jobs/Spice/private/teamdigest/lib/front/web/css/style.less",
 		"/Volumes/minimac/Users/craig/Dropbox/Developer/Jobs/Spice/private/teamdigest/lib/front/web/views/tpl/home.mu",
@@ -313,7 +329,7 @@
 	],
 	"find":
 	{
-		"height": 33.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -327,6 +343,14 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"$eq",
+			"\\",
+			"$eq",
+			"$trav",
+			"$eq",
+			"$trav",
+			"$eq",
+			"_comparable",
 			"$nor",
 			"$not",
 			"TRAV_OP",
@@ -446,14 +470,7 @@
 			"/login",
 			"stat",
 			"find",
-			"store/pr",
-			"rawProfile",
-			"_load",
-			"load",
-			"Profil",
-			"Profile",
-			"args",
-			"--all"
+			"store/pr"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -471,7 +488,6 @@
 	"groups":
 	[
 		{
-			"selected": 24,
 			"sheets":
 			[
 				{
@@ -505,15 +521,15 @@
 					"file": "README.md",
 					"settings":
 					{
-						"buffer_size": 6002,
+						"buffer_size": 6375,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								954,
-								954
+								1340,
+								1340
 							]
 						],
 						"settings":
@@ -522,7 +538,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 360.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -848,15 +864,15 @@
 					"file": "test/sift-test.js",
 					"settings":
 					{
-						"buffer_size": 5040,
+						"buffer_size": 5924,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1307,
-								1307
+								5896,
+								5896
 							]
 						],
 						"settings":
@@ -865,7 +881,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 3124.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -899,33 +915,6 @@
 				},
 				{
 					"buffer": 16,
-					"file": "sift.js",
-					"settings":
-					{
-						"buffer_size": 6314,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5829,
-								5829
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 17,
 					"file": "/tmp/subl stdin 75YbAj.txt",
 					"settings":
 					{
@@ -951,7 +940,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 18,
+					"buffer": 17,
 					"file": "/tmp/subl stdin MF78KF.txt",
 					"settings":
 					{
@@ -977,7 +966,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 19,
+					"buffer": 18,
 					"file": "/tmp/subl stdin e7271b.txt",
 					"settings":
 					{
@@ -1003,7 +992,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 20,
+					"buffer": 19,
 					"file": "/tmp/subl stdin 20SwgP.txt",
 					"settings":
 					{
@@ -1029,7 +1018,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 21,
+					"buffer": 20,
 					"file": "examples/realtime-people.js",
 					"settings":
 					{
@@ -1050,7 +1039,33 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 373.0,
+						"translation.y": 257.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 21,
+					"file": "examples/ex1.js",
+					"settings":
+					{
+						"buffer_size": 934,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								778,
+								783
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 49.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1135,7 +1150,7 @@
 				},
 				{
 					"buffer": 25,
-					"file": "/tmp/subl stdin DFsi2w.txt",
+					"file": "/tmp/subl stdin RybGlr.txt",
 					"settings":
 					{
 						"buffer_size": 0,
@@ -1161,6 +1176,32 @@
 				},
 				{
 					"buffer": 26,
+					"file": "/tmp/subl stdin DFsi2w.txt",
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 27,
 					"file": "/tmp/subl stdin Uqr09n.txt",
 					"settings":
 					{

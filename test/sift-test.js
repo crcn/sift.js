@@ -261,6 +261,21 @@ vows.describe('Sifter').addBatch({
 
 				assert.equal(sifted.length, 2);
 
+			},
+
+
+			/**
+			 */
+
+			 'has sifted with selector function count of 2': function(topic) {
+				var sifted = sift({
+					"name": "photography",
+					"places": {$in:['costa rica']}
+				}, topic, function(item) {
+					return item.hobbies;
+				});
+
+				assert.equal(sifted.length, 2);
 			}
 
 		}

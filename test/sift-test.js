@@ -5,7 +5,8 @@ assert = require('assert');
 
 
 
-
+// console.log(sift(null, [null, undefined, 0, { name: undefined }, { name: 0 }]).length)
+// process.exit();
 vows.describe('Sifter').addBatch({
 	
 	'An array': {
@@ -17,7 +18,6 @@ vows.describe('Sifter').addBatch({
 
 			'has a sifted $in count of 3': function(topic) {
 				assert.isTrue(sift({$in:['craig','john','joe']}, topic).length == 3);
-
 			},
 
 			'has a sifted $nin count of 2': function(topic) {
@@ -91,6 +91,17 @@ vows.describe('Sifter').addBatch({
 			},
 
 
+		},
+		'with undefined values': {
+			topic: [null, undefined, 0, { name: undefined }, { name: 0 }],
+
+			'has $eq null count of 2': function(topic) {
+				assert.equal(sift({$eq:null}, topic).length, 2);
+			},
+
+			'has null count of 2': function(topic) {
+				assert.equal(sift(null, topic).length, 2);
+			}
 		},
 
 		'with simple dates': {

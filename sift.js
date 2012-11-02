@@ -62,9 +62,11 @@
 
 		var parse = this.parse = function(statement, key) {
 
+			//fixes sift(null, []) issue
+			if(!statement) statement = { $eq: statement };
+
 			var testers = [];
 				
-			if(statement) 
 			//if the statement is an object, then we're looking at something like: { key: match }
 			if(statement.constructor == Object) {
 
@@ -510,7 +512,6 @@
 	}
 
 	var sifter = function(query, selector) {
-
 
 		//build the filter for the sifter
 		var filter = _queryParser.parse( query );

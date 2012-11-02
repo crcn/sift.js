@@ -1,12 +1,5 @@
 ## MongoDB inspired array filtering [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)
 
-
-## Use Cases:
-
-- realtime API (pub/sub for mongodb) - [guava](https://github.com/crcn/guava)
-- node.js database - [gumbo](https://github.com/crcn/gumbo)
-- Caching mongodb queries 
-
 ## Features:
 
 - Supported operators: $in, $nin, $exists, $gte, $gt, $lte, $lt, $eq, $neq, $mod, $all, $and, $or, $nor, $not, $size, $type

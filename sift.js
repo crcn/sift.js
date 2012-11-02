@@ -350,15 +350,15 @@
 
 				for(; i--;) {
 
-					if(!test(a[i], b)) {
+					if(test(a[i], b)) {
 
-						return true;
+						return false;
 
 					}
 
 				}
 
-				return !n;
+				return true;
 
 			},
 

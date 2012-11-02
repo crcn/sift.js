@@ -53,7 +53,7 @@ vows.describe('Sifter').addBatch({
 			},
 
 			'has a sifted $nor count of 5': function(topic) {
-				assert.isTrue(sift({$nor:topic}, topic).length == 5);
+				assert.equal(sift({$nor:topic}, topic).length , 0);
 			},
 
 			'has a sifted $not count of 3': function(topic) {

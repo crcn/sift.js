@@ -17,27 +17,27 @@ vows.describe('Sifter').addBatch({
 
 
 			'has a sifted $in count of 3': function(topic) {
-				assert.isTrue(sift({$in:['craig','john','joe']}, topic).length == 3);
+				assert.equal(sift({$in:['craig','john','joe']}, topic).length, 3);
 			},
 
 			'has a sifted $nin count of 2': function(topic) {
-				assert.isTrue(sift({$nin:['craig','john','joe']}, topic).length == 2);
+				assert.equal(sift({$nin:['craig','john','joe']}, topic).length,2);
 			},
 
 			'has a sifted $exists count of 4': function(topic) {
-				assert.isTrue(sift({$exists:true}, topic).length == 4);
+				assert.equal(sift({$exists:true}, topic).length, 4);
 			},
 
 			'has a sifted $and count of 1': function(topic) {
-				assert.isTrue(sift({$and:['craig']}, topic).length == 1);
+				assert.equal(sift({$and:['craig']}, topic).length , 1);
 			},
 
 			'has a sifted $ne count of 4': function(topic) {
-				assert.isTrue(sift({$ne:null}, topic).length == 4);
+				assert.equal(sift({$ne:null}, topic).length , 4);
 			},
 
 			'has a sifted regexp $eq count of 3': function(topic) {
-				assert.isTrue(sift(/^j\w+$/, topic).length == 3);
+				assert.equal(sift(/^j\w+$/, topic).length , 3);
 			},
 
 			'has a sifted function count of 2': function(topic) {
@@ -45,11 +45,11 @@ vows.describe('Sifter').addBatch({
 			},
 
 			'has a sifted type string of 4': function(topic) {
-				assert.isTrue(sift({ $type: String }, topic).length == 4);
+				assert.equal(sift({ $type: String }, topic).length, 4);
 			},
 
 			'has a sifted $or count of 2': function(topic) {
-				assert.isTrue(sift({$or:['craig','jake']}, topic).length == 2);
+				assert.equal(sift({$or:['craig','jake']}, topic).length, 2);
 			},
 
 			'has a sifted $nor count of 5': function(topic) {
@@ -57,11 +57,11 @@ vows.describe('Sifter').addBatch({
 			},
 
 			'has a sifted $not count of 3': function(topic) {
-				assert.isTrue(sift({$not:{$in:['craig','john']}}, topic).length == 3);	
+				assert.equal(sift({$not:{$in:['craig','john']}}, topic).length, 3);	
 			},
 
 			'has a sifted $size of 2': function(topic) {
-				assert.isTrue(sift({$size:4}, topic).length == 2);
+				assert.equal(sift({$size:4}, topic).length, 2);
 			}
 		},
 
@@ -69,25 +69,25 @@ vows.describe('Sifter').addBatch({
 			topic: [0, 100, 200, 300, 400, 500, 600, 700, 800],
 
 			'has sifted < 200 count of 2': function(topic) {
-				assert.isTrue(sift({$lt:200}, topic).length == 2);
+				assert.equal(sift({$lt:200}, topic).length , 2);
 			},
 
 			'has sifted <= 200 count of 3': function(topic) {
-				assert.isTrue(sift({$lte:200}, topic).length == 3);
+				assert.equal(sift({$lte:200}, topic).length , 3);
 			},
 			
 
 			'has sifted > 200 count of 6': function(topic) {
-				assert.isTrue(sift({$gt:200}, topic).length == 6);
+				assert.equal(sift({$gt:200}, topic).length , 6);
 			},
 
 
 			'has sifted >= 200 count of 7': function(topic) {
-				assert.isTrue(sift({$gte:200}, topic).length == 7);
+				assert.equal(sift({$gte:200}, topic).length , 7);
 			},
 
 			'has a sifted modulus 3 count of 3': function(topic) {
-				assert.isTrue(sift({$mod:[3,0]}, topic).length == 3);
+				assert.equal(sift({$mod:[3,0]}, topic).length , 3);
 			},
 
 
@@ -109,15 +109,15 @@ vows.describe('Sifter').addBatch({
 
 			'has $eq date count of 1': function(topic) {
 
-				assert.isTrue(sift(new Date(1325314860361), topic).length == 1);
+				assert.equal(sift(new Date(1325314860361), topic).length , 1);
 			},
 
 			'has $type count of 4': function(topic) {
-				assert.isTrue(sift({ $type: Date }, topic).length == 4);
+				assert.equal(sift({ $type: Date }, topic).length , 4);
 			},
 
 			'has $gt date count of 2': function(topic) {
-				assert.isTrue(sift({ $gt: Date.now() }, topic).length == 2);
+				assert.equal(sift({ $gt: Date.now() }, topic).length , 2);
 			}
 		},
 
@@ -181,7 +181,7 @@ vows.describe('Sifter').addBatch({
 					}
 				}, topic);
 
-				assert.isTrue(sifted.length == 1);
+				assert.equal(sifted.length , 1);
 
 			},
 
@@ -194,7 +194,7 @@ vows.describe('Sifter').addBatch({
 					}
 				}, topic);
 
-				assert.isTrue(sifted.length == 1);
+				assert.equal(sifted.length , 1);
 
 			},
 
@@ -225,7 +225,7 @@ vows.describe('Sifter').addBatch({
 				}, topic);
 
 
-				assert.isTrue(sifted.length == 2);
+				assert.equal(sifted.length , 2);
 			},
 
 			'has sifted to complex count of 0': function(topic) {
@@ -239,7 +239,7 @@ vows.describe('Sifter').addBatch({
 				}, topic);
 
 
-				assert.isTrue(sifted.length == 0);
+				assert.equal(sifted.length , 0);
 			},
 
 

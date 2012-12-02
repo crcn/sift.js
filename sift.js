@@ -291,8 +291,8 @@
 				var i = a.length, p, n = i;
 
 				for(; i--;) {
-					if(~(p = priority(a[i], b, i))) {
-						return p;
+					if(~priority(a[i], b)) {
+						return i;
 					}
 				}
 

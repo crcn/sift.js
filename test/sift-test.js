@@ -181,6 +181,7 @@ vows.describe('Sifter').addBatch({
 					}
 				}, topic);
 
+
 				assert.equal(sifted.length , 1);
 
 			},

@@ -37,22 +37,25 @@
 		 * tests against data
 		 */
 
-		var test = this.test = function(statement, data) {
+		var priority = this.priority = function(statement, data) {
 
-			var exprs = statement.exprs;
-
+			var exprs = statement.exprs,
+			priority = 0;
 
 			//generally, expressions are ordered from least efficient, to most efficient.
 			for(var i = 0, n = exprs.length; i < n; i++) {
 
-				var expr = exprs[i];
+				var expr = exprs[i],
+				p;
 
+				if(!~(p = expr.e(expr.v, _comparable(data), data))) return -1;
 
-				if(!expr.e(expr.v, _comparable(data), data)) return false;
+				priority += p;
 
 			}
 
-			return true;
+
+			return priority;
 		}
 
 
@@ -87,7 +90,7 @@
 
 
 						//using dot notation? convert into a sub-object
-						if(k.indexOf(".") > -1) {
+						if(~k.indexOf(".")) {
 							var keyParts = k.split(".");
 							k = keyParts.shift(); //we're using the first key, so remove it
 
@@ -100,16 +103,12 @@
 							exprValue = [];
 
 							for(var i = value.length; i--;) {
-
-								exprValue.push(parse(value[i]));
-									
+								exprValue.push(parse(value[i]));		
 							}
 
 						//otherwise we're dealing with $trav
-						} else {
-							
+						} else {	
 							exprValue = parse(value, k);
-
 						}
 					} 
 					
@@ -121,21 +120,18 @@
 
 			//otherwise we're comparing a particular value, so set to eq
 			} else {
-
 				testers.push(_getExpr('$eq', k, statement));
-
 			}
 
 			var stmt =  { 
-
 				exprs: testers,
 				k: key,
 				test: function(value) {
-					
-					return test(stmt, value);
-
-				} 
-
+					return ~stmt.priority(value);
+				},
+				priority: function(value) {
+					return priority(stmt, value);
+				}
 			};
 			
 			return stmt;
@@ -145,29 +141,25 @@
 
 		//traversable statements
 		var TRAV_OP = {
-
 			$and: true,
 			$or: true,
 			$nor: true,
 			$trav: true,
 			$not: true
-
-		}
+		};
 
 
 		function _comparable(value) {
-
 			if(value instanceof Date) {
-
 				return value.getTime();
-			
 			} else {
-
 				return value;
-			
 			}
 		}
 
+		function btop(value) {
+			return value ? 0 : -1;
+		}
 
 		var _testers = {
 
@@ -175,54 +167,42 @@
 			 */
 
 			$eq: function(a, b) {
-
-				return a.test(b);
-
+				return btop(a.test(b));
 			},
 
 			/**
 			 */
 
 			$ne: function(a, b) {
-
-				return !a.test(b);
-
+				return btop(!a.test(b));
 			},
 
 			/**
 			 */
 
 			$lt: function(a, b) {
-
-				return a > b;
-
+				return btop(a > b);
 			},
 
 			/**
 			 */
 
 			$gt: function(a, b) {
-
-				return a < b;
-
+				return btop(a < b);
 			},
 
 			/**
 			 */
 
 			$lte: function(a, b) {
-
-				return a >= b;
-
+				return btop(a >= b);
 			},
 
 			/**
 			 */
 
 			$gte: function(a, b) {
-
-				return a <= b;
-
+				return btop(a <= b);
 			},
 
 
@@ -230,9 +210,7 @@
 			 */
 
 			$exists: function(a, b) {
-
-				return a == !!b;
-
+				return btop(a == !!b);
 			},
 
 			/**
@@ -244,24 +222,22 @@
 				if(b instanceof Array) {
 
 					for(var i = b.length; i--;) {
-
-						if(a.indexOf(b[i]) > -1) return true;
-
+						if(~a.indexOf(b[i])) return i;
 					}	
 
 				} else {
-
-					return a.indexOf(b) > -1;
-
+					return btop(~a.indexOf(b));
 				}
 
+
+				return -1;
 			},
 
 			/**
 			 */
 
 			$not: function(a, b) {
-				return !a.test(b);
+				return btop(!a.test(b));
 			},
 
 			/**
@@ -270,8 +246,7 @@
 			$type: function(a, b, org) {
 
 				//instanceof doesn't work for strings / boolean. instanceof works with inheritance
-				return org ? org instanceof a || org.constructor == a : false;
-
+				return org ? btop(org instanceof a || org.constructor == a) : -1;
 			},
 
 			/**
@@ -279,18 +254,14 @@
 
 
 			$nin: function(a, b) {
-
-				return !_testers.$in(a, b);
-
+				return ~_testers.$in(a, b) ? -1 : 0;
 			},
 
 			/**
 			 */
 
 			$mod: function(a, b) {
-
-				return b % a[0] == a[1];
-
+				return b % a[0] == a[1] ? 0 : -1;
 			},
 
 			/**
@@ -298,26 +269,18 @@
 
 			$all: function(a, b) {
 
-
 				for(var i = a.length; i--;) {
-
-					var v = a[i];
-
-					if(b.indexOf(v) == -1) return false;
-
+					if(b.indexOf(a[i]) == -1) return i;
 				}
 
-				return true;
-
+				return -1;
 			},
 
 			/**
 			 */
 
 			$size: function(a, b) {
-
-				return b ? a == b.length : false;
-
+				return b ? btop(a == b.length) : -1;
 			},
 
 			/**
@@ -325,20 +288,15 @@
 
 			$or: function(a, b) {
 
-				var i = a.length, n = i;
+				var i = a.length, p, n = i;
 
 				for(; i--;) {
-
-					if(test(a[i], b)) {
-
-						return true;
-
+					if(~(p = priority(a[i], b, i))) {
+						return p;
 					}
-
 				}
 
-				return !n;
-
+				return btop(n == 0);
 			},
 
 			/**
@@ -349,17 +307,12 @@
 				var i = a.length, n = i;
 
 				for(; i--;) {
-
-					if(test(a[i], b)) {
-
-						return false;
-
+					if(~priority(a[i], b)) {
+						return -1;
 					}
-
 				}
 
-				return true;
-
+				return 0;
 			},
 
 			/**
@@ -368,15 +321,12 @@
 			$and: function(a, b) {
 
 				for(var i = a.length; i--;) {
-
-					if(!test(a[i], b)) {
-
-						return false;
-
+					if(!~priority(a[i], b)) {
+						return -1;
 					}
 				}
 
-				return true;
+				return 0;
 			},
 
 			/**
@@ -387,19 +337,14 @@
 				if(b instanceof Array) {
 					
 					for(var i = b.length; i--;) {
-						
 						var subb = b[i];
-
-						if(subb[a.k] && test(a, subb[a.k])) return true;
-
+						if(subb[a.k] && ~priority(a, subb[a.k])) return i;
 					}
 
-					return false;
+					return -1;
 				}
 
-
-				return b ? test(a, b[a.k]) : false;
-
+				return b ? priority(a, b[a.k]) : -1;
 			}
 		}
 
@@ -413,35 +358,22 @@
 				var fn;
 
 				if(a instanceof RegExp) {
-
 					return a;
-
 				} else if (a instanceof Function) {
-
 					fn = a;
-
 				} else {
 					
-					fn = function(b) {
-						
-						if(b instanceof Array) {
-							
-							return b.indexOf(a) > -1;
-							
-						}else{
-							
+					fn = function(b) {	
+						if(b instanceof Array) {		
+							return ~b.indexOf(a);
+						} else {
 							return a == b;
-							
 						}
-
 					}
-
 				}
 
 				return {
-
 					test: fn
-
 				}
 
 			},
@@ -450,7 +382,6 @@
 			 */
 				
 			 $ne: function(a) {
-
 				return _prepare.$eq(a);
 			 }
 		};
@@ -462,9 +393,6 @@
 			var v = _comparable(value);
 
 			return { 
-
-				//type
-				// t: type,
 
 				//k key
 				k: key, 
@@ -487,25 +415,12 @@
 		if(!selector) {
 
 			return function(value) {
-
 				return value;
-
 			};
 
 		} else 
-		/*if(typeof selector == 'string') {
-
-			return function(value) {
-
-				return value[selector];
-
-			};
-
-		} else */
 		if(typeof selector == 'function') {
-
 			return selector;
-
 		}
 
 		throw new Error("Unknown sift selector " + selector);
@@ -519,20 +434,38 @@
 		//the function used to sift through the given array
 		var self = function(target) {
 				
-			var sifted = [], value;
+			var sifted = [], results = [], value, priority;
 
 			//I'll typically start from the end, but in this case we need to keep the order
 			//of the array the same.
 			for(var i = 0, n = target.length; i < n; i++) {
 
-
 				value = selector(target[i]);
 
-				if(filter.test( value )) sifted.push(value);
+				//priority = -1? it's not something we can use.
+				if(!~(priority = filter.priority( value ))) continue;
 
+				//push all the sifted values to be sorted later. This is important particularly for statements
+				//such as $or
+				sifted.push({
+					value: value,
+					priority: priority
+				});
 			}
 
-			return sifted;
+			//sort the values
+			sifted.sort(function(a, b) {
+				return a.priority > b.priority ? -1 : 1;
+			});
+
+			var values = Array(sifted.length);
+
+			//finally, fetch the values & return them.
+			for(var i = sifted.length; i--;) {
+				values[i] = sifted[i].value;
+			}
+
+			return values;
 		}
 
 		//set the test function incase the sifter isn't needed

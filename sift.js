@@ -470,6 +470,7 @@
 
 		//set the test function incase the sifter isn't needed
 		self.test   = filter.test;
+		self.score = filter.priority;
 		self.query  = query;
 
 		return self;

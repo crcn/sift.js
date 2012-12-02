@@ -127,7 +127,7 @@
 				exprs: testers,
 				k: key,
 				test: function(value) {
-					return ~stmt.priority(value);
+					return !!~stmt.priority(value);
 				},
 				priority: function(value) {
 					return priority(stmt, value);

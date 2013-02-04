@@ -325,6 +325,5 @@ var people = [{
 var sifted = sift({ address: { city: 'Minneapolis' }}, people); // count = 1
 
 //or
-var sifted = sift({'address.city': 'minneapolis', people});//count = 1
+var sifted = sift({'address.city': 'minneapolis'}, people);//count = 1
 ```
-

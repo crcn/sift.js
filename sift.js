@@ -237,7 +237,7 @@
 			 */
 
 			$not: function(a, b) {
-				if(!a.test) throw new Error("$not test should include an expression, not a value");
+				if(!a.test) throw new Error("$not test should include an expression, not a value. Use $ne instead.");
 				return btop(!a.test(b));
 			},
 

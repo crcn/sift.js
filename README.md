@@ -271,7 +271,7 @@ oppositve of or:
 
 ```javascript
 //filtered: [ { name: 'Tim', state: 'MN' }, { name: 'Joe', state: 'CA' }]
-sift({ $or: [ { name: 'Craig' }, { state: 'MN' } ] }, [ 
+sift({ $nor: [ { name: 'Craig' }, { state: 'MN' } ] }, [ 
 { name: 'Craig', state: 'MN' }, 
 { name: 'Tim', state: 'MN' }, 
 { name: 'Joe', state: 'CA' } ]); 
@@ -325,6 +325,5 @@ var people = [{
 var sifted = sift({ address: { city: 'Minneapolis' }}, people); // count = 1
 
 //or
-var sifted = sift({'address.city': 'minneapolis', people});//count = 1
+var sifted = sift({'address.city': 'minneapolis'}, people);//count = 1
 ```
-

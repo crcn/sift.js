@@ -36,6 +36,7 @@ vows.describe('Sifter').addBatch({
 				assert.equal(sift({$ne:null}, topic).length , 4);
 			},
 
+
 			'has a sifted regexp $eq count of 3': function(topic) {
 				assert.equal(sift(/^j\w+$/, topic).length , 3);
 			},
@@ -170,6 +171,13 @@ vows.describe('Sifter').addBatch({
 					places: ['costa rica']
 				}]
 			}],
+
+
+			'throws error if $not is incorrect': function(topic) {
+				assert.throws(function() {
+					sift({$not:['abc']}, topic);
+				}, Error);
+			},
 
 
 			'has sifted through photography in brazil count of 1': function(topic) {

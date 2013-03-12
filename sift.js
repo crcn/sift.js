@@ -271,10 +271,10 @@
 			$all: function(a, b) {
 
 				for(var i = a.length; i--;) {
-					if(b.indexOf(a[i]) == -1) return i;
+					if(b.indexOf(a[i]) == -1) return -1;
 				}
 
-				return -1;
+				return 0;
 			},
 
 			/**

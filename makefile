@@ -1,0 +1,2 @@
+amd:
+	amdify -e ./ -o ./

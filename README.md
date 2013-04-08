@@ -6,7 +6,7 @@
 - Regexp searches
 - Function filtering
 - sub object searching
-- dot notiation searching
+- dot notation searching
 - Supports node.js, and web
 - Small (2 kb minified) library 
 
@@ -115,7 +115,7 @@ siftExists.test('craig'); //true
 
 ## Supported Operators:
 
-See MonboDB's [advanced queries](http://www.mongodb.org/display/DOCS/Advanced+Queries) for more info.
+See MongoDB's [advanced queries](http://www.mongodb.org/display/DOCS/Advanced+Queries) for more info.
 
 ### $in
 
@@ -267,7 +267,7 @@ sift({ $or: [ { name: 'Craig' }, { state: 'MN' } ] }, [
 
 ### $nor
 
-oppositve of or:
+opposite of or:
 
 ```javascript
 //filtered: [ { name: 'Tim', state: 'MN' }, { name: 'Joe', state: 'CA' }]

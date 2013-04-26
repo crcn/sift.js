@@ -140,7 +140,7 @@
 
 
 		//traversable statements
-		var TRAV_OP = {
+		var TRAV_OP = this.traversable = {
 			$and: true,
 			$or: true,
 			$nor: true,
@@ -161,7 +161,7 @@
 			return value ? 0 : -1;
 		}
 
-		var _testers = {
+		var _testers = this.testers =  {
 
 			/**
 			 */
@@ -407,7 +407,6 @@
 
 		}
 
-
 	})();
 
 
@@ -445,9 +444,6 @@
 
 				//priority = -1? it's not something we can use.
 				if(!~(priority = filter.priority( value ))) continue;
-
-				if(typeof priority === "boolean")
-						priority = btop(priority)
 
 				//push all the sifted values to be sorted later. This is important particularly for statements
 				//such as $or
@@ -505,6 +501,36 @@
 		//otherwise return the sifter func
 		return sft;
 
+	}
+
+
+	sift.use = function(options) {
+		if(options.operators) sift.useOperators(options.operators);
+	}
+
+	sift.useOperators = function(operators) {
+		for(var key in operators) {
+			sift.useOperator(key, operators[key]);
+		}
+	}
+
+	sift.useOperator = function(operator, optionsOrFn) {
+
+		var options = {};
+
+		if(typeof optionsOrFn == "object") {
+			options = optionsOrFn;
+		} else {
+			options = { test: optionsOrFn };
+		}
+
+
+		var key = "$" + operator;
+		_queryParser.testers[key] = options.test;
+
+		if(options.traversable || options.traverse) {
+			_queryParser.traversable[key] = true;
+		}
 	}
 
 

@@ -10,16 +10,17 @@
   "engines": {},
   "dependencies": {},
   "devDependencies": {
-    "vows": "*",
     "underscore": "*",
     "colors": "*",
     "benchmark": "*",
-    "express": "*",
     "validator": "*",
-    "expect.js":"*"
+    "mocha": "1.9.x",
+    "expect.js": "0.2.x",
+    "sardines": "0.4.x",
+    "karma": "0.8.x"
   },
   "main": "./sift.js",
   "scripts": {
-    "test": "vows --spec"
+    "test": "mocha ./test; karma start"
   }
 }

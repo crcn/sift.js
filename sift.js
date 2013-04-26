@@ -446,6 +446,9 @@
 				//priority = -1? it's not something we can use.
 				if(!~(priority = filter.priority( value ))) continue;
 
+				if(typeof priority === "boolean")
+						priority = btop(priority)
+
 				//push all the sifted values to be sorted later. This is important particularly for statements
 				//such as $or
 				sifted.push({

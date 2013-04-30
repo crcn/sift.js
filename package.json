@@ -1,7 +1,7 @@
 {
   "name": "sift",
   "description": "mongodb query style array filtering",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "repository": {
     "type": "git",
     "url": "git://github.com/crcn/sift.js.git"
@@ -21,6 +21,6 @@
   },
   "main": "./sift.js",
   "scripts": {
-    "test": "mocha ./test; karma start"
+    "test": "mocha ./test"
   }
 }

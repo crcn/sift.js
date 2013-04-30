@@ -210,7 +210,7 @@
 			 */
 
 			$exists: function(a, b) {
-				return btop(a == !!b);
+				return btop(a === (b != null))
 			},
 
 			/**

@@ -8,7 +8,8 @@
 - sub object searching
 - dot notation searching
 - Supports node.js, and web
-- Small (2 kb minified) library 
+- Small (2 kb minified) library
+- Custom Expressions 
 
 
 ## Node.js Examples
@@ -327,3 +328,27 @@ var sifted = sift({ address: { city: 'Minneapolis' }}, people); // count = 1
 //or
 var sifted = sift({'address.city': 'minneapolis'}, people);//count = 1
 ```
+
+
+## Custom Expressions
+
+You can add your own expressions. For instance - say you want to do some bitmask filtering, you could add this example:
+
+```javascript
+
+sift.use({
+	operations: {
+		band: function(a, b) {
+			return (a & b) ? 0 : -1; # 0 = exists, -1 = doesn't exist
+		}
+	}
+})
+
+# ops
+var IS_ANIMAL = 2,
+IS_PERSON     = IS_ANIMAL   << 1,
+IS_DOG        = IS_PERSON   << 1,
+EATS_CEREAL   = IS_DOG      << 1,
+EATS_BONES    = EATS_CEREAL << 1;
+
+sift({ $band: IS_PERSON }, [ S_PERSON|EATS_CEREAL, IS_DOG|EATS_BONES, IS_PERSON ]);

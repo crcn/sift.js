@@ -111,7 +111,6 @@
 							exprValue = parse(value, k);
 						}
 					} 
-					
 
 					testers.push(_getExpr(operator, k, exprValue));
 
@@ -335,6 +334,8 @@
 
 			$trav: function(a, b) {
 
+
+
 				if(b instanceof Array) {
 					
 					for(var i = b.length; i--;) {
@@ -345,7 +346,9 @@
 					return -1;
 				}
 
-				return b ? priority(a, b[a.k]) : -1;
+				//continue to traverse even if there isn't a value - this is needed for 
+				//something like name:{$exists:false}
+				return priority(a, b ? b[a.k] : undefined);
 			}
 		}
 

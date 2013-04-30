@@ -22,8 +22,9 @@ describe("simple strings", function() {
     assert.equal(sift({name:{$exists:true}}, topic).length, 2);
   })
 
+
   it("has name:$exists:false count of 3", function() {
-    assert.equal(sift({name:{$exists:false}}, topic).length, 3);
+    assert.equal(sift({name:{$exists:false}}, topic).length, 6);
   })
 
 });

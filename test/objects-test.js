@@ -2,6 +2,7 @@ var expect = require("expect.js"),
     sift = require(".."),
     assert = require("assert");
 describe("objects", function () {
+  
     var topic = [{
             name: 'craig',
             age: 90001,

@@ -4,6 +4,7 @@ assert = require("assert");
 
 describe("simple strings", function() {
 
+
   var topic = ['craig','john','jake','joe', null];
 
   it("has a sifted $in count of 3", function() {

@@ -339,12 +339,12 @@ You can add your own expressions. For instance - say you want to do some bitmask
 sift.use({
 	operations: {
 		band: function(a, b) {
-			return (a & b) ? 0 : -1; # 0 = exists, -1 = doesn't exist
+			return (a & b) ? 0 : -1; // 0 = exists, -1 = doesn't exist
 		}
 	}
 })
 
-# ops
+// ops
 var IS_ANIMAL = 2,
 IS_PERSON     = IS_ANIMAL   << 1,
 IS_DOG        = IS_PERSON   << 1,

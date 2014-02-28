@@ -2,10 +2,6 @@
   "name": "sift",
   "description": "mongodb query style array filtering",
   "version": "0.0.13",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/crcn/sift.js.git"
-  },
   "repository": {},
   "engines": {},
   "dependencies": {},
@@ -17,7 +13,8 @@
     "mocha": "1.9.x",
     "expect.js": "0.2.x",
     "sardines": "0.4.x",
-    "karma": "0.8.x"
+    "karma": "0.8.x",
+    "browserify": "~3.31.2"
   },
   "main": "./sift.js",
   "scripts": {

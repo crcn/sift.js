@@ -1,6 +1,6 @@
-amd:
-	amdify -e ./ -o ./
-
+browser:
+	./node_modules/.bin/browserify ./sift.js -o ./sift.browser.js
+	
 clean:
 	rm -rf test-web;
 

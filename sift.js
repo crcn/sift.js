@@ -270,7 +270,9 @@
 			$all: function(a, b) {
 
 				for(var i = a.length; i--;) {
-					if(b.indexOf(a[i]) == -1) return -1;
+                    var a1 = a[i];
+                    var indexInB = ~b.indexOf(a1);
+					if(!indexInB) return -1;
 				}
 
 				return 0;
@@ -349,7 +351,17 @@
 				//continue to traverse even if there isn't a value - this is needed for 
 				//something like name:{$exists:false}
 				return priority(a, b ? b[a.k] : undefined);
+			},
+
+			/**
+			 */
+
+			$regex: function(a, b) {
+                var aRE = new RegExp(a);
+                return aRE.test(b) ? 0 : -1;
 			}
+
+
 		}
 
 		var _prepare = {

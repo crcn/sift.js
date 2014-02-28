@@ -4,7 +4,7 @@ For extended documentation, checkout http://docs.mongodb.org/manual/reference/op
 
 ## Features:
 
-- Supported operators: $in, $nin, $exists, $gte, $gt, $lte, $lt, $eq, $neq, $mod, $all, $and, $or, $nor, $not, $size, $type
+- Supported operators: [$in](#in), [$nin](#nin), [$exists](#exists), [$gte](#gte), [$gt](#gt), [$lte](#lte), [$lt](#lt), [$eq](#eq), [$neq](#neq), [$mod](#mod), [$all](#all), [$and](#and), [$or](#or), [$nor](#nor), [$not](#not), [$size](#size), [$type](#type), [$regex](#regex)
 - Regexp searches
 - Function filtering
 - sub object searching
@@ -298,6 +298,14 @@ Matches a values based on the type
 ```javascript
 sift({ $type: Date }, [new Date(), 4342, 'hello world']); //returns single date
 sift({ $type: String }, [new Date(), 4342, 'hello world']); //returns ['hello world']
+```
+
+### $regex
+
+Matches values based on the given regular expression
+
+```javascript
+sift({ $regex: /^f/i, $nin: ["frank"] }, ["frank", "fred", "sam", "frost"]); // ["fred", "frost"]
 ```
 
 ### $not

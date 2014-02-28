@@ -437,16 +437,17 @@
 		//the function used to sift through the given array
 		var self = function(target) {
 				
-			var sifted = [], results = [], value, priority;
+			var sifted = [], results = [], testValue, value, priority;
 
 			//I'll typically start from the end, but in this case we need to keep the order
 			//of the array the same.
 			for(var i = 0, n = target.length; i < n; i++) {
 
-				value = selector(target[i]);
+				value = target[i];
+				testValue = selector(value);
 
 				//priority = -1? it's not something we can use.
-				if(!~(priority = filter.priority( value ))) continue;
+				if(!~(priority = filter.priority( testValue ))) continue;
 
 				//push all the sifted values to be sorted later. This is important particularly for statements
 				//such as $or

@@ -76,7 +76,7 @@ add('Sift for tags: cooking, brazil, and age lt 30', function() {
 	}, objects);
 }).
 on('cycle', function(event, bench) {
-	console.log(String(event));
+	console.log(String(event.target));
 }).
 on('complete', function() {
 }).

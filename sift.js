@@ -71,7 +71,7 @@
       var testers = [];
         
       //if the statement is an object, then we're looking at something like: { key: match }
-      if(statement.constructor == Object) {
+      if(Object.prototype.toString.call(statement) === "[object Object]") {
 
         for(var k in statement) {
 

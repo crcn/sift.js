@@ -268,7 +268,7 @@
        */
 
       $all: function(a, b) {
-
+        b = b || (b = [])
         for(var i = a.length; i--;) {
                     var a1 = a[i];
                     var indexInB = ~b.indexOf(a1);

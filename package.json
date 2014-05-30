@@ -1,5 +1,5 @@
 {
-  "name": "sift",
+  "name": "lever-sift",
   "description": "mongodb query style array filtering",
   "version": "0.0.17",
   "repository": {},

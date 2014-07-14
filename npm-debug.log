@@ -1,0 +1,191 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'publish' ]
+2 info using npm@1.4.3
+3 info using node@v0.10.26
+4 verbose publish [ '.' ]
+5 verbose cache add [ '.', null ]
+6 verbose cache add name=undefined spec="." args=[".",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: '.',
+7 verbose parsed url   path: '.',
+7 verbose parsed url   href: '.' }
+8 silly lockFile 3a52ce78- .
+9 verbose lock . /Users/craig/.npm/3a52ce78-.lock
+10 verbose tar pack [ '/var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/tmp.tgz',
+10 verbose tar pack   '.' ]
+11 verbose tarball /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/tmp.tgz
+12 verbose folder .
+13 info prepublish sift@0.0.17
+14 silly lockFile 1f1177db-tar tar://.
+15 verbose lock tar://. /Users/craig/.npm/1f1177db-tar.lock
+16 silly lockFile de324acf-680488-0-776850720634684-tmp-tgz tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/tmp.tgz
+17 verbose lock tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/tmp.tgz /Users/craig/.npm/de324acf-680488-0-776850720634684-tmp-tgz.lock
+18 silly lockFile 1f1177db-tar tar://.
+19 silly lockFile 1f1177db-tar tar://.
+20 silly lockFile de324acf-680488-0-776850720634684-tmp-tgz tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/tmp.tgz
+21 silly lockFile de324acf-680488-0-776850720634684-tmp-tgz tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/tmp.tgz
+22 verbose tar unpack /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/tmp.tgz
+23 silly lockFile e5c4f27d-680488-0-776850720634684-package tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/package
+24 verbose lock tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/package /Users/craig/.npm/e5c4f27d-680488-0-776850720634684-package.lock
+25 silly lockFile de324acf-680488-0-776850720634684-tmp-tgz tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/tmp.tgz
+26 verbose lock tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/tmp.tgz /Users/craig/.npm/de324acf-680488-0-776850720634684-tmp-tgz.lock
+27 silly gunzTarPerm modes [ '755', '644' ]
+28 silly gunzTarPerm extractEntry package.json
+29 silly gunzTarPerm extractEntry .npmignore
+30 silly gunzTarPerm modified mode [ '.npmignore', 511, 493 ]
+31 silly gunzTarPerm extractEntry README.md
+32 silly gunzTarPerm modified mode [ 'README.md', 511, 493 ]
+33 silly gunzTarPerm extractEntry karma.conf.js
+34 silly gunzTarPerm modified mode [ 'karma.conf.js', 511, 493 ]
+35 silly gunzTarPerm extractEntry sift.min.js
+36 silly gunzTarPerm modified mode [ 'sift.min.js', 511, 493 ]
+37 silly gunzTarPerm extractEntry request.config.js
+38 silly gunzTarPerm modified mode [ 'request.config.js', 511, 493 ]
+39 silly gunzTarPerm extractEntry sift.js
+40 silly gunzTarPerm extractEntry makefile
+41 silly gunzTarPerm modified mode [ 'makefile', 511, 493 ]
+42 silly gunzTarPerm extractEntry modules/sift/sift.js
+43 silly gunzTarPerm modified mode [ 'modules/sift/sift.js', 511, 493 ]
+44 silly gunzTarPerm extractEntry benchmark/benchmark.js
+45 silly gunzTarPerm modified mode [ 'benchmark/benchmark.js', 511, 493 ]
+46 silly gunzTarPerm extractEntry examples/ex1.js
+47 silly gunzTarPerm modified mode [ 'examples/ex1.js', 511, 493 ]
+48 silly gunzTarPerm extractEntry examples/realtime-people.js
+49 silly gunzTarPerm modified mode [ 'examples/realtime-people.js', 511, 493 ]
+50 silly gunzTarPerm extractEntry examples/test.html
+51 silly gunzTarPerm modified mode [ 'examples/test.html', 511, 493 ]
+52 silly gunzTarPerm extractEntry examples/tmp/people.json
+53 silly gunzTarPerm modified mode [ 'examples/tmp/people.json', 511, 493 ]
+54 silly gunzTarPerm extractEntry .travis.yml
+55 silly gunzTarPerm modified mode [ '.travis.yml', 511, 493 ]
+56 silly gunzTarPerm extractEntry .cupboard
+57 silly gunzTarPerm modified mode [ '.cupboard', 511, 493 ]
+58 silly gunzTarPerm extractEntry test/custom-test.js
+59 silly gunzTarPerm modified mode [ 'test/custom-test.js', 511, 493 ]
+60 silly gunzTarPerm extractEntry test/dates-test.js
+61 silly gunzTarPerm modified mode [ 'test/dates-test.js', 511, 493 ]
+62 silly gunzTarPerm extractEntry test/objects-test.js
+63 silly gunzTarPerm extractEntry test/selector-test.js
+64 silly gunzTarPerm modified mode [ 'test/selector-test.js', 511, 493 ]
+65 silly gunzTarPerm extractEntry test/simple-numbers-test.js
+66 silly gunzTarPerm modified mode [ 'test/simple-numbers-test.js', 511, 493 ]
+67 silly gunzTarPerm extractEntry test/simple-string-test.js
+68 silly gunzTarPerm modified mode [ 'test/simple-string-test.js', 511, 493 ]
+69 silly gunzTarPerm extractEntry test/undefined-test.js
+70 silly gunzTarPerm modified mode [ 'test/undefined-test.js', 511, 493 ]
+71 silly lockFile e5c4f27d-680488-0-776850720634684-package tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/package
+72 silly lockFile e5c4f27d-680488-0-776850720634684-package tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/package
+73 silly lockFile de324acf-680488-0-776850720634684-tmp-tgz tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/tmp.tgz
+74 silly lockFile de324acf-680488-0-776850720634684-tmp-tgz tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/tmp.tgz
+75 verbose tar pack [ '/Users/craig/.npm/sift/0.0.17/package.tgz',
+75 verbose tar pack   '/var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/package' ]
+76 verbose tarball /Users/craig/.npm/sift/0.0.17/package.tgz
+77 verbose folder /var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/package
+78 silly lockFile e5c4f27d-680488-0-776850720634684-package tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/package
+79 verbose lock tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/package /Users/craig/.npm/e5c4f27d-680488-0-776850720634684-package.lock
+80 silly lockFile 33915534-raig-npm-sift-0-0-17-package-tgz tar:///Users/craig/.npm/sift/0.0.17/package.tgz
+81 verbose lock tar:///Users/craig/.npm/sift/0.0.17/package.tgz /Users/craig/.npm/33915534-raig-npm-sift-0-0-17-package-tgz.lock
+82 silly lockFile e5c4f27d-680488-0-776850720634684-package tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/package
+83 silly lockFile e5c4f27d-680488-0-776850720634684-package tar:///var/folders/n1/r96x64mx6jzcbzkbz1ddrw6r0000gn/T/npm-7842-c2kbucYi/1405352680488-0.776850720634684/package
+84 silly lockFile 33915534-raig-npm-sift-0-0-17-package-tgz tar:///Users/craig/.npm/sift/0.0.17/package.tgz
+85 silly lockFile 33915534-raig-npm-sift-0-0-17-package-tgz tar:///Users/craig/.npm/sift/0.0.17/package.tgz
+86 silly lockFile e2dff3ac-rs-craig-npm-sift-0-0-17-package /Users/craig/.npm/sift/0.0.17/package
+87 verbose lock /Users/craig/.npm/sift/0.0.17/package /Users/craig/.npm/e2dff3ac-rs-craig-npm-sift-0-0-17-package.lock
+88 silly lockFile e2dff3ac-rs-craig-npm-sift-0-0-17-package /Users/craig/.npm/sift/0.0.17/package
+89 silly lockFile e2dff3ac-rs-craig-npm-sift-0-0-17-package /Users/craig/.npm/sift/0.0.17/package
+90 verbose tar unpack /Users/craig/.npm/sift/0.0.17/package.tgz
+91 silly lockFile d758f2eb-rs-craig-npm-sift-0-0-17-package tar:///Users/craig/.npm/sift/0.0.17/package
+92 verbose lock tar:///Users/craig/.npm/sift/0.0.17/package /Users/craig/.npm/d758f2eb-rs-craig-npm-sift-0-0-17-package.lock
+93 silly lockFile 33915534-raig-npm-sift-0-0-17-package-tgz tar:///Users/craig/.npm/sift/0.0.17/package.tgz
+94 verbose lock tar:///Users/craig/.npm/sift/0.0.17/package.tgz /Users/craig/.npm/33915534-raig-npm-sift-0-0-17-package-tgz.lock
+95 silly gunzTarPerm modes [ '755', '644' ]
+96 silly gunzTarPerm extractEntry package.json
+97 silly gunzTarPerm extractEntry .npmignore
+98 silly gunzTarPerm extractEntry README.md
+99 silly gunzTarPerm extractEntry karma.conf.js
+100 silly gunzTarPerm extractEntry request.config.js
+101 silly gunzTarPerm extractEntry sift.js
+102 silly gunzTarPerm extractEntry sift.min.js
+103 silly gunzTarPerm extractEntry makefile
+104 silly gunzTarPerm extractEntry modules/sift/sift.js
+105 silly gunzTarPerm extractEntry benchmark/benchmark.js
+106 silly gunzTarPerm extractEntry examples/ex1.js
+107 silly gunzTarPerm extractEntry examples/realtime-people.js
+108 silly gunzTarPerm extractEntry examples/test.html
+109 silly gunzTarPerm extractEntry examples/tmp/people.json
+110 silly gunzTarPerm extractEntry .travis.yml
+111 silly gunzTarPerm extractEntry .cupboard
+112 silly gunzTarPerm extractEntry test/custom-test.js
+113 silly gunzTarPerm extractEntry test/dates-test.js
+114 silly gunzTarPerm extractEntry test/objects-test.js
+115 silly gunzTarPerm extractEntry test/selector-test.js
+116 silly gunzTarPerm extractEntry test/simple-numbers-test.js
+117 silly gunzTarPerm extractEntry test/simple-string-test.js
+118 silly gunzTarPerm extractEntry test/undefined-test.js
+119 silly lockFile d758f2eb-rs-craig-npm-sift-0-0-17-package tar:///Users/craig/.npm/sift/0.0.17/package
+120 silly lockFile d758f2eb-rs-craig-npm-sift-0-0-17-package tar:///Users/craig/.npm/sift/0.0.17/package
+121 silly lockFile 33915534-raig-npm-sift-0-0-17-package-tgz tar:///Users/craig/.npm/sift/0.0.17/package.tgz
+122 silly lockFile 33915534-raig-npm-sift-0-0-17-package-tgz tar:///Users/craig/.npm/sift/0.0.17/package.tgz
+123 verbose chmod /Users/craig/.npm/sift/0.0.17/package.tgz 644
+124 verbose chown /Users/craig/.npm/sift/0.0.17/package.tgz [ 501, 20 ]
+125 silly lockFile 3a52ce78- .
+126 silly lockFile 3a52ce78- .
+127 silly publish { name: 'sift',
+127 silly publish   description: 'mongodb query style array filtering',
+127 silly publish   version: '0.0.17',
+127 silly publish   repository: {},
+127 silly publish   engines: {},
+127 silly publish   dependencies: {},
+127 silly publish   devDependencies:
+127 silly publish    { underscore: '*',
+127 silly publish      colors: '*',
+127 silly publish      benchmark: '*',
+127 silly publish      validator: '*',
+127 silly publish      mocha: '1.9.x',
+127 silly publish      'expect.js': '0.2.x',
+127 silly publish      sardines: '0.4.x',
+127 silly publish      karma: '0.8.x',
+127 silly publish      browserify: '~3.31.2' },
+127 silly publish   main: './sift.js',
+127 silly publish   scripts: { test: 'mocha ./test' },
+127 silly publish   readme: '## MongoDB inspired array filtering [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)\n\nFor extended documentation, checkout http://docs.mongodb.org/manual/reference/operator/query/\n\n## Features:\n\n- Supported operators: [$in](#in), [$nin](#nin), [$exists](#exists), [$gte](#gte), [$gt](#gt), [$lte](#lte), [$lt](#lt), [$eq](#eq), [$neq](#neq), [$mod](#mod), [$all](#all), [$and](#and), [$or](#or), [$nor](#nor), [$not](#not), [$size](#size), [$type](#type), [$regex](#regex)\n- Regexp searches\n- Function filtering\n- sub object searching\n- dot notation searching\n- Supports node.js, and web\n- Small (2 kb minified) library\n- Custom Expressions \n\n\n\n## Node.js Examples\n\n```javascript\n\nvar sift = require(\'sift\');\n\n//intersecting arrays\nvar sifted = sift({ $in: [\'hello\',\'world\'] }, [\'hello\',\'sifted\',\'array!\']); //[\'hello\']\n\n//regexp filter\nvar sifted = sift(/^j/, [\'craig\',\'john\',\'jake\']); //[\'john\',\'jake\']\n\n\n//A *sifter* is returned if the second parameter is omitted\nvar siftPeople = sift({\n\n\t//you can also filter against functions\n\tname: function(value) {\n\t\treturn value.length == 5;\n\t}\n});\n\n//filtered: [{ name: \'craig\' }]\nsiftPeople([{\n\tname: \'craig\',\n},\n{\n\tname: \'john\'\n},\n{\n\tname: \'jake\'\n}]);\n\n\n//you can test *single values* against your custom sifter\nsiftPeople.test({ name: \'sarah\' }); //true\nsiftPeople.test({ name: \'tim\' }); //false\\\n```\n\n## Browser Examples\n```html\n<html>\n\t<head>\n\t\t<script src="https://raw.github.com/crcn/sift.js/master/sift.min.js" type="text/javascript"></script>\n\t\t<script type="text/javascript">\n\t\t\t//regexp filter\n\t\t\tvar sifted = sift(/^j/, [\'craig\',\'john\',\'jake\']); //[\'john\',\'jake\']\n\t\t</script>\n\t</head>\n\t<body>\n\t</body>\n</html>\n```\n\n## API\n\n### .sift(filter[, array][, selectorFn])\n\n- `filter` - the filter to use against the target array\n- `array` - sifts against target array. Without this, a function is returned\n- `selectorFn` - selector for the values within the array. \n\nWith an array:\n\n```javascript\nsift({$exists:true}, [\'craig\',null]); //[\'craig\']\n```\n\nWithout an array, a sifter is returned:\n\n```javascript\nvar siftExists = sift({$exists:true});\n\nsiftExists([\'craig\',null]); //[\'craig\']\n```\n\nWith a selector:\n\n```javascript\nvar sifter = sift({$exists:true}, function(user) {\n\treturn !!user.name;\n});\n\n\nsifter([\n\t{\n\t\tname: "Craig"\n\t},\n\t{\n\t\tname: null\n\t}\n])\n```\n\nWith your sifter, you can also **test** values:\n\n```javascript\nsiftExists.test(null); //false\nsiftExists.test(\'craig\'); //true\n```\n\n\n## Supported Operators:\n\nSee MongoDB\'s [advanced queries](http://www.mongodb.org/display/DOCS/Advanced+Queries) for more info.\n\n### $in\n\narray value must be *$in* the given query:\n\nIntersecting two arrays:\n \n```javascript\n//filtered: [\'Brazil\']\nsift({ $in: [\'Costa Rica\',\'Brazil\'] }, [\'Brazil\',\'Haiti\',\'Peru\',\'Chile\']); \n``` \n\nHere\'s another example. This acts more like the $or operator:\n\n```javascript\nsift({ location: { $in: [\'Costa Rica\',\'Brazil\'] } }, { name: \'Craig\', location: \'Brazil\' });\n```\n\n### $nin\n\nOpposite of $in:\n\n```javascript\n//filtered: [\'Haiti\',\'Peru\',\'Chile\']\nsift({ $nin: [\'Costa Rica\',\'Brazil\'] }, [\'Brazil\',\'Haiti\',\'Peru\',\'Chile\']); \n``` \n\n### $exists\n\nChecks if whether a value exists:\n\n```javascript\n//filtered: [\'Craig\',\'Tim\']\nsift({ $exists: true }, [\'Craig\',null,\'Tim\']); \n``` \n\nYou can also filter out values that don\'t exist\n\n```javascript\n//filtered: [{ name: \'Craig\', city: \'Minneapolis\' }]\nsift({ city: { $exists: false } }, [ { name: \'Craig\', city: \'Minneapolis\' }, { name: \'Tim\' }]); \n```\n\n### $gte\n\nChecks if a number is >= value:\n\n```javascript\n//filtered: [2, 3]\nsift({ $gte: 2 }, [0, 1, 2, 3]); \n```\n\n### $gt\n\nChecks if a number is > value:\n\n```javascript\n//filtered: [3]\nsift({ $gt: 2 }, [0, 1, 2, 3]); \n```\n\n### $lte\n\nChecks if a number is <= value.\n\n```javascript\n//filtered: [0, 1, 2]\nsift({ $lte: 2 }, [0, 1, 2, 3]); \n```\n\n### $lt\n\nChecks if number is < value.\n\n```javascript\n//filtered: [0, 1]\nsift({ $lt: 2 }, [0, 1, 2, 3]); \n```\n\n### $eq\n\nChecks if query == value. Note that **$eq can be omitted**. For **$eq**, and **$neq**\n\n```javascript\n//filtered: [{ state: \'MN\' }]\nsift({ state: {$eq: \'MN\' }}, [{ state: \'MN\' }, { state: \'CA\' }, { state: \'WI\' }); \n```\n\nOr:\n\n```javascript\n//filtered: [{ state: \'MN\' }]\nsift({ state: \'MN\' }, [{ state: \'MN\' }, { state: \'CA\' }, { state: \'WI\' }); \n```\n\n### $ne\n\nChecks if query != value.\n\n```javascript\n//filtered: [{ state: \'CA\' }, { state: \'WI\'}] \nsift({ state: {$ne: \'MN\' }}, [{ state: \'MN\' }, { state: \'CA\' }, { state: \'WI\' }); \n```\n\n### $mod\n\nModulus:\n\n```javascript\n//filtered: [300, 600]\nsift({ $mod: [3, 0] }, [100, 200, 300, 400, 500, 600]); \n```\n\n### $all\n\nvalues must match **everything** in array:\n\n```javascript\n//filtered: [ { tags: [\'books\',\'programming\',\'travel\' ]} ]\nsift({ tags: {$all: [\'books\',\'programming\'] }}, [\n{ tags: [\'books\',\'programming\',\'travel\' ] }, \n{ tags: [\'travel\',\'cooking\'] } ]); \n```\n\n### $and\n\nability to use an array of expressions. All expressions must test true.\n\n```javascript\n//filtered: [ { name: \'Craig\', state: \'MN\' }]\n\nsift({ $and: [ { name: \'Craig\' }, { state: \'MN\' } ] }, [ \n{ name: \'Craig\', state: \'MN\' }, \n{ name: \'Tim\', state: \'MN\' }, \n{ name: \'Joe\', state: \'CA\' } ]); \n```\n\n### $or\n\nOR array of expressions.\n\n```javascript\n//filtered: [ { name: \'Craig\', state: \'MN\' }, { name: \'Tim\', state: \'MN\' }]\nsift({ $or: [ { name: \'Craig\' }, { state: \'MN\' } ] }, [ \n{ name: \'Craig\', state: \'MN\' }, \n{ name: \'Tim\', state: \'MN\' }, \n{ name: \'Joe\', state: \'CA\' } ]); \n```\n\n### $nor\n\nopposite of or:\n\n```javascript\n//filtered: [ { name: \'Tim\', state: \'MN\' }, { name: \'Joe\', state: \'CA\' }]\nsift({ $nor: [ { name: \'Craig\' }, { state: \'MN\' } ] }, [ \n{ name: \'Craig\', state: \'MN\' }, \n{ name: \'Tim\', state: \'MN\' }, \n{ name: \'Joe\', state: \'CA\' } ]); \n```\n\n\n### $size\n\nMatches an array - must match given size:\n\n```javascript\n//filtered: [\'food\',\'cooking\']\nsift({ tags: { $size: 2 } }, [ { tags: [\'food\',\'cooking\'] }, { tags: [\'traveling\'] }]); \n```\n\n### $type\n\nMatches a values based on the type\n\n```javascript\nsift({ $type: Date }, [new Date(), 4342, \'hello world\']); //returns single date\nsift({ $type: String }, [new Date(), 4342, \'hello world\']); //returns [\'hello world\']\n```\n\n### $regex\n\nMatches values based on the given regular expression\n\n```javascript\nsift({ $regex: /^f/i, $nin: ["frank"] }, ["frank", "fred", "sam", "frost"]); // ["fred", "frost"]\n```\n\n### $not\n\nNot expression:\n\n```javascript\nsift({$not:{$in:[\'craig\',\'tim\']}}, [\'craig\',\'tim\',\'jake\']); //[\'jake\']\nsift({$not:{$size:5}}, [\'craig\',\'tim\',\'jake\']); //[\'tim\',\'jake\']\n```\n\n## sub object Searching\n\n\n```javascript\nvar people = [{\n\tname: \'craig\',\n\taddress: {\n\t\tcity: \'Minneapolis\'\n\t}\n},\n{\n\tname: \'tim\',\n\taddress: {\n\t\tcity: \'St. Paul\'\n\t}\n}];\n\nvar sifted = sift({ address: { city: \'Minneapolis\' }}, people); // count = 1\n\n//or\nvar sifted = sift({\'address.city\': \'minneapolis\'}, people);//count = 1\n```\n\n\n## Custom Expressions\n\nYou can add your own expressions. For instance - say you want to do some bitmask filtering, you could add this example:\n\n```javascript\n\nsift.use({\n\toperations: {\n\t\tband: function(a, b) {\n\t\t\treturn (a & b) ? 0 : -1; // 0 = exists, -1 = doesn\'t exist\n\t\t}\n\t}\n})\n\n// ops\nvar IS_ANIMAL = 2,\nIS_PERSON     = IS_ANIMAL   << 1,\nIS_DOG        = IS_PERSON   << 1,\nEATS_CEREAL   = IS_DOG      << 1,\nEATS_BONES    = EATS_CEREAL << 1;\n\nsift({ $band: IS_PERSON }, [ S_PERSON|EATS_CEREAL, IS_DOG|EATS_BONES, IS_PERSON ]);\n',
+127 silly publish   readmeFilename: 'README.md',
+127 silly publish   _id: 'sift@0.0.17',
+127 silly publish   dist: { shasum: 'b747855210bdf87755b1d0cd6049b9a9a3535513' },
+127 silly publish   _from: '.' }
+128 verbose url raw sift
+129 verbose url resolving [ 'http://registry.npmjs.org/', './sift' ]
+130 verbose url resolved http://registry.npmjs.org/sift
+131 info trying registry request attempt 1 at 08:44:40
+132 http PUT http://registry.npmjs.org/sift
+133 http 403 http://registry.npmjs.org/sift
+134 error publish Failed PUT 403
+135 error Error: forbidden cannot modify pre-existing version: 0.0.17
+135 error old={"name":"sift","description":"mongodb query style array filtering","version":"0.0.17","repository":{},"engines":{},"dependencies":{},"devDependencies":{"underscore":"*","colors":"*","benchmark":"*","validator":"*","mocha":"1.9.x","expect.js":"0.2.x","sardines":"0.4.x","karma":"0.8.x","browserify":"~3.31.2"},"main":"./sift.js","scripts":{"test":"mocha ./test"},"_id":"sift@0.0.17","dist":{"shasum":"4aaea8b03e94d01e8cbf1a8d1d58e95887f1f8e4","tarball":"http://registry.npmjs.org/sift/-/sift-0.0.17.tgz"},"_from":".","_npmVersion":"1.4.3","_npmUser":{"name":"architectd","email":"craig.j.condon@gmail.com"},"maintainers":[{"name":"architectd","email":"craig.j.condon@gmail.com"}]}
+135 error new={"name":"sift","description":"mongodb query style array filtering","version":"0.0.17","repository":{},"engines":{},"dependencies":{},"devDependencies":{"underscore":"*","colors":"*","benchmark":"*","validator":"*","mocha":"1.9.x","expect.js":"0.2.x","sardines":"0.4.x","karma":"0.8.x","browserify":"~3.31.2"},"main":"./sift.js","scripts":{"test":"mocha ./test"},"readme":"## MongoDB inspired array filtering [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)\u000a\u000aFor extended documentation, checkout http://docs.mongodb.org/manual/reference/operator/query/\u000a\u000a## Features:\u000a\u000a- Supported operators: [$in](#in), [$nin](#nin), [$exists](#exists), [$gte](#gte), [$gt](#gt), [$lte](#lte), [$lt](#lt), [$eq](#eq), [$neq](#neq), [$mod](#mod), [$all](#all), [$and](#and), [$or](#or), [$nor](#nor), [$not](#not), [$size](#size), [$type](#type), [$regex](#regex)\u000a- Regexp searches\u000a- Function filtering\u000a- sub object searching\u000a- dot notation searching\u000a- Supports node.js, and web\u000a- Small (2 kb minified) library\u000a- Custom Expressions \u000a\u000a\u000a\u000a## Node.js Examples\u000a\u000a```javascript\u000a\u000avar sift = require('sift');\u000a\u000a//intersecting arrays\u000avar sifted = sift({ $in: ['hello','world'] }, ['hello','sifted','array!']); //['hello']\u000a\u000a//regexp filter\u000avar sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']\u000a\u000a\u000a//A *sifter* is returned if the second parameter is omitted\u000avar siftPeople = sift({\u000a\u000a\u0009//you can also filter against functions\u000a\u0009name: function(value) {\u000a\u0009\u0009return value.length == 5;\u000a\u0009}\u000a});\u000a\u000a//filtered: [{ name: 'craig' }]\u000asiftPeople([{\u000a\u0009name: 'craig',\u000a},\u000a{\u000a\u0009name: 'john'\u000a},\u000a{\u000a\u0009name: 'jake'\u000a}]);\u000a\u000a\u000a//you can test *single values* against your custom sifter\u000asiftPeople.test({ name: 'sarah' }); //true\u000asiftPeople.test({ name: 'tim' }); //false\\\u000a```\u000a\u000a## Browser Examples\u000a```html\u000a<html>\u000a\u0009<head>\u000a\u0009\u0009<script src=\"https://raw.github.com/crcn/sift.js/master/sift.min.js\" type=\"text/javascript\"></script>\u000a\u0009\u0009<script type=\"text/javascript\">\u000a\u0009\u0009\u0009//regexp filter\u000a\u0009\u0009\u0009var sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']\u000a\u0009\u0009</script>\u000a\u0009</head>\u000a\u0009<body>\u000a\u0009</body>\u000a</html>\u000a```\u000a\u000a## API\u000a\u000a### .sift(filter[, array][, selectorFn])\u000a\u000a- `filter` - the filter to use against the target array\u000a- `array` - sifts against target array. Without this, a function is returned\u000a- `selectorFn` - selector for the values within the array. \u000a\u000aWith an array:\u000a\u000a```javascript\u000asift({$exists:true}, ['craig',null]); //['craig']\u000a```\u000a\u000aWithout an array, a sifter is returned:\u000a\u000a```javascript\u000avar siftExists = sift({$exists:true});\u000a\u000asiftExists(['craig',null]); //['craig']\u000a```\u000a\u000aWith a selector:\u000a\u000a```javascript\u000avar sifter = sift({$exists:true}, function(user) {\u000a\u0009return !!user.name;\u000a});\u000a\u000a\u000asifter([\u000a\u0009{\u000a\u0009\u0009name: \"Craig\"\u000a\u0009},\u000a\u0009{\u000a\u0009\u0009name: null\u000a\u0009}\u000a])\u000a```\u000a\u000aWith your sifter, you can also **test** values:\u000a\u000a```javascript\u000asiftExists.test(null); //false\u000asiftExists.test('craig'); //true\u000a```\u000a\u000a\u000a## Supported Operators:\u000a\u000aSee MongoDB's [advanced queries](http://www.mongodb.org/display/DOCS/Advanced+Queries) for more info.\u000a\u000a### $in\u000a\u000aarray value must be *$in* the given query:\u000a\u000aIntersecting two arrays:\u000a \u000a```javascript\u000a//filtered: ['Brazil']\u000asift({ $in: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']); \u000a``` \u000a\u000aHere's another example. This acts more like the $or operator:\u000a\u000a```javascript\u000asift({ location: { $in: ['Costa Rica','Brazil'] } }, { name: 'Craig', location: 'Brazil' });\u000a```\u000a\u000a### $nin\u000a\u000aOpposite of $in:\u000a\u000a```javascript\u000a//filtered: ['Haiti','Peru','Chile']\u000asift({ $nin: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']); \u000a``` \u000a\u000a### $exists\u000a\u000aChecks if whether a value exists:\u000a\u000a```javascript\u000a//filtered: ['Craig','Tim']\u000asift({ $exists: true }, ['Craig',null,'Tim']); \u000a``` \u000a\u000aYou can also filter out values that don't exist\u000a\u000a```javascript\u000a//filtered: [{ name: 'Craig', city: 'Minneapolis' }]\u000asift({ city: { $exists: false } }, [ { name: 'Craig', city: 'Minneapolis' }, { name: 'Tim' }]); \u000a```\u000a\u000a### $gte\u000a\u000aChecks if a number is >= value:\u000a\u000a```javascript\u000a//filtered: [2, 3]\u000asift({ $gte: 2 }, [0, 1, 2, 3]); \u000a```\u000a\u000a### $gt\u000a\u000aChecks if a number is > value:\u000a\u000a```javascript\u000a//filtered: [3]\u000asift({ $gt: 2 }, [0, 1, 2, 3]); \u000a```\u000a\u000a### $lte\u000a\u000aChecks if a number is <= value.\u000a\u000a```javascript\u000a//filtered: [0, 1, 2]\u000asift({ $lte: 2 }, [0, 1, 2, 3]); \u000a```\u000a\u000a### $lt\u000a\u000aChecks if number is < value.\u000a\u000a```javascript\u000a//filtered: [0, 1]\u000asift({ $lt: 2 }, [0, 1, 2, 3]); \u000a```\u000a\u000a### $eq\u000a\u000aChecks if query == value. Note that **$eq can be omitted**. For **$eq**, and **$neq**\u000a\u000a```javascript\u000a//filtered: [{ state: 'MN' }]\u000asift({ state: {$eq: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); \u000a```\u000a\u000aOr:\u000a\u000a```javascript\u000a//filtered: [{ state: 'MN' }]\u000asift({ state: 'MN' }, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); \u000a```\u000a\u000a### $ne\u000a\u000aChecks if query != value.\u000a\u000a```javascript\u000a//filtered: [{ state: 'CA' }, { state: 'WI'}] \u000asift({ state: {$ne: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); \u000a```\u000a\u000a### $mod\u000a\u000aModulus:\u000a\u000a```javascript\u000a//filtered: [300, 600]\u000asift({ $mod: [3, 0] }, [100, 200, 300, 400, 500, 600]); \u000a```\u000a\u000a### $all\u000a\u000avalues must match **everything** in array:\u000a\u000a```javascript\u000a//filtered: [ { tags: ['books','programming','travel' ]} ]\u000asift({ tags: {$all: ['books','programming'] }}, [\u000a{ tags: ['books','programming','travel' ] }, \u000a{ tags: ['travel','cooking'] } ]); \u000a```\u000a\u000a### $and\u000a\u000aability to use an array of expressions. All expressions must test true.\u000a\u000a```javascript\u000a//filtered: [ { name: 'Craig', state: 'MN' }]\u000a\u000asift({ $and: [ { name: 'Craig' }, { state: 'MN' } ] }, [ \u000a{ name: 'Craig', state: 'MN' }, \u000a{ name: 'Tim', state: 'MN' }, \u000a{ name: 'Joe', state: 'CA' } ]); \u000a```\u000a\u000a### $or\u000a\u000aOR array of expressions.\u000a\u000a```javascript\u000a//filtered: [ { name: 'Craig', state: 'MN' }, { name: 'Tim', state: 'MN' }]\u000asift({ $or: [ { name: 'Craig' }, { state: 'MN' } ] }, [ \u000a{ name: 'Craig', state: 'MN' }, \u000a{ name: 'Tim', state: 'MN' }, \u000a{ name: 'Joe', state: 'CA' } ]); \u000a```\u000a\u000a### $nor\u000a\u000aopposite of or:\u000a\u000a```javascript\u000a//filtered: [ { name: 'Tim', state: 'MN' }, { name: 'Joe', state: 'CA' }]\u000asift({ $nor: [ { name: 'Craig' }, { state: 'MN' } ] }, [ \u000a{ name: 'Craig', state: 'MN' }, \u000a{ name: 'Tim', state: 'MN' }, \u000a{ name: 'Joe', state: 'CA' } ]); \u000a```\u000a\u000a\u000a### $size\u000a\u000aMatches an array - must match given size:\u000a\u000a```javascript\u000a//filtered: ['food','cooking']\u000asift({ tags: { $size: 2 } }, [ { tags: ['food','cooking'] }, { tags: ['traveling'] }]); \u000a```\u000a\u000a### $type\u000a\u000aMatches a values based on the type\u000a\u000a```javascript\u000asift({ $type: Date }, [new Date(), 4342, 'hello world']); //returns single date\u000asift({ $type: String }, [new Date(), 4342, 'hello world']); //returns ['hello world']\u000a```\u000a\u000a### $regex\u000a\u000aMatches values based on the given regular expression\u000a\u000a```javascript\u000asift({ $regex: /^f/i, $nin: [\"frank\"] }, [\"frank\", \"fred\", \"sam\", \"frost\"]); // [\"fred\", \"frost\"]\u000a```\u000a\u000a### $not\u000a\u000aNot expression:\u000a\u000a```javascript\u000asift({$not:{$in:['craig','tim']}}, ['craig','tim','jake']); //['jake']\u000asift({$not:{$size:5}}, ['craig','tim','jake']); //['tim','jake']\u000a```\u000a\u000a## sub object Searching\u000a\u000a\u000a```javascript\u000avar people = [{\u000a\u0009name: 'craig',\u000a\u0009address: {\u000a\u0009\u0009city: 'Minneapolis'\u000a\u0009}\u000a},\u000a{\u000a\u0009name: 'tim',\u000a\u0009address: {\u000a\u0009\u0009city: 'St. Paul'\u000a\u0009}\u000a}];\u000a\u000avar sifted = sift({ address: { city: 'Minneapolis' }}, people); // count = 1\u000a\u000a//or\u000avar sifted = sift({'address.city': 'minneapolis'}, people);//count = 1\u000a```\u000a\u000a\u000a## Custom Expressions\u000a\u000aYou can add your own expressions. For instance - say you want to do some bitmask filtering, you could add this example:\u000a\u000a```javascript\u000a\u000asift.use({\u000a\u0009operations: {\u000a\u0009\u0009band: function(a, b) {\u000a\u0009\u0009\u0009return (a & b) ? 0 : -1; // 0 = exists, -1 = doesn't exist\u000a\u0009\u0009}\u000a\u0009}\u000a})\u000a\u000a// ops\u000avar IS_ANIMAL = 2,\u000aIS_PERSON     = IS_ANIMAL   << 1,\u000aIS_DOG        = IS_PERSON   << 1,\u000aEATS_CEREAL   = IS_DOG      << 1,\u000aEATS_BONES    = EATS_CEREAL << 1;\u000a\u000asift({ $band: IS_PERSON }, [ S_PERSON|EATS_CEREAL, IS_DOG|EATS_BONES, IS_PERSON ]);\u000a","readmeFilename":"README.md","_id":"sift@0.0.17","dist":{"shasum":"b747855210bdf87755b1d0cd6049b9a9a3535513","tarball":"http://registry.npmjs.org/sift/-/sift-0.0.17.tgz"},"_from":".","_npmVersion":"1.4.3","_npmUser":{"name":"architectd","email":"craig.j.condon@gmail.com"},"maintainers":[{"name":"architectd","email":"craig.j.condon@gmail.com"}]}: sift
+135 error     at RegClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:237:14)
+135 error     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:123:22)
+135 error     at Request.EventEmitter.emit (events.js:98:17)
+135 error     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:893:14)
+135 error     at Request.EventEmitter.emit (events.js:117:20)
+135 error     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:844:12)
+135 error     at IncomingMessage.EventEmitter.emit (events.js:117:20)
+135 error     at _stream_readable.js:920:16
+135 error     at process._tickCallback (node.js:415:13)
+136 error If you need help, you may report this *entire* log,
+136 error including the npm and node versions, at:
+136 error     <http://github.com/npm/npm/issues>
+137 error System Darwin 13.3.0
+138 error command "node" "/usr/local/bin/npm" "publish"
+139 error cwd /Users/craig/Developer/Public/sift.js
+140 error node -v v0.10.26
+141 error npm -v 1.4.3
+142 verbose exit [ 1, true ]

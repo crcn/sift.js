@@ -17,4 +17,10 @@ describe("simple strings", function() {
   it("can use custom $notb operator", function() {
     expect(sift({$notb: 6 }, topic)).not.to.contain(6);
   });
+
+  it("throws an exception on unknown operators", function() {
+    expect(function () {
+      sift({$abc: 23}, topic);
+    }).to.throwError("Unknown operator.");
+  });
 });

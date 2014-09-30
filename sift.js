@@ -1,10 +1,10 @@
 /*
  * Sift
- * 
+ *
  * Copryright 2011, Craig Condon
  * Licensed under MIT
  *
- * Inspired by mongodb's query language 
+ * Inspired by mongodb's query language
  */
 
 
@@ -24,7 +24,7 @@
     }
 
     currentValue[keyParts[i]] = value;
-    
+
     return subObject;
   }
 
@@ -69,21 +69,29 @@
       if(!statement) statement = { $eq: statement };
 
       var testers = [];
-        
+
       //if the statement is an object, then we're looking at something like: { key: match }
       if(Object.prototype.toString.call(statement) === "[object Object]") {
 
         for(var k in statement) {
 
-          //find the apropriate operator. If one doesn't exist, then it's a property, which means
-          //we create a new statement (traversing) 
-          var operator = !!_testers[k] ?  k : '$trav',
+          //find the apropriate operator. If one doesn't exist and the key does not start
+          //with a $ character, then it's a property, which means we create a new statement
+          //(traversing)
+          var operator;
+          if (!!_testers[k]) {
+            operator = k;
+          } else if (k.substr(0, 1) !== '$') {
+            operator = '$trav';
+          } else {
+            throw new Error('Unknown operator.');
+          }
 
           //value of given statement (the match)
-          value = statement[k],
+          var value = statement[k];
 
           //default = match
-          exprValue = value;
+          var exprValue = value;
 
           //if we're working with a traversable operator, then set the expr value
           if(TRAV_OP[operator]) {
@@ -96,33 +104,33 @@
 
               exprValue = value = _convertDotToSubObject(keyParts, value);
             }
-            
+
             //*if* the value is an array, then we're dealing with something like: $or, $and
             if(value instanceof Array) {
-              
+
               exprValue = [];
 
               for(var i = value.length; i--;) {
-                exprValue.push(parse(value[i]));    
+                exprValue.push(parse(value[i]));
               }
 
             //otherwise we're dealing with $trav
-            } else {  
+            } else {
               exprValue = parse(value, k);
             }
-          } 
+          }
 
           testers.push(_getExpr(operator, k, exprValue));
 
         }
-                
+
 
       //otherwise we're comparing a particular value, so set to eq
       } else {
         testers.push(_getExpr('$eq', k, statement));
       }
 
-      var stmt =  { 
+      var stmt =  {
         exprs: testers,
         k: key,
         test: function(value) {
@@ -132,9 +140,9 @@
           return priority(stmt, value);
         }
       };
-      
+
       return stmt;
-    
+
     }
 
 
@@ -222,7 +230,7 @@
 
           for(var i = b.length; i--;) {
             if(~a.indexOf(b[i])) return i;
-          } 
+          }
 
         } else {
           return btop(~a.indexOf(b));
@@ -339,7 +347,7 @@
 
 
         if(b instanceof Array) {
-          
+
           for(var i = b.length; i--;) {
             var subb = b[i];
             if(subb[a.k] && ~priority(a, subb[a.k])) return i;
@@ -348,7 +356,7 @@
           return -1;
         }
 
-        //continue to traverse even if there isn't a value - this is needed for 
+        //continue to traverse even if there isn't a value - this is needed for
         //something like name:{$exists:false}
         return priority(a, b ? b[a.k] : undefined);
       },
@@ -365,12 +373,12 @@
     }
 
     var _prepare = {
-      
+
       /**
        */
 
       $eq: function(a) {
-        
+
         var fn;
 
         if(a instanceof RegExp) {
@@ -378,9 +386,9 @@
         } else if (a instanceof Function) {
           fn = a;
         } else {
-          
-          fn = function(b) {  
-            if(b instanceof Array) {    
+
+          fn = function(b) {
+            if(b instanceof Array) {
               return ~b.indexOf(a);
             } else {
               return a == b;
@@ -393,10 +401,10 @@
         }
 
       },
-      
+
       /**
        */
-        
+
        $ne: function(a) {
         return _prepare.$eq(a);
        }
@@ -408,16 +416,16 @@
 
       var v = _comparable(value);
 
-      return { 
+      return {
 
         //k key
-        k: key, 
+        k: key,
 
         //v value
-        v: _prepare[type] ? _prepare[type](v) : v, 
+        v: _prepare[type] ? _prepare[type](v) : v,
 
         //e eval
-        e: _testers[type] 
+        e: _testers[type]
       };
 
     }
@@ -433,7 +441,7 @@
         return value;
       };
 
-    } else 
+    } else
     if(typeof selector == 'function') {
       return selector;
     }
@@ -445,10 +453,10 @@
 
     //build the filter for the sifter
     var filter = _queryParser.parse( query );
-      
+
     //the function used to sift through the given array
     var self = function(target) {
-        
+
       var sifted = [], results = [], testValue, value, priority;
 
       //I'll typically start from the end, but in this case we need to keep the order
@@ -552,14 +560,14 @@
 
   //node.js?
   if((typeof module != 'undefined') && (typeof module.exports != 'undefined')) {
-    
+
     module.exports = sift;
 
-  } else 
+  } else
 
   //browser?
   if(typeof window != 'undefined') {
-    
+
     window.sift = sift;
 
   }

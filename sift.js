@@ -365,7 +365,16 @@
        */
 
       $regex: function(a, b) {
-        var aRE = new RegExp(a);
+        var aRE, match;
+
+        // For string input, generate RegEx
+        if (typeof a == 'string') {
+          match = a.match(new RegExp('^/(.*?)/([gimy]*)$'));
+          aRE = new RegExp(match[1], match[2]);
+        }
+        else {
+          aRE = new RegExp(a);
+        }
         return aRE.test(b) ? 0 : -1;
       }
 

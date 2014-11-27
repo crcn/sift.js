@@ -477,10 +477,10 @@
         });
       }
 
-      //sort the values
-      sifted.sort(function(a, b) {
-        return a.priority > b.priority ? -1 : 1;
-      });
+      //sort the values  // SORTING REMOVED by mkrn
+      // sifted.sort(function(a, b) {
+      //   return a.priority > b.priority ? -1 : 1;
+      // });
 
       var values = Array(sifted.length);
 

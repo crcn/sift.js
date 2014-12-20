@@ -452,7 +452,7 @@
   var sifter = function(query, selector) {
 
     //build the filter for the sifter
-    var filter = _queryParser.parse( query );
+    var filter = _queryParser.parse(query);
 
     //the function used to sift through the given array
     var self = function(target) {

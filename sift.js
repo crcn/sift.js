@@ -278,8 +278,8 @@
       $all: function(a, b) {
         b = b || (b = [])
         for(var i = a.length; i--;) {
-                    var a1 = a[i];
-                    var indexInB = ~b.indexOf(a1);
+          var a1 = a[i];
+          var indexInB = ~b.indexOf(a1);
           if(!indexInB) return -1;
         }
 
@@ -358,7 +358,7 @@
 
         //continue to traverse even if there isn't a value - this is needed for
         //something like name:{$exists:false}
-        return priority(a, b ? b[a.k] : undefined);
+        return priority(a, b ? b[a.k] : void 0);
       },
 
       /**
@@ -496,7 +496,7 @@
     //must be an array
     if(typeof target != "object") {
       rawSelector = target;
-      target = undefined;
+      target = void 0;
     }
 
 
@@ -544,16 +544,12 @@
 
   //node.js?
   if((typeof module != 'undefined') && (typeof module.exports != 'undefined')) {
-
     module.exports = sift;
-
   } else
 
   //browser?
   if(typeof window != 'undefined') {
-
     window.sift = sift;
-
   }
 
 })();

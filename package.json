@@ -6,15 +6,16 @@
   "engines": {},
   "dependencies": {},
   "devDependencies": {
-    "underscore": "*",
-    "colors": "*",
     "benchmark": "*",
-    "validator": "*",
-    "mocha": "1.9.x",
+    "browserify": "~3.31.2",
+    "colors": "*",
     "expect.js": "0.2.x",
-    "sardines": "0.4.x",
     "karma": "0.8.x",
-    "browserify": "~3.31.2"
+    "mocha": "1.9.x",
+    "sardines": "0.4.x",
+    "uglify-js": "^2.4.16",
+    "underscore": "*",
+    "validator": "*"
   },
   "main": "./sift.js",
   "scripts": {

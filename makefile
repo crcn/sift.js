@@ -1,2 +1,2 @@
 min: 
-	./node_modules/.bin/uglifyjs ./sift.js > ./sift.min.js
+	./node_modules/.bin/uglifyjs ./sift.js -m -c > ./sift.min.js

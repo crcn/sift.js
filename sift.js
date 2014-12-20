@@ -467,14 +467,9 @@
         testValue = selector(value);
 
         //priority = -1? it's not something we can use.
-        if(!~(priority = filter.priority( testValue ))) continue;
+        if(!~(priority = filter.priority(testValue))) continue;
 
-        //push all the sifted values to be sorted later. This is important particularly for statements
-        //such as $or
-        sifted.push({
-          value: value,
-          priority: priority
-        });
+        sifted.push(value);
       }
 
       //sort the values

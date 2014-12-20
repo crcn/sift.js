@@ -472,19 +472,7 @@
         sifted.push(value);
       }
 
-      //sort the values
-      sifted.sort(function(a, b) {
-        return a.priority > b.priority ? -1 : 1;
-      });
-
-      var values = Array(sifted.length);
-
-      //finally, fetch the values & return them.
-      for(var i = sifted.length; i--;) {
-        values[i] = sifted[i].value;
-      }
-
-      return values;
+      return sifted;
     }
 
     //set the test function incase the sifter isn't needed

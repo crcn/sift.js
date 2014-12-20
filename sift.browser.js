@@ -453,7 +453,7 @@
   var sifter = function(query, selector) {
 
     //build the filter for the sifter
-    var filter = _queryParser.parse( query );
+    var filter = _queryParser.parse(query);
 
     //the function used to sift through the given array
     var self = function(target) {
@@ -468,29 +468,12 @@
         testValue = selector(value);
 
         //priority = -1? it's not something we can use.
-        if(!~(priority = filter.priority( testValue ))) continue;
+        if(!~(priority = filter.priority(testValue))) continue;
 
-        //push all the sifted values to be sorted later. This is important particularly for statements
-        //such as $or
-        sifted.push({
-          value: value,
-          priority: priority
-        });
+        sifted.push(value);
       }
 
-      //sort the values
-      sifted.sort(function(a, b) {
-        return a.priority > b.priority ? -1 : 1;
-      });
-
-      var values = Array(sifted.length);
-
-      //finally, fetch the values & return them.
-      for(var i = sifted.length; i--;) {
-        values[i] = sifted[i].value;
-      }
-
-      return values;
+      return sifted;
     }
 
     //set the test function incase the sifter isn't needed
@@ -531,6 +514,7 @@
 
   sift.use = function(options) {
     if(options.operators) sift.useOperators(options.operators);
+    if (typeof options === "function") options(sift);
   }
 
   sift.useOperators = function(operators) {

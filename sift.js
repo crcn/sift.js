@@ -530,6 +530,7 @@
 
   sift.use = function(options) {
     if(options.operators) sift.useOperators(options.operators);
+    if (typeof options === "function") options(sift);
   }
 
   sift.useOperators = function(operators) {

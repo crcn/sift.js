@@ -7,19 +7,17 @@
  * Inspired by mongodb's query language
  */
 
-
 (function() {
-
 
   /**
    */
 
-  var _convertDotToSubObject = function(keyParts, value) {
+  function _convertDotToSubObject(keyParts, value) {
 
-    var subObject = {},
-    currentValue = subObject;
+    var subObject    = {};
+    var currentValue = subObject;
 
-    for(var i = 0, n = keyParts.length - 1; i < n; i++) {
+    for (var i = 0, n = keyParts.length - 1; i < n; i++) {
       currentValue = currentValue[keyParts[i]] = {};
     }
 
@@ -31,7 +29,7 @@
   /**
    */
 
-  var _queryParser = new (function() {
+  function QueryParser() {
 
     /**
      * tests against data
@@ -39,25 +37,23 @@
 
     var priority = this.priority = function(statement, data) {
 
-      var exprs = statement.exprs,
-      priority = 0;
+      var exprs    = statement.exprs;
+      var priority = 0;
 
       //generally, expressions are ordered from least efficient, to most efficient.
-      for(var i = 0, n = exprs.length; i < n; i++) {
+      for (var i = 0, n = exprs.length; i < n; i++) {
 
-        var expr = exprs[i],
-        p;
+        var expr = exprs[i];
+        var p;
 
-        if(!~(p = expr.e(expr.v, _comparable(data), data))) return -1;
+        if (!~(p = expr.e(expr.v, _comparable(data), data))) return -1;
 
         priority += p;
 
       }
 
-
       return priority;
-    }
-
+    };
 
     /**
      * parses a statement into something evaluable
@@ -66,14 +62,14 @@
     var parse = this.parse = function(statement, key) {
 
       //fixes sift(null, []) issue
-      if(!statement) statement = { $eq: statement };
+      if (!statement) statement = { $eq: statement };
 
       var testers = [];
 
       //if the statement is an object, then we're looking at something like: { key: match }
-      if(Object.prototype.toString.call(statement) === "[object Object]") {
+      if (Object.prototype.toString.call(statement) === "[object Object]") {
 
-        for(var k in statement) {
+        for (var k in statement) {
 
           //find the apropriate operator. If one doesn't exist and the key does not start
           //with a $ character, then it's a property, which means we create a new statement
@@ -81,10 +77,10 @@
           var operator;
           if (!!_testers[k]) {
             operator = k;
-          } else if (k.substr(0, 1) !== '$') {
-            operator = '$trav';
+          } else if (k.substr(0, 1) !== "$") {
+            operator = "$trav";
           } else {
-            throw new Error('Unknown operator.');
+            throw new Error("Unknown operator.");
           }
 
           //value of given statement (the match)
@@ -94,11 +90,10 @@
           var exprValue = value;
 
           //if we're working with a traversable operator, then set the expr value
-          if(TRAV_OP[operator]) {
-
+          if (TRAV_OP[operator]) {
 
             //using dot notation? convert into a sub-object
-            if(~k.indexOf(".")) {
+            if (~k.indexOf(".")) {
               var keyParts = k.split(".");
               k = keyParts.shift(); //we're using the first key, so remove it
 
@@ -106,11 +101,11 @@
             }
 
             //*if* the value is an array, then we're dealing with something like: $or, $and
-            if(value instanceof Array) {
+            if (value instanceof Array) {
 
               exprValue = [];
 
-              for(var i = value.length; i--;) {
+              for (var i = value.length; i--;) {
                 exprValue.push(parse(value[i]));
               }
 
@@ -121,13 +116,11 @@
           }
 
           testers.push(_getExpr(operator, k, exprValue));
-
         }
-
 
       //otherwise we're comparing a particular value, so set to eq
       } else {
-        testers.push(_getExpr('$eq', k, statement));
+        testers.push(_getExpr("$eq", key, statement));
       }
 
       var stmt =  {
@@ -142,9 +135,7 @@
       };
 
       return stmt;
-
-    }
-
+    };
 
     //traversable statements
     var TRAV_OP = this.traversable = {
@@ -155,9 +146,8 @@
       $not: true
     };
 
-
     function _comparable(value) {
-      if(value instanceof Date) {
+      if (value instanceof Date) {
         return value.getTime();
       } else {
         return value;
@@ -212,12 +202,11 @@
         return btop(a <= b);
       },
 
-
       /**
        */
 
       $exists: function(a, b) {
-        return btop(a === (b != null))
+        return btop(a === (b != null));
       },
 
       /**
@@ -226,16 +215,15 @@
       $in: function(a, b) {
 
         //intersecting an array
-        if(b instanceof Array) {
+        if (b instanceof Array) {
 
-          for(var i = b.length; i--;) {
-            if(~a.indexOf(b[i])) return i;
+          for (var i = b.length; i--;) {
+            if (~a.indexOf(b[i])) return i;
           }
 
         } else {
           return btop(~a.indexOf(b));
         }
-
 
         return -1;
       },
@@ -244,7 +232,7 @@
        */
 
       $not: function(a, b) {
-        if(!a.test) throw new Error("$not test should include an expression, not a value. Use $ne instead.");
+        if (!a.test) throw new Error("$not test should include an expression, not a value. Use $ne instead.");
         return btop(!a.test(b));
       },
 
@@ -259,7 +247,6 @@
 
       /**
        */
-
 
       $nin: function(a, b) {
         return ~_testers.$in(a, b) ? -1 : 0;
@@ -277,10 +264,10 @@
 
       $all: function(a, b) {
         if (!b) b = [];
-        for(var i = a.length; i--;) {
+        for (var i = a.length; i--;) {
           var a1 = a[i];
           var indexInB = ~b.indexOf(a1);
-          if(!indexInB) return -1;
+          if (!indexInB) return -1;
         }
 
         return 0;
@@ -298,15 +285,16 @@
 
       $or: function(a, b) {
 
-        var i = a.length, p, n = i;
+        var i = a.length;
+        var n = i;
 
-        for(; i--;) {
-          if(~priority(a[i], b)) {
+        for (; i--;) {
+          if (~priority(a[i], b)) {
             return i;
           }
         }
 
-        return btop(n == 0);
+        return btop(n === 0);
       },
 
       /**
@@ -314,10 +302,10 @@
 
       $nor: function(a, b) {
 
-        var i = a.length, n = i;
+        var i = a.length;
 
-        for(; i--;) {
-          if(~priority(a[i], b)) {
+        for (; i--;) {
+          if (~priority(a[i], b)) {
             return -1;
           }
         }
@@ -330,8 +318,8 @@
 
       $and: function(a, b) {
 
-        for(var i = a.length; i--;) {
-          if(!~priority(a[i], b)) {
+        for (var i = a.length; i--;) {
+          if (!~priority(a[i], b)) {
             return -1;
           }
         }
@@ -344,13 +332,11 @@
 
       $trav: function(a, b) {
 
+        if (b instanceof Array) {
 
-
-        if(b instanceof Array) {
-
-          for(var i = b.length; i--;) {
+          for (var i = b.length; i--;) {
             var subb = b[i];
-            if(subb[a.k] && ~priority(a, subb[a.k])) return i;
+            if (subb[a.k] && ~priority(a, subb[a.k])) return i;
           }
 
           return -1;
@@ -368,9 +354,7 @@
         var aRE = new RegExp(a);
         return aRE.test(b) ? 0 : -1;
       }
-
-
-    }
+    };
 
     var _prepare = {
 
@@ -381,38 +365,35 @@
 
         var fn;
 
-        if(a instanceof RegExp) {
+        if (a instanceof RegExp) {
           return a;
         } else if (a instanceof Function) {
           fn = a;
         } else {
 
           fn = function(b) {
-            if(b instanceof Array) {
+            if (b instanceof Array) {
               return ~b.indexOf(a);
             } else {
               return a == b;
             }
-          }
+          };
         }
 
         return {
           test: fn
-        }
-
+        };
       },
 
       /**
        */
 
        $ne: function(a) {
-        return _prepare.$eq(a);
+         return _prepare.$eq(a);
        }
     };
 
-
-
-    var _getExpr = function(type, key, value) {
+    function _getExpr(type, key, value) {
 
       var v = _comparable(value);
 
@@ -427,27 +408,25 @@
         //e eval
         e: _testers[type]
       };
-
     }
+  }
 
-  })();
-
+  var _queryParser = new QueryParser();
 
   var getSelector = function(selector) {
 
-    if(!selector) {
+    if (!selector) {
 
       return function(value) {
         return value;
       };
 
-    } else
-    if(typeof selector == 'function') {
+    } else if (typeof selector == "function") {
       return selector;
     }
 
     throw new Error("Unknown sift selector " + selector);
-  }
+  };
 
   var sifter = function(query, selector) {
 
@@ -457,23 +436,26 @@
     //the function used to sift through the given array
     var self = function(target) {
 
-      var sifted = [], results = [], testValue, value, priority;
+      var sifted  = [];
+      var testValue;
+      var value;
+      var priority;
 
       //I'll typically start from the end, but in this case we need to keep the order
       //of the array the same.
-      for(var i = 0, n = target.length; i < n; i++) {
+      for (var i = 0, n = target.length; i < n; i++) {
 
         value = target[i];
         testValue = selector(value);
 
         //priority = -1? it's not something we can use.
-        if(!~(priority = filter.priority(testValue))) continue;
+        if (!~(priority = filter.priority(testValue))) continue;
 
         sifted.push(value);
       }
 
       return sifted;
-    }
+    };
 
     //set the test function incase the sifter isn't needed
     self.test   = filter.test;
@@ -481,8 +463,7 @@
     self.query  = query;
 
     return self;
-  }
-
+  };
 
   /**
    * sifts the given function
@@ -494,63 +475,56 @@
   var sift = function(query, target, rawSelector) {
 
     //must be an array
-    if(typeof target != "object") {
+    if (typeof target != "object") {
       rawSelector = target;
       target = void 0;
     }
 
-
     var sft  = sifter(query, getSelector(rawSelector));
 
     //target given? sift through it and return the filtered result
-    if(target) return sft(target);
+    if (target) return sft(target);
 
     //otherwise return the sifter func
     return sft;
-
-  }
-
+  };
 
   sift.use = function(options) {
-    if(options.operators) sift.useOperators(options.operators);
+    if (options.operators) sift.useOperators(options.operators);
     if (typeof options === "function") options(sift);
-  }
+  };
 
   sift.useOperators = function(operators) {
-    for(var key in operators) {
+    for (var key in operators) {
       sift.useOperator(key, operators[key]);
     }
-  }
+  };
 
   sift.useOperator = function(operator, optionsOrFn) {
 
     var options = {};
 
-    if(typeof optionsOrFn == "object") {
+    if (typeof optionsOrFn == "object") {
       options = optionsOrFn;
     } else {
       options = { test: optionsOrFn };
     }
 
-
     var key = "$" + operator;
     _queryParser.testers[key] = options.test;
 
-    if(options.traversable || options.traverse) {
+    if (options.traversable || options.traverse) {
       _queryParser.traversable[key] = true;
     }
-  }
-
+  };
 
   //node.js?
-  if((typeof module != 'undefined') && (typeof module.exports != 'undefined')) {
+  if ((typeof module != "undefined") && (typeof module.exports != "undefined")) {
     module.exports = sift;
   } else
 
   //browser?
-  if(typeof window != 'undefined') {
+  if (typeof window != "undefined") {
     window.sift = sift;
   }
-
 })();
-

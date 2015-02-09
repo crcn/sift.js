@@ -1,7 +1,7 @@
 {
   "name": "sift",
   "description": "mongodb query style array filtering",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "repository": {},
   "engines": {},
   "dependencies": {},
@@ -10,6 +10,8 @@
     "browserify": "~3.31.2",
     "colors": "*",
     "expect.js": "0.2.x",
+    "jscs": "^1.11.0",
+    "jshint": "^2.6.0",
     "karma": "0.8.x",
     "mocha": "1.9.x",
     "sardines": "0.4.x",
@@ -19,6 +21,6 @@
   },
   "main": "./sift.js",
   "scripts": {
-    "test": "mocha ./test"
+    "test": "make lint test-node"
   }
 }

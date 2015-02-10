@@ -463,7 +463,7 @@
     self.query  = query;
 
     return self;
-  };
+  }
 
   /**
    * sifts the given function
@@ -487,7 +487,7 @@
 
     //otherwise return the sifter func
     return sft;
-  };
+  }
 
   sift.use = function(options) {
     if (options.operators) sift.useOperators(options.operators);

@@ -428,7 +428,7 @@
     throw new Error("Unknown sift selector " + selector);
   };
 
-  var sifter = function(query, selector) {
+  function createSifter(query, selector) {
 
     //build the filter for the sifter
     var filter = _queryParser.parse(query);
@@ -472,7 +472,7 @@
    * @param rawSelector the selector for plucking data from the given target
    */
 
-  var sift = function(query, target, rawSelector) {
+  function sift(query, target, rawSelector) {
 
     //must be an array
     if (typeof target != "object") {
@@ -480,7 +480,7 @@
       target = void 0;
     }
 
-    var sft  = sifter(query, getSelector(rawSelector));
+    var sft  = createSifter(query, getSelector(rawSelector));
 
     //target given? sift through it and return the filtered result
     if (target) return sft(target);

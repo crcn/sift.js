@@ -1,5 +1,4 @@
-var _ = require('underscore'),
-    expect = require("expect.js"),
+var     expect = require("expect.js"),
     sift = require(".."),
     assert = require("assert");
 

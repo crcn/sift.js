@@ -1,13 +1,14 @@
+REPORTER=dot
+ONLY="."
+
 min: 
 	./node_modules/.bin/uglifyjs ./sift.js -m -c > ./sift.min.js
 
 test-node:
-	./node_modules/.bin/mocha
+	./node_modules/.bin/mocha test -g $(ONLY) --reporter $(REPORTER)
 
-lint: jscs jshint
-
-jscs:
-
+test-watch:
+	./node_modules/.bin/mocha test -g $(ONLY) --reporter $(REPORTER) --watch sift.js
 
 lint: jshint jscs
 	

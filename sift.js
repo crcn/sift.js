@@ -240,9 +240,8 @@
        */
 
       $type: function(a, b, org) {
-
         //instanceof doesn't work for strings / boolean. instanceof works with inheritance
-        return org ? btop(org instanceof a || org.constructor == a) : -1;
+        return org != null ? btop(org instanceof a || org.constructor == a) : -1;
       },
 
       /**
@@ -375,7 +374,7 @@
             if (b instanceof Array) {
               return ~b.indexOf(a);
             } else {
-              return a == b;
+              return a === b;
             }
           };
         }

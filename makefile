@@ -1,6 +1,6 @@
 REPORTER=dot
 ONLY="."
-TESTS=./test2
+TESTS=./test2 ./test
 
 min: 
 	./node_modules/.bin/uglifyjs ./sift.js -m -c > ./sift.min.js

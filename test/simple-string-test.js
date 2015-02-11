@@ -7,17 +7,6 @@ describe("simple strings", function() {
 
   var topic = ['craig','john','jake','joe', null];
 
-  it("has a sifted $in count of 3", function() {
-    expect(sift({$in:['craig','john','joe']}, topic).length).to.be(3);
-  });
-
-  it("has a sifted $nin count of 2", function() {
-    expect(sift({$nin:['craig','john','joe']}, topic).length).to.be(2);
-  });
-
-  it("has a sifted $exists count of 4", function() {
-    expect(sift({$exists:true}, topic).length).to.be(4);
-  });
 
   it("has a sifted $and count of 1", function() {
     expect(sift({$and:['craig']}, topic).length).to.be(1);

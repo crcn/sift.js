@@ -132,11 +132,11 @@
 
     //traversable statements
     var TRAV_OP = this.traversable = {
-      $and: true,
-      $or: true,
-      $nor: true,
-      $trav: true,
-      $not: true
+      $and  : true,
+      $or   : true,
+      $nor  : true,
+      $trav : true,
+      $not  : true
     };
 
     function _comparable(value) {

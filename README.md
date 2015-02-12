@@ -1,4 +1,4 @@
-## MongoDB inspired array filtering [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)
+## MongoDB inspired array filtering [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js) [![Coverage Status](https://coveralls.io/repos/crcn/sift.js/badge.svg)](https://coveralls.io/r/crcn/sift.js)
 
 For extended documentation, checkout http://docs.mongodb.org/manual/reference/operator/query/
 

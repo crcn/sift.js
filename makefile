@@ -26,5 +26,5 @@ test-cov:
 
 test-coveralls:
 	PC_DEBUG=1 ./node_modules/.bin/istanbul cover \
-	./node_modules/.bin/_mocha $(TESTS) --timeout $(TIMEOUT) -- --reporter $(REPORTER)  && \
+	./node_modules/.bin/_mocha $(TESTS) -- --timeout $(TIMEOUT) --reporter $(REPORTER)  && \
 	cat ./coverage/lcov.info | ./node_modules/.bin/coveralls --verbose

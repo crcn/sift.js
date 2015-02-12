@@ -147,10 +147,6 @@
       }
     }
 
-    function btop(value) {
-      return !!value;
-    }
-
     var _testers = this.testers =  {
 
       /**

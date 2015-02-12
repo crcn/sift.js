@@ -7,10 +7,10 @@ min:
 	./node_modules/.bin/uglifyjs ./sift.js -m -c > ./sift.min.js
 
 test-node:
-	./node_modules/.bin/mocha $(TESTS) -g $(ONLY) --reporter $(REPORTER)
+	./node_modules/.bin/mocha $(TESTS) -g $(ONLY) --reporter $(REPORTER) --bail
 
 test-watch:
-	./node_modules/.bin/mocha $(TESTS) -g $(ONLY) --reporter $(REPORTER) --watch sift.js
+	./node_modules/.bin/mocha $(TESTS) -g $(ONLY) --reporter $(REPORTER) --bail --watch sift.js
 
 lint: jshint jscs
 	

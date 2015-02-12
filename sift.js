@@ -35,24 +35,20 @@
      * tests against data
      */
 
-    var priority = this.priority = function(statement, data) {
+    var test = this.test = function(statement, data) {
 
       var exprs    = statement.exprs;
-      var priority = 0;
 
       //generally, expressions are ordered from least efficient, to most efficient.
       for (var i = 0, n = exprs.length; i < n; i++) {
 
         var expr = exprs[i];
-        var p;
 
-        if (!~(p = expr.e(expr.v, _comparable(data), data))) return -1;
-
-        priority += p;
+        if (!expr.e(expr.v, _comparable(data), data)) return false;
 
       }
 
-      return priority;
+      return true;
     };
 
     /**
@@ -127,10 +123,7 @@
         exprs: testers,
         k: key,
         test: function(value) {
-          return !!~stmt.priority(value);
-        },
-        priority: function(value) {
-          return priority(stmt, value);
+          return test(stmt, value);
         }
       };
 
@@ -155,7 +148,7 @@
     }
 
     function btop(value) {
-      return value ? 0 : -1;
+      return !!value;
     }
 
     var _testers = this.testers =  {
@@ -164,49 +157,49 @@
        */
 
       $eq: function(a, b) {
-        return btop(a.test(b));
+        return a.test(b);
       },
 
       /**
        */
 
       $ne: function(a, b) {
-        return btop(!a.test(b));
+        return !a.test(b);
       },
 
       /**
        */
 
       $lt: function(a, b) {
-        return btop(a > b);
+        return a > b;
       },
 
       /**
        */
 
       $gt: function(a, b) {
-        return btop(a < b);
+        return a < b;
       },
 
       /**
        */
 
       $lte: function(a, b) {
-        return btop(a >= b);
+        return a >= b;
       },
 
       /**
        */
 
       $gte: function(a, b) {
-        return btop(a <= b);
+        return a <= b;
       },
 
       /**
        */
 
       $exists: function(a, b) {
-        return btop(a === (b != null));
+        return a === (b != null);
       },
 
       /**
@@ -218,14 +211,14 @@
         if (b instanceof Array) {
 
           for (var i = b.length; i--;) {
-            if (~a.indexOf(b[i])) return i;
+            if (~a.indexOf(b[i])) return true;
           }
 
         } else {
-          return btop(~a.indexOf(b));
+          return ~a.indexOf(b);
         }
 
-        return -1;
+        return false;
       },
 
       /**
@@ -233,7 +226,7 @@
 
       $not: function(a, b) {
         if (!a.test) throw new Error("$not test should include an expression, not a value. Use $ne instead.");
-        return btop(!a.test(b));
+        return !a.test(b);
       },
 
       /**
@@ -241,21 +234,21 @@
 
       $type: function(a, b, org) {
         //instanceof doesn't work for strings / boolean. instanceof works with inheritance
-        return org != null ? btop(org instanceof a || org.constructor == a) : -1;
+        return org != null ? org instanceof a || org.constructor == a : false;
       },
 
       /**
        */
 
       $nin: function(a, b) {
-        return ~_testers.$in(a, b) ? -1 : 0;
+        return !_testers.$in(a, b);
       },
 
       /**
        */
 
       $mod: function(a, b) {
-        return b % a[0] == a[1] ? 0 : -1;
+        return b % a[0] == a[1];
       },
 
       /**
@@ -266,17 +259,17 @@
         for (var i = a.length; i--;) {
           var a1 = a[i];
           var indexInB = ~b.indexOf(a1);
-          if (!indexInB) return -1;
+          if (!indexInB) return false;
         }
 
-        return 0;
+        return true;
       },
 
       /**
        */
 
       $size: function(a, b) {
-        return b ? btop(a == b.length) : -1;
+        return b ? a === b.length : false;
       },
 
       /**
@@ -288,12 +281,12 @@
         var n = i;
 
         for (; i--;) {
-          if (~priority(a[i], b)) {
-            return i;
+          if (test(a[i], b)) {
+            return true;
           }
         }
 
-        return btop(n === 0);
+        return n === 0;
       },
 
       /**
@@ -304,12 +297,12 @@
         var i = a.length;
 
         for (; i--;) {
-          if (~priority(a[i], b)) {
-            return -1;
+          if (test(a[i], b)) {
+            return false;
           }
         }
 
-        return 0;
+        return true;
       },
 
       /**
@@ -318,12 +311,12 @@
       $and: function(a, b) {
 
         for (var i = a.length; i--;) {
-          if (!~priority(a[i], b)) {
-            return -1;
+          if (!test(a[i], b)) {
+            return false;
           }
         }
 
-        return 0;
+        return true;
       },
 
       /**
@@ -335,15 +328,15 @@
 
           for (var i = b.length; i--;) {
             var subb = b[i];
-            if (subb[a.k] && ~priority(a, subb[a.k])) return i;
+            if (subb[a.k] && test(a, subb[a.k])) return true;
           }
 
-          return -1;
+          return false;
         }
 
         //continue to traverse even if there isn't a value - this is needed for
         //something like name:{$exists:false}
-        return priority(a, b ? b[a.k] : void 0);
+        return test(a, b ? b[a.k] : void 0);
       },
 
       /**
@@ -351,7 +344,7 @@
 
       $regex: function(a, b) {
         var aRE = new RegExp(a);
-        return aRE.test(b) ? 0 : -1;
+        return aRE.test(b);
       }
     };
 
@@ -438,7 +431,6 @@
       var sifted  = [];
       var testValue;
       var value;
-      var priority;
 
       //I'll typically start from the end, but in this case we need to keep the order
       //of the array the same.
@@ -447,10 +439,7 @@
         value = target[i];
         testValue = selector(value);
 
-        //priority = -1? it's not something we can use.
-        if (!~(priority = filter.priority(testValue))) continue;
-
-        sifted.push(value);
+        if (filter.test(testValue)) sifted.push(value);
       }
 
       return sifted;
@@ -458,7 +447,6 @@
 
     //set the test function incase the sifter isn't needed
     self.test   = filter.test;
-    self.score  = filter.priority;
     self.query  = query;
 
     return self;

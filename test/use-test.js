@@ -52,7 +52,7 @@ describe(__filename + "#", function() {
   sift.use({
     operators: {
       notb: function(a, b) {
-        return a != b ? 0 : -1;
+        return a != b ? true : false;
       }
     }
   });

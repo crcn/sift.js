@@ -113,6 +113,7 @@ describe("objects", function () {
                 }
             }
         }, topic);
+
         assert.equal(sifted.length, 2);
     });
     it("has sifted to complex count of 0", function () {

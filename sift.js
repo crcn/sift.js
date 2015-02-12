@@ -80,7 +80,7 @@
           } else if (k.substr(0, 1) !== "$") {
             operator = "$trav";
           } else {
-            throw new Error("Unknown operator.");
+            throw new Error("Unknown operator "+k+".");
           }
 
           //value of given statement (the match)
@@ -91,6 +91,7 @@
 
           //if we're working with a traversable operator, then set the expr value
           if (TRAV_OP[operator]) {
+
 
             //using dot notation? convert into a sub-object
             if (~k.indexOf(".")) {

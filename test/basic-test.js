@@ -27,6 +27,19 @@ describe(__filename + "#", function() {
     expect(filtered[0]).to.be(people[0]);
   });
 
+  it("throws an errror if the selector is invalid", function () {
+    
+    var err;
+    try {
+      sift({$aaa:1}, 1).test("b");
+    } catch (e) {
+      err = e;
+    }
+
+    expect(err.message).to.be("Unknown sift selector 1");
+
+  });
+
   it("can use a custom selector as the 3rd param", function () {
 
     var people = [{ person: { age: 6 }}];
@@ -37,5 +50,16 @@ describe(__filename + "#", function() {
 
     expect(filtered.length).to.be(1);
     expect(filtered[0]).to.be(people[0]);
+  });
+
+  it("throws an error", function () {
+    var err;
+    try {
+      sift({$aaa:1}).test("b");
+    } catch (e) {
+      err = e;
+    }
+
+    expect(err.message).to.be("Unknown operator $aaa.");
   })
 });

@@ -182,6 +182,23 @@ describe("objects", function () {
             });
         });
     });
+
+    describe("keypath", function () {
+
+        var arr = [
+            {
+                a: {
+                    b: {
+                        c: 1,
+                        c2: 1
+                    }
+                }
+            }
+        ]
+        it("can be used", function () {
+            expect(sift({"a.b.c":1}).test(arr[0])).to.be(true);
+        });
+    });
 });
 
 

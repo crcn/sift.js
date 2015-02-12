@@ -15,8 +15,10 @@ describe(__filename + "#", function () {
     [null, [void 0, null], [null]],
     [void 0, [void 0, null], [void 0]],
     [1, [2,3,4,5], []],
+    [1, [[1]], [[1]]],
     [new Date(1), [new Date(), new Date(1), new Date(2), new Date(3)], [new Date(1)]],
     [/^a/, ["a","ab","abc","b","bc"], ["a","ab","abc"]],
+    [function(b) { return b === 1; }, [1,2,3],[1]],
 
     // $neq
     [{$ne:5}, [5, "5", 6], ["5", 6]],
@@ -68,7 +70,7 @@ describe(__filename + "#", function () {
 
     // $all
     [{$all:[1,2,3]},[[1,2,3,4],[1,2,4]],[[1,2,3,4]]],
-    [{$all:[0,false]},[[0,1,2],[0,false],["0","false"]],[[0,false]]],
+    [{$all:[0,false]},[[0,1,2],[0,false],["0","false"],void 0],[[0,false]]],
     [{$all:["1"]},[[1]],[]],
 
     // $size

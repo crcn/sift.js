@@ -1,5 +1,4 @@
-var     expect = require("expect.js"),
-    sift = require(".."),
+var sift = require(".."),
     assert = require("assert");
 
 
@@ -197,7 +196,7 @@ describe("objects", function () {
             }
         ]
         it("can be used", function () {
-            expect(sift({"a.b.c":1}).test(arr[0])).to.be(true);
+            assert.equal(sift({"a.b.c":1}).test(arr[0]), true);
         });
     });
 });

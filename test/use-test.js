@@ -1,4 +1,4 @@
-var expect = require("expect.js"),
+var assert = require("assert"),
 sift = require("..");
 
 describe(__filename + "#", function() {
@@ -17,12 +17,13 @@ describe(__filename + "#", function() {
 
     sift({ a: {$abba:-1}}, [1,2,3]);
 
-    expect(i).to.be(3);
+    // expect(i).to.be(3);
+    assert.equal(i, 3);
   });
 
   it("can use a function", function (next) {
     sift.use(function (sift) {
-      expect(sift(1,[1,2,3]).length).to.be(1);
+      assert.equal(sift(1,[1,2,3]).length, 1);
       next();
     })
   });
@@ -45,7 +46,7 @@ describe(__filename + "#", function() {
     });
 
     sift({a:{$baab:1}}).test({a:1});
-    expect(i).to.be(1);
+    assert.equal(i, 1);
   });
 
 
@@ -61,7 +62,7 @@ describe(__filename + "#", function() {
   var topic = [1, 2, 3, 4, 5, 6, 6, 4, 3];
 
   it("can use custom $notb operator", function() {
-    expect(sift({$notb: 6 }, topic)).not.to.contain(6);
+    assert.equal(sift({$notb: 6 }, topic).indexOf(6), -1);
   });
 
 

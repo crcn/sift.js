@@ -1,4 +1,4 @@
-var expect   = require("expect.js");
+var assert   = require("assert");
 var sift     = require("../sift");
 var ObjectID = require("bson").pure().ObjectID;
 
@@ -110,7 +110,7 @@ describe(__filename + "#", function () {
 
     it(JSON.stringify(filter), function () {
       var sifter = sift(filter);
-      expect(JSON.stringify(sifter(array))).to.equal(JSON.stringify(matchArray));
+      assert.equal(JSON.stringify(sifter(array)), JSON.stringify(matchArray));
     });
   });
 });

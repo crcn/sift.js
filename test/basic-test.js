@@ -1,4 +1,4 @@
-var expect = require("expect.js"),
+var assert = require("assert"),
 sift = require("..");
 
 describe(__filename + "#", function() {
@@ -9,10 +9,10 @@ describe(__filename + "#", function() {
     }, [9,8,7,6,5,4,3,2,1]);
 
 
-    expect(values.length).to.be(3);
-    expect(values[0]).to.be(3);
-    expect(values[1]).to.be(2);
-    expect(values[2]).to.be(1);
+    assert.equal(values.length, 3);
+    assert.equal(values[0], 3);
+    assert.equal(values[1], 2);
+    assert.equal(values[2], 1);
   });
 
   it("can create a custom selector, and use it", function () {
@@ -24,8 +24,8 @@ describe(__filename + "#", function() {
     filtered = sifter(people);
 
 
-    expect(filtered.length).to.be(1);
-    expect(filtered[0]).to.be(people[0]);
+    assert.equal(filtered.length, 1);
+    assert.equal(filtered[0], people[0]);
   });
 
   it("throws an errror if the selector is invalid", function () {
@@ -37,7 +37,7 @@ describe(__filename + "#", function() {
       err = e;
     }
 
-    expect(err.message).to.be("Unknown sift selector 1");
+    assert.equal(err.message, "Unknown sift selector 1");
 
   });
 
@@ -49,8 +49,8 @@ describe(__filename + "#", function() {
       return item.person;
     });
 
-    expect(filtered.length).to.be(1);
-    expect(filtered[0]).to.be(people[0]);
+    assert.equal(filtered.length, 1);
+    assert.equal(filtered[0], people[0]);
   });
 
   it("throws an error", function () {
@@ -61,6 +61,6 @@ describe(__filename + "#", function() {
       err = e;
     }
 
-    expect(err.message).to.be("Unknown operator $aaa.");
+    assert.equal(err.message, "Unknown operator $aaa.");
   })
 });

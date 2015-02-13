@@ -88,7 +88,11 @@ describe(__filename + "#", function () {
     [{$and:[{$gt:1},{$lt:4}]},[1,2,3,4],[2,3]],
     
     // $regex
-    [{$regex:"^a"},["a","ab","abc","bc","bcd"],["a","ab","abc"]]
+    [{$regex:"^a"},["a","ab","abc","bc","bcd"],["a","ab","abc"]],
+
+    // $where
+    [{$where:function () { return this.v === 1 }}, [{v:1},{v:2}],[{v:1}]],
+    [{$where:"this.v === 1"}, [{v:1},{v:2}],[{v:1}]]
 
   ].forEach(function (operation) {
 

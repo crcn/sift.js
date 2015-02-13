@@ -341,6 +341,13 @@
       $regex: function(a, b) {
         var aRE = new RegExp(a);
         return aRE.test(b);
+      },
+
+      /**
+       */
+
+      $where: function(a, b) {
+        return a.call(b);
       }
     };
 
@@ -378,7 +385,19 @@
 
        $ne: function(a) {
          return _prepare.$eq(a);
-       }
+       },
+
+       /**
+        */
+
+      $where: function(a) {
+
+        if (typeof a === "string") {
+          return new Function("return " + a);
+        }
+
+        return a;
+      }
     };
 
     function _getExpr(type, key, value) {

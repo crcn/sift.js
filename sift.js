@@ -63,7 +63,7 @@
       var testers = [];
 
       //if the statement is an object, then we're looking at something like: { key: match }
-      if (Object.prototype.toString.call(statement) === "[object Object]") {
+      if (statement && statement.constructor === Object) {
 
         for (var k in statement) {
 
@@ -367,7 +367,6 @@
         } else if (a instanceof Function) {
           fn = a;
         } else {
-
           fn = function(b) {
             if (b instanceof Array) {
               return ~b.indexOf(a);
@@ -385,9 +384,9 @@
       /**
        */
 
-       $ne: function(a) {
-         return _prepare.$eq(a);
-       },
+      $ne: function(a) {
+        return _prepare.$eq(a);
+      },
 
        /**
         */

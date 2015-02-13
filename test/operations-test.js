@@ -1,5 +1,7 @@
-var expect = require("expect.js");
-var sift   = require("../sift");
+var expect   = require("expect.js");
+var sift     = require("../sift");
+var ObjectID = require("bson").pure().ObjectID;
+
 
 describe(__filename + "#", function () {
 
@@ -19,6 +21,9 @@ describe(__filename + "#", function () {
     [new Date(1), [new Date(), new Date(1), new Date(2), new Date(3)], [new Date(1)]],
     [/^a/, ["a","ab","abc","b","bc"], ["a","ab","abc"]],
     [function(b) { return b === 1; }, [1,2,3],[1]],
+
+    // object is not exact - there is no match here unless ObjectID is a comparable.
+    [ObjectID("54dd5546b1d296a54d152e84"),[ObjectID(),ObjectID("54dd5546b1d296a54d152e84")],[]],
 
     // $neq
     [{$ne:5}, [5, "5", 6], ["5", 6]],

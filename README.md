@@ -4,7 +4,7 @@ For extended documentation, checkout http://docs.mongodb.org/manual/reference/op
 
 ## Features:
 
-- Supported operators: [$in](#in), [$nin](#nin), [$exists](#exists), [$gte](#gte), [$gt](#gt), [$lte](#lte), [$lt](#lt), [$eq](#eq), [$neq](#neq), [$mod](#mod), [$all](#all), [$and](#and), [$or](#or), [$nor](#nor), [$not](#not), [$size](#size), [$type](#type), [$regex](#regex)
+- Supported operators: [$in](#in), [$nin](#nin), [$exists](#exists), [$gte](#gte), [$gt](#gt), [$lte](#lte), [$lt](#lt), [$eq](#eq), [$neq](#neq), [$mod](#mod), [$all](#all), [$and](#and), [$or](#or), [$nor](#nor), [$not](#not), [$size](#size), [$type](#type), [$regex](#regex), [$where](#where)
 - Regexp searches
 - Function filtering
 - sub object searching
@@ -306,6 +306,19 @@ Matches values based on the given regular expression
 
 ```javascript
 sift({ $regex: /^f/i, $nin: ["frank"] }, ["frank", "fred", "sam", "frost"]); // ["fred", "frost"]
+```
+
+### $regex
+
+Matches values based on the given regular expression
+
+```javascript
+sift({ $where: "this.name === 'frank'" }, [{name:'frank'},{name:'joe'}]); // ["frank"]
+sift({ 
+	$where: function() { 
+		return this.name === "frank"
+	}
+}, [{name:'frank'},{name:'joe'}]); // ["frank"]
 ```
 
 ### $not

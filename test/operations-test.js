@@ -52,10 +52,12 @@ describe(__filename + "#", function () {
     // TODO - {$in:[Date]} doesn't work - make it work?
     [{$in:[0,false,1,"1"]},[0,1,2,3,4,false],[0,1,false]],
     [{$in:[1,"1","2"]},["1","2","3"],["1","2"]],
+    [{$in:[new Date(1)]},[new Date(1), new Date(2)],[new Date(1)]],
 
     // $nin
     [{$nin:[0,false,1,"1"]},[0,1,2,3,4,false],[2,3,4]],
     [{$nin:[1,"1","2"]},["1","2","3"],["3"]],
+    [{$nin:[new Date(1)]},[new Date(1), new Date(2)],[new Date(2)]],
 
     // $not
     [{$not:false},[0,false],[0]],
@@ -72,6 +74,7 @@ describe(__filename + "#", function () {
     [{$all:[1,2,3]},[[1,2,3,4],[1,2,4]],[[1,2,3,4]]],
     [{$all:[0,false]},[[0,1,2],[0,false],["0","false"],void 0],[[0,false]]],
     [{$all:["1"]},[[1]],[]],
+    [{$all:[new Date(1),new Date(2)]},[[new Date(1), new Date(2)],[new Date(1)]],[[new Date(1), new Date(2)]]],
 
     // $size
     [{$size:3},["123",[1,2,3],"1"],["123",[1,2,3]]],

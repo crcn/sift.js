@@ -142,6 +142,8 @@
     function _comparable(value) {
       if (value instanceof Date) {
         return value.getTime();
+      } else if (value instanceof Array) {
+        return value.map(_comparable);
       } else {
         return value;
       }

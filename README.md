@@ -308,9 +308,9 @@ Matches values based on the given regular expression
 sift({ $regex: /^f/i, $nin: ["frank"] }, ["frank", "fred", "sam", "frost"]); // ["fred", "frost"]
 ```
 
-### $regex
+### $where
 
-Matches values based on the given regular expression
+Matches based on some javascript comparison
 
 ```javascript
 sift({ $where: "this.name === 'frank'" }, [{name:'frank'},{name:'joe'}]); // ["frank"]

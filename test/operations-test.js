@@ -25,7 +25,7 @@ describe(__filename + "#", function () {
     // object is not exact - there is no match here unless ObjectID is a comparable.
     [ObjectID("54dd5546b1d296a54d152e84"),[ObjectID(),ObjectID("54dd5546b1d296a54d152e84")],[]],
 
-    // $neq
+    // $ne
     [{$ne:5}, [5, "5", 6], ["5", 6]],
     [{$ne:"5"}, ["5", 6], [6]],
     [{$ne:false}, [false], []],

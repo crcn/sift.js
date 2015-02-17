@@ -4,7 +4,7 @@ For extended documentation, checkout http://docs.mongodb.org/manual/reference/op
 
 ## Features:
 
-- Supported operators: [$in](#in), [$nin](#nin), [$exists](#exists), [$gte](#gte), [$gt](#gt), [$lte](#lte), [$lt](#lt), [$eq](#eq), [$neq](#neq), [$mod](#mod), [$all](#all), [$and](#and), [$or](#or), [$nor](#nor), [$not](#not), [$size](#size), [$type](#type), [$regex](#regex), [$where](#where)
+- Supported operators: [$in](#in), [$nin](#nin), [$exists](#exists), [$gte](#gte), [$gt](#gt), [$lte](#lte), [$lt](#lt), [$eq](#eq), [$ne](#ne), [$mod](#mod), [$all](#all), [$and](#and), [$or](#or), [$nor](#nor), [$not](#not), [$size](#size), [$type](#type), [$regex](#regex), [$where](#where)
 - Regexp searches
 - Function filtering
 - sub object searching
@@ -201,7 +201,7 @@ sift({ $lt: 2 }, [0, 1, 2, 3]);
 
 ### $eq
 
-Checks if query == value. Note that **$eq can be omitted**. For **$eq**, and **$neq**
+Checks if query == value. Note that **$eq can be omitted**. For **$eq**, and **$ne**
 
 ```javascript
 //filtered: [{ state: 'MN' }]

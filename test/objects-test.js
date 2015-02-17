@@ -174,7 +174,7 @@ describe("objects", function () {
             });
         });
 
-        it("$neq for nested object", function () {
+        it("$ne for nested object", function () {
             var sifted = sift({'sub.num': {'$ne': 10}}, loremArr);
             assert(sifted.length > 0);
             sifted.forEach(function (v) {

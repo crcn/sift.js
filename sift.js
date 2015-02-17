@@ -443,22 +443,9 @@
 
     //the function used to sift through the given array
     var self = function(target) {
-
-      var sifted  = [];
-      var testValue;
-      var value;
-
-      //I'll typically start from the end, but in this case we need to keep the order
-      //of the array the same.
-      for (var i = 0, n = target.length; i < n; i++) {
-
-        value = target[i];
-        testValue = selector(value);
-
-        if (filter.test(testValue)) sifted.push(value);
-      }
-
-      return sifted;
+      return target.filter(function (value) {
+        return filter.test(selector(value));
+      });
     };
 
     //set the test function incase the sifter isn't needed

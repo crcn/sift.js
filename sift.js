@@ -436,25 +436,6 @@
     throw new Error("Unknown sift selector " + selector);
   };
 
-  function createSifter(query, selector) {
-
-    //build the filter for the sifter
-    var filter = _queryParser.parse(query);
-
-    //the function used to sift through the given array
-    var self = function(target) {
-      return target.filter(function (value) {
-        return filter.test(selector(value));
-      });
-    };
-
-    //set the test function incase the sifter isn't needed
-    self.test   = filter.test;
-    self.query  = query;
-
-    return self;
-  }
-
   /**
    * sifts the given function
    * @param query the mongodb query
@@ -470,13 +451,28 @@
       target = void 0;
     }
 
-    var sft  = createSifter(query, getSelector(rawSelector));
+    var selector = getSelector(rawSelector);
 
-    //target given? sift through it and return the filtered result
-    if (target) return sft(target);
+    //build the filter for the sifter
+    var sifter = _queryParser.parse(query);
+
+    function filter(value) {
+      return sifter.test(selector(value));
+    }
+
+    if (target) return target.filter(filter);
+
+    //the function used to sift through the given array
+    function self(target) {
+      return target.filter(filter);
+    }
+
+    //set the test function incase the sifter isn't needed
+    self.test   = sifter.test;
+    self.query  = query;
 
     //otherwise return the sifter func
-    return sft;
+    return self;
   }
 
   sift.use = function(options) {

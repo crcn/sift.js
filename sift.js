@@ -471,7 +471,8 @@
     self.test   = sifter.test;
     self.query  = query;
 
-    //otherwise return the sifter func
+    // TODO - maybe just return the filter so we can do this:
+    // [].filter(sift(query));
     return self;
   }
 

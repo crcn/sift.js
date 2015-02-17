@@ -21,7 +21,7 @@ describe(__filename + "#", function() {
     });
 
     var people = [{ person: { age: 6 }}],
-    filtered = sifter(people);
+    filtered = people.filter(sifter);
 
 
     assert.equal(filtered.length, 1);
@@ -32,7 +32,7 @@ describe(__filename + "#", function() {
     
     var err;
     try {
-      sift({$aaa:1}, 1).test("b");
+      sift({$aaa:1}, 1)("b");
     } catch (e) {
       err = e;
     }
@@ -56,7 +56,7 @@ describe(__filename + "#", function() {
   it("throws an error", function () {
     var err;
     try {
-      sift({$aaa:1}).test("b");
+      sift({$aaa:1})("b");
     } catch (e) {
       err = e;
     }

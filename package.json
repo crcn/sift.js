@@ -1,7 +1,7 @@
 {
   "name": "sift",
   "description": "mongodb query style array filtering",
-  "version": "0.5.6",
+  "version": "1.0.0",
   "repository": {},
   "engines": {},
   "dependencies": {},

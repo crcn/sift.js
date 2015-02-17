@@ -462,18 +462,9 @@
 
     if (target) return target.filter(filter);
 
-    //the function used to sift through the given array
-    function self(target) {
-      return target.filter(filter);
-    }
+    filter.query = query;
 
-    //set the test function incase the sifter isn't needed
-    self.test   = sifter.test;
-    self.query  = query;
-
-    // TODO - maybe just return the filter so we can do this:
-    // [].filter(sift(query));
-    return self;
+    return filter;
   }
 
   sift.use = function(options) {

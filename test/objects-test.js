@@ -2,7 +2,7 @@ var sift = require(".."),
     assert = require("assert");
 
 
-describe("objects", function () {
+describe(__filename + "#", function () {
 
     var topic = [
         {
@@ -196,7 +196,7 @@ describe("objects", function () {
             }
         ]
         it("can be used", function () {
-            assert.equal(sift({"a.b.c":1}).test(arr[0]), true);
+            assert.equal(sift({"a.b.c":1})(arr[0]), true);
         });
     });
 });

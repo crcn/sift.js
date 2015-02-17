@@ -109,8 +109,7 @@ describe(__filename + "#", function () {
     matchArray = operation[2];
 
     it(JSON.stringify(filter), function () {
-      var sifter = sift(filter);
-      assert.equal(JSON.stringify(sifter(array)), JSON.stringify(matchArray));
+      assert.equal(JSON.stringify(array.filter(sift(filter))), JSON.stringify(matchArray));
     });
   });
 });

@@ -45,7 +45,7 @@ describe(__filename + "#", function() {
       }
     });
 
-    sift({a:{$baab:1}}).test({a:1});
+    sift({a:{$baab:1}})({a:1});
     assert.equal(i, 1);
   });
 

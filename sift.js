@@ -73,7 +73,9 @@
           var operator;
           if (!!_testers[k]) {
             operator = k;
-          } else if (k.substr(0, 1) !== "$") {
+
+          // $ == 36
+          } else if (k.charCodeAt(0) !== 36) {
             operator = "$trav";
           } else {
             throw new Error("Unknown operator " + k + ".");

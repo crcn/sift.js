@@ -72,7 +72,7 @@ describe(__filename + "#", function () {
     // $type
     [{$type:Date}, [0,new Date(1)],[new Date(1)]],
     [{$type:Number}, [0,false,1],[0,1]],
-    [{$type:Boolean}, [0,false],[false]],
+    [{$type:Boolean}, [0,false, void 0],[false]],
     [{$type:String}, ["1",1,false],["1"]],
 
     // $all
@@ -83,6 +83,7 @@ describe(__filename + "#", function () {
 
     // $size
     [{$size:3},["123",[1,2,3],"1"],["123",[1,2,3]]],
+    [{$size:1},["123",[1,2,3],"1", void 0],["1"]],
     
     // $or
     [{$or:[1,2,3]},[1,2,3,4],[1,2,3]],

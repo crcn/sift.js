@@ -11,425 +11,417 @@
 
   "use strict";
 
-  /**
-   */
-
-  function QueryParser() {
-
-    //traversable statements
-    var TRAV_OP = this.traversable = {
-      $and  : true,
-      $or   : true,
-      $nor  : true,
-      $trav : true,
-      $not  : true
-    };
-
-    var _testers = this.testers =  {
-
-      /**
-       */
-
-      $eq: function(a, b) {
-        return a.test(b);
-      },
-
-      /**
-       */
-
-      $ne: function(a, b) {
-        return !a.test(b);
-      },
-
-      /**
-       */
-
-      $lt: function(a, b) {
-        return a > b;
-      },
-
-      /**
-       */
-
-      $gt: function(a, b) {
-        return a < b;
-      },
-
-      /**
-       */
-
-      $lte: function(a, b) {
-        return a >= b;
-      },
-
-      /**
-       */
-
-      $gte: function(a, b) {
-        return a <= b;
-      },
-
-      /**
-       */
-
-      $exists: function(a, b) {
-        return a === (b != null);
-      },
-
-      /**
-       */
-
-      $in: function(a, b) {
-
-        //intersecting an array
-        if (b instanceof Array) {
-
-          for (var i = b.length; i--;) {
-            if (~a.indexOf(b[i])) return true;
-          }
-
-        } else {
-          return ~a.indexOf(b);
-        }
-
-        return false;
-      },
-
-      /**
-       */
-
-      $not: function(a, b) {
-        if (!a.test) throw new Error("$not test should include an expression, not a value. Use $ne instead.");
-        return !a.test(b);
-      },
-
-      /**
-       */
-
-      $type: function(a, b, org) {
-        //instanceof doesn't work for strings / boolean. instanceof works with inheritance
-        return org != null ? org instanceof a || org.constructor == a : false;
-      },
-
-      /**
-       */
-
-      $nin: function(a, b) {
-        return !_testers.$in(a, b);
-      },
-
-      /**
-       */
-
-      $mod: function(a, b) {
-        return b % a[0] == a[1];
-      },
-
-      /**
-       */
-
-      $all: function(a, b) {
-        if (!b) b = [];
-        for (var i = a.length; i--;) {
-          var a1 = a[i];
-          var indexInB = ~b.indexOf(a1);
-          if (!indexInB) return false;
-        }
-
-        return true;
-      },
-
-      /**
-       */
-
-      $size: function(a, b) {
-        return b ? a === b.length : false;
-      },
-
-      /**
-       */
-
-      $or: function(a, b) {
-
-        var i = a.length;
-        var n = i;
-
-        for (; i--;) {
-          if (test(a[i], b)) {
-            return true;
-          }
-        }
-
-        return n === 0;
-      },
-
-      /**
-       */
-
-      $nor: function(a, b) {
-
-        var i = a.length;
-
-        for (; i--;) {
-          if (test(a[i], b)) {
-            return false;
-          }
-        }
-
-        return true;
-      },
-
-      /**
-       */
-
-      $and: function(a, b) {
-
-        for (var i = a.length; i--;) {
-          if (!test(a[i], b)) {
-            return false;
-          }
-        }
-
-        return true;
-      },
-
-      /**
-       */
-
-      $trav: function(a, b) {
-
-        if (b instanceof Array) {
-
-          for (var i = b.length; i--;) {
-            var subb = b[i];
-            if (subb[a.k] && test(a, subb[a.k])) return true;
-          }
-
-          return false;
-        }
-
-        //continue to traverse even if there isn't a value - this is needed for
-        //something like name:{$exists:false}
-        return test(a, b ? b[a.k] : void 0);
-      },
-
-      /**
-       */
-
-      $regex: function(a, b) {
-        var aRE = new RegExp(a);
-        return aRE.test(b);
-      },
-
-      /**
-       */
-
-      $where: function(a, b) {
-        return a.call(b);
-      }
-    };
-
-    var _prepare = {
-
-      /**
-       */
-
-      $eq: function(a) {
-
-        var fn;
-
-        if (a instanceof RegExp) {
-          return a;
-        } else if (a instanceof Function) {
-          fn = a;
-        } else {
-          fn = function(b) {
-            if (b instanceof Array) {
-              return ~b.indexOf(a);
-            } else {
-              return a === b;
-            }
-          };
-        }
-
-        return {
-          test: fn
-        };
-      },
-
-      /**
-       */
-
-      $ne: function(a) {
-        return _prepare.$eq(a);
-      },
-
-       /**
-        */
-
-      $where: function(a) {
-
-        if (typeof a === "string") {
-          return new Function("return " + a);
-        }
-
-        return a;
-      }
-    };
+  //traversable statements
+  var TRAV_OP = {
+    $and  : true,
+    $or   : true,
+    $nor  : true,
+    $trav : true,
+    $not  : true
+  };
+
+  var _testers = {
 
     /**
      */
 
-    function _getExpr(type, key, value) {
-
-      var v = _comparable(value);
-
-      return {
-
-        //k key
-        k: key,
-
-        //v value
-        v: _prepare[type] ? _prepare[type](v) : v,
-
-        //e eval
-        e: _testers[type]
-      };
-    }
+    $eq: function(a, b) {
+      return a.test(b);
+    },
 
     /**
-     * tests against data
      */
 
-    var test = this.test = function(statement, data) {
+    $ne: function(a, b) {
+      return !a.test(b);
+    },
 
-      var exprs    = statement.exprs;
+    /**
+     */
 
-      //generally, expressions are ordered from least efficient, to most efficient.
-      for (var i = 0, n = exprs.length; i < n; i++) {
+    $lt: function(a, b) {
+      return a > b;
+    },
 
-        var expr = exprs[i];
+    /**
+     */
 
-        if (!expr.e(expr.v, _comparable(data), data)) return false;
+    $gt: function(a, b) {
+      return a < b;
+    },
 
+    /**
+     */
+
+    $lte: function(a, b) {
+      return a >= b;
+    },
+
+    /**
+     */
+
+    $gte: function(a, b) {
+      return a <= b;
+    },
+
+    /**
+     */
+
+    $exists: function(a, b) {
+      return a === (b != null);
+    },
+
+    /**
+     */
+
+    $in: function(a, b) {
+
+      //intersecting an array
+      if (b instanceof Array) {
+
+        for (var i = b.length; i--;) {
+          if (~a.indexOf(b[i])) return true;
+        }
+
+      } else {
+        return ~a.indexOf(b);
+      }
+
+      return false;
+    },
+
+    /**
+     */
+
+    $not: function(a, b) {
+      if (!a.test) throw new Error("$not test should include an expression, not a value. Use $ne instead.");
+      return !a.test(b);
+    },
+
+    /**
+     */
+
+    $type: function(a, b, org) {
+      //instanceof doesn't work for strings / boolean. instanceof works with inheritance
+      return org != null ? org instanceof a || org.constructor == a : false;
+    },
+
+    /**
+     */
+
+    $nin: function(a, b) {
+      return !_testers.$in(a, b);
+    },
+
+    /**
+     */
+
+    $mod: function(a, b) {
+      return b % a[0] == a[1];
+    },
+
+    /**
+     */
+
+    $all: function(a, b) {
+      if (!b) b = [];
+      for (var i = a.length; i--;) {
+        var a1 = a[i];
+        var indexInB = ~b.indexOf(a1);
+        if (!indexInB) return false;
       }
 
       return true;
-    };
+    },
 
     /**
-     * parses a statement into something evaluable
      */
 
-    var parse = this.parse = function(statement, key) {
+    $size: function(a, b) {
+      return b ? a === b.length : false;
+    },
 
-      //fixes sift(null, []) issue
-      if (!statement) statement = { $eq: statement };
+    /**
+     */
 
-      var testers = [];
+    $or: function(a, b) {
 
-      //if the statement is an object, then we're looking at something like: { key: match }
-      if (statement && statement.constructor === Object) {
+      var i = a.length;
+      var n = i;
 
-        for (var k in statement) {
+      for (; i--;) {
+        if (test(a[i], b)) {
+          return true;
+        }
+      }
 
-          //find the apropriate operator. If one doesn't exist and the key does not start
-          //with a $ character, then it's a property, which means we create a new statement
-          //(traversing)
-          var operator;
-          if (!!_testers[k]) {
-            operator = k;
+      return n === 0;
+    },
 
-          // $ == 36
-          } else if (k.charCodeAt(0) !== 36) {
-            operator = "$trav";
+    /**
+     */
+
+    $nor: function(a, b) {
+
+      var i = a.length;
+
+      for (; i--;) {
+        if (test(a[i], b)) {
+          return false;
+        }
+      }
+
+      return true;
+    },
+
+    /**
+     */
+
+    $and: function(a, b) {
+
+      for (var i = a.length; i--;) {
+        if (!test(a[i], b)) {
+          return false;
+        }
+      }
+
+      return true;
+    },
+
+    /**
+     */
+
+    $trav: function(a, b) {
+
+      if (b instanceof Array) {
+
+        for (var i = b.length; i--;) {
+          var subb = b[i];
+          if (subb[a.k] && test(a, subb[a.k])) return true;
+        }
+
+        return false;
+      }
+
+      //continue to traverse even if there isn't a value - this is needed for
+      //something like name:{$exists:false}
+      return test(a, b ? b[a.k] : void 0);
+    },
+
+    /**
+     */
+
+    $regex: function(a, b) {
+      var aRE = new RegExp(a);
+      return aRE.test(b);
+    },
+
+    /**
+     */
+
+    $where: function(a, b) {
+      return a.call(b);
+    }
+  };
+
+  var _prepare = {
+
+    /**
+     */
+
+    $eq: function(a) {
+
+      var fn;
+
+      if (a instanceof RegExp) {
+        return a;
+      } else if (a instanceof Function) {
+        fn = a;
+      } else {
+        fn = function(b) {
+          if (b instanceof Array) {
+            return ~b.indexOf(a);
           } else {
-            throw new Error("Unknown operator " + k + ".");
+            return a === b;
           }
-
-          //value of given statement (the match)
-          var value = statement[k];
-
-          //default = match
-          var exprValue = value;
-
-          //if we're working with a traversable operator, then set the expr value
-          if (TRAV_OP[operator]) {
-
-            //using dot notation? convert into a sub-object
-            if (~k.indexOf(".")) {
-              var keyParts = k.split(".");
-              k = keyParts.shift(); //we're using the first key, so remove it
-
-              exprValue = value = _convertDotToSubObject(keyParts, value);
-            }
-
-            //*if* the value is an array, then we're dealing with something like: $or, $and
-            if (value instanceof Array) {
-
-              exprValue = [];
-
-              for (var i = value.length; i--;) {
-                exprValue.push(parse(value[i]));
-              }
-
-            //otherwise we're dealing with $trav
-            } else {
-              exprValue = parse(value, k);
-            }
-          }
-
-          testers.push(_getExpr(operator, k, exprValue));
-        }
-
-      //otherwise we're comparing a particular value, so set to eq
-      } else {
-        testers.push(_getExpr("$eq", key, statement));
+        };
       }
 
-      var stmt =  {
-        exprs: testers,
-        k: key,
-        test: function(value) {
-          return test(stmt, value);
-        }
+      return {
+        test: fn
       };
-
-      return stmt;
-    };
+    },
 
     /**
      */
 
-    function _comparable(value) {
-      if (value instanceof Date) {
-        return value.getTime();
-      } else if (value instanceof Array) {
-        return value.map(_comparable);
-      } else {
-        return value;
+    $ne: function(a) {
+      return _prepare.$eq(a);
+    },
+
+     /**
+      */
+
+    $where: function(a) {
+
+      if (typeof a === "string") {
+        return new Function("return " + a);
       }
+
+      return a;
+    }
+  };
+
+  /**
+   */
+
+  function _getExpr(type, key, value) {
+
+    var v = _comparable(value);
+
+    return {
+
+      //k key
+      k: key,
+
+      //v value
+      v: _prepare[type] ? _prepare[type](v) : v,
+
+      //e eval
+      e: _testers[type]
+    };
+  }
+
+  /**
+   * tests against data
+   */
+
+  function test(statement, data) {
+
+    var exprs    = statement.exprs;
+
+    //generally, expressions are ordered from least efficient, to most efficient.
+    for (var i = 0, n = exprs.length; i < n; i++) {
+
+      var expr = exprs[i];
+
+      if (!expr.e(expr.v, _comparable(data), data)) return false;
+
     }
 
-    /**
-     */
+    return true;
+  }
 
-    function _convertDotToSubObject(keyParts, value) {
+  /**
+   * parses a statement into something evaluable
+   */
 
-      var subObject    = {};
-      var currentValue = subObject;
+  function parse(statement, key) {
 
-      for (var i = 0, n = keyParts.length - 1; i < n; i++) {
-        currentValue = currentValue[keyParts[i]] = {};
+    //fixes sift(null, []) issue
+    if (!statement) statement = { $eq: statement };
+
+    var testers = [];
+
+    //if the statement is an object, then we're looking at something like: { key: match }
+    if (statement && statement.constructor === Object) {
+
+      for (var k in statement) {
+
+        //find the apropriate operator. If one doesn't exist and the key does not start
+        //with a $ character, then it's a property, which means we create a new statement
+        //(traversing)
+        var operator;
+        if (!!_testers[k]) {
+          operator = k;
+
+        // $ == 36
+        } else if (k.charCodeAt(0) !== 36) {
+          operator = "$trav";
+        } else {
+          throw new Error("Unknown operator " + k + ".");
+        }
+
+        //value of given statement (the match)
+        var value = statement[k];
+
+        //default = match
+        var exprValue = value;
+
+        //if we're working with a traversable operator, then set the expr value
+        if (TRAV_OP[operator]) {
+
+          //using dot notation? convert into a sub-object
+          if (~k.indexOf(".")) {
+            var keyParts = k.split(".");
+            k = keyParts.shift(); //we're using the first key, so remove it
+
+            exprValue = value = _convertDotToSubObject(keyParts, value);
+          }
+
+          //*if* the value is an array, then we're dealing with something like: $or, $and
+          if (value instanceof Array) {
+
+            exprValue = [];
+
+            for (var i = value.length; i--;) {
+              exprValue.push(parse(value[i]));
+            }
+
+          //otherwise we're dealing with $trav
+          } else {
+            exprValue = parse(value, k);
+          }
+        }
+
+        testers.push(_getExpr(operator, k, exprValue));
       }
 
-      currentValue[keyParts[i]] = value;
+    //otherwise we're comparing a particular value, so set to eq
+    } else {
+      testers.push(_getExpr("$eq", key, statement));
+    }
 
-      return subObject;
+    var stmt =  {
+      exprs: testers,
+      k: key,
+      test: function(value) {
+        return test(stmt, value);
+      }
+    };
+
+    return stmt;
+  }
+
+  /**
+   */
+
+  function _comparable(value) {
+    if (value instanceof Date) {
+      return value.getTime();
+    } else if (value instanceof Array) {
+      return value.map(_comparable);
+    } else {
+      return value;
     }
   }
 
-  var _queryParser = new QueryParser();
+  /**
+   */
+
+  function _convertDotToSubObject(keyParts, value) {
+
+    var subObject    = {};
+    var currentValue = subObject;
+
+    for (var i = 0, n = keyParts.length - 1; i < n; i++) {
+      currentValue = currentValue[keyParts[i]] = {};
+    }
+
+    currentValue[keyParts[i]] = value;
+
+    return subObject;
+  }
 
   /**
    */
@@ -467,7 +459,7 @@
     var selector = getSelector(rawSelector);
 
     //build the filter for the sifter
-    var sifter = _queryParser.parse(query);
+    var sifter = parse(query);
 
     function filter(value) {
       return sifter.test(selector(value));
@@ -502,10 +494,10 @@
     }
 
     var key = "$" + operator;
-    _queryParser.testers[key] = options.test;
+    _testers[key] = options.test;
 
     if (options.traversable || options.traverse) {
-      _queryParser.traversable[key] = true;
+      TRAV_OP[key] = true;
     }
   };
 

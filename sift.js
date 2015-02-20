@@ -14,125 +14,7 @@
   /**
    */
 
-  function _convertDotToSubObject(keyParts, value) {
-
-    var subObject    = {};
-    var currentValue = subObject;
-
-    for (var i = 0, n = keyParts.length - 1; i < n; i++) {
-      currentValue = currentValue[keyParts[i]] = {};
-    }
-
-    currentValue[keyParts[i]] = value;
-
-    return subObject;
-  }
-
-  /**
-   */
-
   function QueryParser() {
-
-    /**
-     * tests against data
-     */
-
-    var test = this.test = function(statement, data) {
-
-      var exprs    = statement.exprs;
-
-      //generally, expressions are ordered from least efficient, to most efficient.
-      for (var i = 0, n = exprs.length; i < n; i++) {
-
-        var expr = exprs[i];
-
-        if (!expr.e(expr.v, _comparable(data), data)) return false;
-
-      }
-
-      return true;
-    };
-
-    /**
-     * parses a statement into something evaluable
-     */
-
-    var parse = this.parse = function(statement, key) {
-
-      //fixes sift(null, []) issue
-      if (!statement) statement = { $eq: statement };
-
-      var testers = [];
-
-      //if the statement is an object, then we're looking at something like: { key: match }
-      if (statement && statement.constructor === Object) {
-
-        for (var k in statement) {
-
-          //find the apropriate operator. If one doesn't exist and the key does not start
-          //with a $ character, then it's a property, which means we create a new statement
-          //(traversing)
-          var operator;
-          if (!!_testers[k]) {
-            operator = k;
-
-          // $ == 36
-          } else if (k.charCodeAt(0) !== 36) {
-            operator = "$trav";
-          } else {
-            throw new Error("Unknown operator " + k + ".");
-          }
-
-          //value of given statement (the match)
-          var value = statement[k];
-
-          //default = match
-          var exprValue = value;
-
-          //if we're working with a traversable operator, then set the expr value
-          if (TRAV_OP[operator]) {
-
-            //using dot notation? convert into a sub-object
-            if (~k.indexOf(".")) {
-              var keyParts = k.split(".");
-              k = keyParts.shift(); //we're using the first key, so remove it
-
-              exprValue = value = _convertDotToSubObject(keyParts, value);
-            }
-
-            //*if* the value is an array, then we're dealing with something like: $or, $and
-            if (value instanceof Array) {
-
-              exprValue = [];
-
-              for (var i = value.length; i--;) {
-                exprValue.push(parse(value[i]));
-              }
-
-            //otherwise we're dealing with $trav
-            } else {
-              exprValue = parse(value, k);
-            }
-          }
-
-          testers.push(_getExpr(operator, k, exprValue));
-        }
-
-      //otherwise we're comparing a particular value, so set to eq
-      } else {
-        testers.push(_getExpr("$eq", key, statement));
-      }
-
-      var stmt =  {
-        exprs: testers,
-        k: key,
-        test: function(value) {
-          return test(stmt, value);
-        }
-      };
-
-      return stmt;
-    };
 
     //traversable statements
     var TRAV_OP = this.traversable = {
@@ -142,16 +24,6 @@
       $trav : true,
       $not  : true
     };
-
-    function _comparable(value) {
-      if (value instanceof Date) {
-        return value.getTime();
-      } else if (value instanceof Array) {
-        return value.map(_comparable);
-      } else {
-        return value;
-      }
-    }
 
     var _testers = this.testers =  {
 
@@ -405,6 +277,9 @@
       }
     };
 
+    /**
+     */
+
     function _getExpr(type, key, value) {
 
       var v = _comparable(value);
@@ -421,11 +296,145 @@
         e: _testers[type]
       };
     }
+
+    /**
+     * tests against data
+     */
+
+    var test = this.test = function(statement, data) {
+
+      var exprs    = statement.exprs;
+
+      //generally, expressions are ordered from least efficient, to most efficient.
+      for (var i = 0, n = exprs.length; i < n; i++) {
+
+        var expr = exprs[i];
+
+        if (!expr.e(expr.v, _comparable(data), data)) return false;
+
+      }
+
+      return true;
+    };
+
+    /**
+     * parses a statement into something evaluable
+     */
+
+    var parse = this.parse = function(statement, key) {
+
+      //fixes sift(null, []) issue
+      if (!statement) statement = { $eq: statement };
+
+      var testers = [];
+
+      //if the statement is an object, then we're looking at something like: { key: match }
+      if (statement && statement.constructor === Object) {
+
+        for (var k in statement) {
+
+          //find the apropriate operator. If one doesn't exist and the key does not start
+          //with a $ character, then it's a property, which means we create a new statement
+          //(traversing)
+          var operator;
+          if (!!_testers[k]) {
+            operator = k;
+
+          // $ == 36
+          } else if (k.charCodeAt(0) !== 36) {
+            operator = "$trav";
+          } else {
+            throw new Error("Unknown operator " + k + ".");
+          }
+
+          //value of given statement (the match)
+          var value = statement[k];
+
+          //default = match
+          var exprValue = value;
+
+          //if we're working with a traversable operator, then set the expr value
+          if (TRAV_OP[operator]) {
+
+            //using dot notation? convert into a sub-object
+            if (~k.indexOf(".")) {
+              var keyParts = k.split(".");
+              k = keyParts.shift(); //we're using the first key, so remove it
+
+              exprValue = value = _convertDotToSubObject(keyParts, value);
+            }
+
+            //*if* the value is an array, then we're dealing with something like: $or, $and
+            if (value instanceof Array) {
+
+              exprValue = [];
+
+              for (var i = value.length; i--;) {
+                exprValue.push(parse(value[i]));
+              }
+
+            //otherwise we're dealing with $trav
+            } else {
+              exprValue = parse(value, k);
+            }
+          }
+
+          testers.push(_getExpr(operator, k, exprValue));
+        }
+
+      //otherwise we're comparing a particular value, so set to eq
+      } else {
+        testers.push(_getExpr("$eq", key, statement));
+      }
+
+      var stmt =  {
+        exprs: testers,
+        k: key,
+        test: function(value) {
+          return test(stmt, value);
+        }
+      };
+
+      return stmt;
+    };
+
+    /**
+     */
+
+    function _comparable(value) {
+      if (value instanceof Date) {
+        return value.getTime();
+      } else if (value instanceof Array) {
+        return value.map(_comparable);
+      } else {
+        return value;
+      }
+    }
+
+    /**
+     */
+
+    function _convertDotToSubObject(keyParts, value) {
+
+      var subObject    = {};
+      var currentValue = subObject;
+
+      for (var i = 0, n = keyParts.length - 1; i < n; i++) {
+        currentValue = currentValue[keyParts[i]] = {};
+      }
+
+      currentValue[keyParts[i]] = value;
+
+      return subObject;
+    }
   }
 
   var _queryParser = new QueryParser();
 
-  var getSelector = function(selector) {
+  /**
+   */
+
+  function getSelector(selector) {
 
     if (!selector) {
 
@@ -438,7 +447,7 @@
     }
 
     throw new Error("Unknown sift selector " + selector);
-  };
+  }
 
   /**
    * sifts the given function

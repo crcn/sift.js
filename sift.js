@@ -220,7 +220,7 @@
      */
 
     $where: function(a, b) {
-      return a.call(b);
+      return a.call(b, b);
     }
   };
 
@@ -265,7 +265,7 @@
     $where: function(a) {
 
       if (typeof a === "string") {
-        return new Function("return " + a);
+        return new Function("obj", "return " + a);
       }
 
       return a;

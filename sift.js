@@ -275,9 +275,9 @@
   /**
    */
 
-  function _getExpr(type, key, value) {
+  function getExpr(type, key, value) {
 
-    var v = _comparable(value);
+    var v = comparable(value);
 
     return {
 
@@ -305,7 +305,7 @@
 
       var expr = exprs[i];
 
-      if (!expr.e(expr.v, _comparable(data), data)) return false;
+      if (!expr.e(expr.v, comparable(data), data)) return false;
 
     }
 
@@ -356,7 +356,7 @@
             var keyParts = k.split(".");
             k = keyParts.shift(); //we're using the first key, so remove it
 
-            exprValue = value = _convertDotToSubObject(keyParts, value);
+            exprValue = value = convertDotToSubObject(keyParts, value);
           }
 
           //*if* the value is an array, then we're dealing with something like: $or, $and
@@ -374,12 +374,12 @@
           }
         }
 
-        testers.push(_getExpr(operator, k, exprValue));
+        testers.push(getExpr(operator, k, exprValue));
       }
 
     //otherwise we're comparing a particular value, so set to eq
     } else {
-      testers.push(_getExpr("$eq", key, statement));
+      testers.push(getExpr("$eq", key, statement));
     }
 
     var stmt =  {
@@ -396,11 +396,11 @@
   /**
    */
 
-  function _comparable(value) {
+  function comparable(value) {
     if (value instanceof Date) {
       return value.getTime();
     } else if (value instanceof Array) {
-      return value.map(_comparable);
+      return value.map(comparable);
     } else {
       return value;
     }
@@ -409,7 +409,7 @@
   /**
    */
 
-  function _convertDotToSubObject(keyParts, value) {
+  function convertDotToSubObject(keyParts, value) {
 
     var subObject    = {};
     var currentValue = subObject;

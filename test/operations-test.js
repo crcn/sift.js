@@ -102,7 +102,11 @@ describe(__filename + "#", function () {
     // $where
     [{$where:function () { return this.v === 1 }}, [{v:1},{v:2}],[{v:1}]],
     [{$where:"this.v === 1"}, [{v:1},{v:2}],[{v:1}]],
-    [{$where:"obj.v === 1"}, [{v:1},{v:2}],[{v:1}]]
+    [{$where:"obj.v === 1"}, [{v:1},{v:2}],[{v:1}]],
+
+    // $elemMatch
+    [{a:{$elemMatch:{b:1,c:2}}}, [{a:{b:1,c:2}},{a:{b:1,c:2,d:3}},{a:{b:2,c:3}}], [{a:{b:1,c:2}},{a:{b:1,c:2,d:3}}]],
+    [{a:{$elemMatch:{b:2,c:{$gt:2}}}}, [{a:{b:1,c:2}},{a:{b:1,c:2,d:3}},{a:{b:2,c:3}}], [{a:{b:2,c:3}}]],
 
   ].forEach(function (operation) {
 

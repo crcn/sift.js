@@ -221,6 +221,13 @@
 
     $where: function(a, b) {
       return a.call(b, b);
+    },
+
+    /**
+     */
+
+    $elemMatch: function (a, b) {
+      return a.test(b);
     }
   };
 
@@ -269,6 +276,13 @@
       }
 
       return a;
+    },
+
+    /**
+     */
+
+    $elemMatch: function (a) {
+      return parse(a);
     }
   };
 

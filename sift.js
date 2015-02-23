@@ -226,7 +226,7 @@
     /**
      */
 
-    $elemMatch: function (a, b) {
+    $elemMatch: function(a, b) {
       return a.test(b);
     }
   };
@@ -281,7 +281,7 @@
     /**
      */
 
-    $elemMatch: function (a) {
+    $elemMatch: function(a) {
       return parse(a);
     }
   };

@@ -7,20 +7,13 @@
  * Inspired by mongodb's query language
  */
 
-(function() {
 
-  "use strict";
+(function () {
 
-  //traversable statements
-  var TRAV_OP = {
-    $and  : true,
-    $or   : true,
-    $nor  : true,
-    $trav : true,
-    $not  : true
-  };
+  /**
+   */
 
-  var _testers = {
+  var operators = {
 
     /**
      */
@@ -150,7 +143,7 @@
       var n = i;
 
       for (; i--;) {
-        if (test(a[i], b)) {
+        if (a[i](b)) {
           return true;
         }
       }
@@ -166,7 +159,7 @@
       var i = a.length;
 
       for (; i--;) {
-        if (test(a[i], b)) {
+        if (a[i](b)) {
           return false;
         }
       }
@@ -180,7 +173,7 @@
     $and: function(a, b) {
 
       for (var i = a.length; i--;) {
-        if (!test(a[i], b)) {
+        if (!a[i](b)) {
           return false;
         }
       }
@@ -191,7 +184,8 @@
     /**
      */
 
-    $trav: function(a, b) {
+    $trav: function(a, b, k) {
+
 
       if (b instanceof Array) {
 
@@ -205,7 +199,9 @@
 
       //continue to traverse even if there isn't a value - this is needed for
       //something like name:{$exists:false}
-      return test(a, b ? b[a.k] : void 0);
+      // console.log(a(b ? b[k] : void 0), b);
+
+      return a(b ? b[k] : void 0);
     },
 
     /**
@@ -239,6 +235,7 @@
     $eq: function(a) {
 
       var fn;
+
 
       if (a instanceof RegExp) {
         return a;
@@ -289,127 +286,6 @@
   /**
    */
 
-  function getExpr(type, key, value) {
-
-    var v = comparable(value);
-
-    return {
-
-      //k key
-      k: key,
-
-      //v value
-      v: _prepare[type] ? _prepare[type](v) : v,
-
-      //e eval
-      e: _testers[type]
-    };
-  }
-
-  /**
-   * tests against data
-   */
-
-  function test(statement, data) {
-
-    var exprs    = statement.exprs;
-
-    //generally, expressions are ordered from least efficient, to most efficient.
-    for (var i = 0, n = exprs.length; i < n; i++) {
-
-      var expr = exprs[i];
-
-      if (!expr.e(expr.v, comparable(data), data)) return false;
-
-    }
-
-    return true;
-  }
-
-  /**
-   * parses a statement into something evaluable
-   */
-
-  function parse(statement, key) {
-
-    //fixes sift(null, []) issue
-    if (!statement) statement = { $eq: statement };
-
-    var testers = [];
-
-    //if the statement is an object, then we're looking at something like: { key: match }
-    if (statement && statement.constructor === Object) {
-
-      for (var k in statement) {
-
-        //find the apropriate operator. If one doesn't exist and the key does not start
-        //with a $ character, then it's a property, which means we create a new statement
-        //(traversing)
-        var operator;
-        if (!!_testers[k]) {
-          operator = k;
-
-        // $ == 36
-        } else if (k.charCodeAt(0) !== 36) {
-          operator = "$trav";
-        } else {
-          throw new Error("Unknown operator " + k + ".");
-        }
-
-        //value of given statement (the match)
-        var value = statement[k];
-
-        //default = match
-        var exprValue = value;
-
-        //if we're working with a traversable operator, then set the expr value
-        if (TRAV_OP[operator]) {
-
-          //using dot notation? convert into a sub-object
-          if (~k.indexOf(".")) {
-            var keyParts = k.split(".");
-            k = keyParts.shift(); //we're using the first key, so remove it
-
-            exprValue = value = convertDotToSubObject(keyParts, value);
-          }
-
-          //*if* the value is an array, then we're dealing with something like: $or, $and
-          if (value instanceof Array) {
-
-            exprValue = [];
-
-            for (var i = value.length; i--;) {
-              exprValue.push(parse(value[i]));
-            }
-
-          //otherwise we're dealing with $trav
-          } else {
-            exprValue = parse(value, k);
-          }
-        }
-
-        testers.push(getExpr(operator, k, exprValue));
-      }
-
-    //otherwise we're comparing a particular value, so set to eq
-    } else {
-      testers.push(getExpr("$eq", key, statement));
-    }
-
-    var stmt =  {
-      exprs: testers,
-      k: key,
-      test: function(value) {
-        return test(stmt, value);
-      }
-    };
-
-    return stmt;
-  }
-
-  /**
-   */
-
   function comparable(value) {
     if (value instanceof Date) {
       return value.getTime();
@@ -423,36 +299,45 @@
   /**
    */
 
-  function convertDotToSubObject(keyParts, value) {
+  function parse (query, key) {
 
-    var subObject    = {};
-    var currentValue = subObject;
+    var a = query;
+    var operatorKey;
 
-    for (var i = 0, n = keyParts.length - 1; i < n; i++) {
-      currentValue = currentValue[keyParts[i]] = {};
+    if (query == null || typeof query !== "object") {
+
+      if (key && key.charCodeAt(0) !== 36) {
+        operatorKey = "$trav";
+        a = parse(query);
+      } else {
+        operatorKey = "$eq";
+      }
+
+    } else {
+      var a = [];
+      if (query.constructor === Object) {
+        for (var key in query) {
+          a.push(parse(query[key], key));
+        }
+      } else if (query.constructor === Array) {
+        for (var i = 0, n = query.length; i < n; i++) {
+          a.push(parse(query[i]));
+        }
+      }
+
+      operatorKey = "$and";
     }
 
-    currentValue[keyParts[i]] = value;
-
-    return subObject;
-  }
-
-  /**
-   */
-
-  function getSelector(selector) {
-
-    if (!selector) {
-
-      return function(value) {
-        return value;
-      };
-
-    } else if (typeof selector == "function") {
-      return selector;
+    if (_prepare[operatorKey]) {
+      a = _prepare[operatorKey](comparable(a));
     }
 
-    throw new Error("Unknown sift selector " + selector);
+    var operator = operators[operatorKey];
+
+
+    return function (b) {
+      return operator(a, comparable(b), key);
+    }
   }
 
   /**
@@ -462,58 +347,9 @@
    * @param rawSelector the selector for plucking data from the given target
    */
 
-  function sift(query, target, rawSelector) {
-
-    //must be an array
-    if (typeof target != "object") {
-      rawSelector = target;
-      target = void 0;
-    }
-
-    var selector = getSelector(rawSelector);
-
-    //build the filter for the sifter
-    var sifter = parse(query);
-
-    function filter(value) {
-      return sifter.test(selector(value));
-    }
-
-    if (target) return target.filter(filter);
-
-    filter.query = query;
-
-    return filter;
+  function sift(query) {
+    return parse(query);
   }
-
-  sift.use = function(options) {
-    if (options.operators) sift.useOperators(options.operators);
-    if (typeof options === "function") options(sift);
-  };
-
-  sift.useOperators = function(operators) {
-    for (var key in operators) {
-      sift.useOperator(key, operators[key]);
-    }
-  };
-
-  sift.useOperator = function(operator, optionsOrFn) {
-
-    var options = {};
-
-    if (typeof optionsOrFn == "object") {
-      options = optionsOrFn;
-    } else {
-      options = { test: optionsOrFn };
-    }
-
-    var key = "$" + operator;
-    _testers[key] = options.test;
-
-    if (options.traversable || options.traverse) {
-      TRAV_OP[key] = true;
-    }
-  };
 
   /* istanbul ignore next */
   if ((typeof module != "undefined") && (typeof module.exports != "undefined")) {

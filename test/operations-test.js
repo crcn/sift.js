@@ -6,7 +6,7 @@ var ObjectID = require("bson").pure().ObjectID;
 describe(__filename + "#", function () {
 
 
-  [
+  var d = [
 
     // $eq
     [{$eq:5}, [5,"5", 6], [5]],
@@ -24,6 +24,7 @@ describe(__filename + "#", function () {
 
     // object is not exact - there is no match here unless ObjectID is a comparable.
     [ObjectID("54dd5546b1d296a54d152e84"),[ObjectID(),ObjectID("54dd5546b1d296a54d152e84")],[]],
+    [[{a:"b"},{c:"d"}],[[{a:"b",c:"d"},{a:"b"}],[{a:"b"}]],[{a:"b",c:"d"}]],
 
     // $ne
     [{$ne:5}, [5, "5", 6], ["5", 6]],
@@ -108,7 +109,16 @@ describe(__filename + "#", function () {
     [{a:{$elemMatch:{b:1,c:2}}}, [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]},{a:{b:2,c:3}}], [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]}]],
     [{a:{$elemMatch:{b:2,c:{$gt:2}}}}, [{a:{b:1,c:2}},{a:{b:1,c:2,d:3}},{a:{b:2,c:3}}], [{a:{b:2,c:3}}]],
 
-  ].forEach(function (operation) {
+  ];
+
+  d2 = [
+    [1,[1,2],[1]],
+    [{a:1},[{a:1},{a:2}],[{a:1}]],
+    [{"a.b":1},[{a:{b:1}},{a:2}],[{a:1}]]
+    // [[{a:"b"},{c:"d"}],[[{a:"b",c:"d"},{a:"b"}],[{a:"b"}]],[{a:"b",c:"d"}]]
+  ];
+
+  d.forEach(function (operation) {
 
     var filter = operation[0],
     array      = operation[1],

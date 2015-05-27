@@ -28,7 +28,7 @@ describe(__filename + "#", function() {
     assert.equal(filtered[0], people[0]);
   });
 
-  it("throws an errror if the selector is invalid", function () {
+  it("throws an error if the selector is invalid", function () {
     
     var err;
     try {

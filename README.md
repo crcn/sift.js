@@ -378,3 +378,24 @@ EATS_BONES    = EATS_CEREAL << 1;
 
 sift({ $band: IS_PERSON }, [ S_PERSON|EATS_CEREAL, IS_DOG|EATS_BONES, IS_PERSON ]);
 ```
+
+## Get index of first matching element
+
+Get the index (0-based) of first matching element in target array. Returns `-1` if no match is found.
+
+```javascript
+var people = [{
+	name: 'craig',
+	address: {
+		city: 'Minneapolis'
+	}
+},
+{
+	name: 'tim',
+	address: {
+		city: 'St. Paul'
+	}
+}];
+
+var index = sift.indexOf({ address: { city: 'Minneapolis' }}, people); // index = 0
+```

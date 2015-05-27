@@ -266,8 +266,8 @@
       return _prepare.$eq(a);
     },
 
-     /**
-      */
+    /**
+     */
 
     $where: function(a) {
 
@@ -513,6 +513,21 @@
     if (options.traversable || options.traverse) {
       TRAV_OP[key] = true;
     }
+  };
+
+  sift.indexOf = function(query, target, rawSelector) {
+    var selector = getSelector(rawSelector);
+
+    //build the filter for the sifter
+    var sifter = parse(query);
+
+    for (var i = 0; i < target.length; i++) {
+      if (sifter.test(selector(target[i]))) {
+        return i;
+      }
+    }
+
+    return -1;
   };
 
   /* istanbul ignore next */

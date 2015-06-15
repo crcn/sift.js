@@ -113,8 +113,8 @@ sifter([
 With your sifter, you can also **test** values:
 
 ```javascript
-siftExists.test(null); //false
-siftExists.test('craig'); //true
+siftExists(null); //false
+siftExists('craig'); //true
 ```
 
 

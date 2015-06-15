@@ -30,7 +30,7 @@ var sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']
 
 
 //A *sifter* is returned if the second parameter is omitted
-var siftPeople = sift({
+var testQuery = sift({
 
 	//you can also filter against functions
 	name: function(value) {
@@ -39,7 +39,7 @@ var siftPeople = sift({
 });
 
 //filtered: [{ name: 'craig' }]
-siftPeople([{
+[{
 	name: 'craig',
 },
 {
@@ -47,12 +47,12 @@ siftPeople([{
 },
 {
 	name: 'jake'
-}]);
+}].filter(testQuery);
 
 
 //you can test *single values* against your custom sifter
-siftPeople.test({ name: 'sarah' }); //true
-siftPeople.test({ name: 'tim' }); //false\
+testQuery({ name: 'sarah' }); //true
+testQuery({ name: 'tim' }); //false\
 ```
 
 ## Browser Examples

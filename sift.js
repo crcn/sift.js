@@ -531,11 +531,10 @@
   };
 
   function isObject(value) {
-    // function appropriated from lodash. The check for obj.constructor === Object fails in a custom REPL for node.
-    // Avoid a V8 JIT bug in Chrome 19-20.
-    // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
     var type = typeof value;
-    return !!value && (type === "object" || type === "function");
+    return !!value && type === "object" && !(
+      value instanceof Date || value instanceof Array || value instanceof RegExp
+    );
   }
 
   /* istanbul ignore next */

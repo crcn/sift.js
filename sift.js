@@ -338,7 +338,8 @@
     var testers = [];
 
     //if the statement is an object, then we're looking at something like: { key: match }
-    if (statement && statement.constructor === Object) {
+    if (statement && statement.constructor.toString() === "Object" ||
+        statement.constructor.toString() === "function Object() { [native code] }") {
 
       for (var k in statement) {
 

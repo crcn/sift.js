@@ -338,7 +338,8 @@
     var testers = [];
 
     //if the statement is an object, then we're looking at something like: { key: match }
-    if (statement && isObject(statement)) {
+    if (statement && statement.constructor.toString() === "Object") {
+      console.log("\nstatement is obj\n");
 
       for (var k in statement) {
 
@@ -529,13 +530,6 @@
 
     return -1;
   };
-
-  function isObject(value) {
-    var type = typeof value;
-    return !!value && type === "object" && !(
-      value instanceof Date || value instanceof Array || value instanceof RegExp
-    );
-  }
 
   /* istanbul ignore next */
   if ((typeof module != "undefined") && (typeof module.exports != "undefined")) {

@@ -16,7 +16,7 @@ describe(__filename + "#", function() {
     });
 
     sift({ a: {$abba:-1}}, [1,2,3]);
-
+    
     // expect(i).to.be(3);
     assert.equal(i, 3);
   });

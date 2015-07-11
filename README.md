@@ -362,12 +362,10 @@ You can add your own expressions. For instance - say you want to do some bitmask
 ```javascript
 
 sift.use({
-	operators: {
-		band: function(a, b) {
-			return (a & b) ? 0 : -1; // 0 = exists, -1 = doesn't exist
-		}
+	$band: function(a, b) {
+		return (a & b) ? 0 : -1; // 0 = exists, -1 = doesn't exist
 	}
-})
+});
 
 // ops
 var IS_ANIMAL = 2,

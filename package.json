@@ -6,6 +6,7 @@
   "engines": {},
   "dependencies": {},
   "devDependencies": {
+    "benchmark": "^1.0.0",
     "bson": "^0.2.18",
     "gulp": "^3.9.0",
     "gulp-coveralls": "^0.1.4",

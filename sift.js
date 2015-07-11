@@ -341,7 +341,8 @@
 
     query = comparable(query);
 
-    if (!query || query.constructor !== Object) {
+    if (!query || (query.constructor.toString() !== "Object" &&
+        query.constructor.toString() !== "function Object() { [native code] }")) {
       query = { $eq: query };
     }
 

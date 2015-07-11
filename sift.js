@@ -9,6 +9,8 @@
 
 (function() {
 
+  "use strict";
+
   /**
    */
 
@@ -29,7 +31,6 @@
   function isPrimitive(value) {
     return typeof value !== "object" || value == void 0;
   }
-
 
   /**
    */
@@ -185,12 +186,12 @@
       };
     },
 
-     /**
-      */
+    /**
+     */
 
-     $type: function(a) {
+    $type: function(a) {
        return function(b) {
-         return b != null ? b instanceof a || b.constructor == a : false;
+         return b != void 0 ? b instanceof a || b.constructor == a : false;
        };
      },
 
@@ -264,7 +265,11 @@
      */
 
     $elemMatch: function(a) {
-      return parse(a);
+      var validator = parse(a);
+      return function(b) {
+        if (isArray(b)) return !!~search(b, validator);
+        return validator(b);
+      };
     },
 
     /**

@@ -183,6 +183,45 @@ describe(__filename + "#", function () {
         });
     });
 
+    describe("$where", function() {
+
+      var couples = [{
+          name: "SMITH",
+          person: [{
+                  firstName: "craig",
+                  gender: "female",
+                  age: 29
+              }, {
+                  firstName: "tim",
+                  gender: "male",
+                  age: 32
+              }
+
+          ]
+      }, {
+          name: "JOHNSON",
+          person: [{
+                  firstName: "emily",
+                  gender: "female",
+                  age: 35
+              }, {
+                  firstName: "jacob",
+                  gender: "male",
+                  age: 32
+              }
+
+          ]
+      }];
+
+      it("can filter people", function() {
+          var results = sift({"person": {$elemMatch: { "gender": "female", "age": {"$lt": 30}}}}, couples);
+          assert.equal(results[0].name, "SMITH");
+
+          var results = sift({"person": {$elemMatch: { "gender": "male", "age": {"$lt": 30}}}}, [couples[0]]);
+          assert.equal(results.length, 0);
+      });
+    });
+
     describe("keypath", function () {
 
         var arr = [

@@ -105,16 +105,17 @@ describe(__filename + "#", function () {
     [{$where:"obj.v === 1"}, [{v:1},{v:2}],[{v:1}]],
 
     // $elemMatch
+    //{"person": {"$elemMatch": {"gender": "male", "age": {"$lt": 30}}}}
     [{a:{$elemMatch:{b:1,c:2}}}, [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]},{a:{b:2,c:3}}], [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]}]],
-    [{a:{$elemMatch:{b:2,c:{$gt:2}}}}, [{a:{b:1,c:2}},{a:{b:1,c:2,d:3}},{a:{b:2,c:3}}], [{a:{b:2,c:3}}]],
+    [{a:{$elemMatch:{b:2,c:{$gt:2}}}}, [{a:{b:1,c:2}},{a:{b:1,c:2,d:3}},[{a:{b:2,c:3}}]], [[{a:{b:2,c:3}}]]],
 
   ].forEach(function (operation, i) {
 
-    var filter = operation[0],
-    array      = operation[1],
-    matchArray = operation[2];
+    var filter     = operation[0];
+    var array      = operation[1];
+    var matchArray = operation[2];
 
-    it(i + ": " + JSON.stringify(filter), function () {
+    it(i + ": " + JSON.stringify(filter), function() {
       assert.equal(JSON.stringify(array.filter(sift(filter))), JSON.stringify(matchArray));
     });
   });

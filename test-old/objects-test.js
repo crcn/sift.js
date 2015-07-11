@@ -57,7 +57,7 @@ describe(__filename + "#", function () {
             ]
         }
     ];
-    it("throws error if $not is incorrect", function () {
+    xit("throws error if $not is incorrect", function () {
         assert.throws(function () {
             sift({
                 $not: ['abc']

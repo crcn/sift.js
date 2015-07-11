@@ -8,15 +8,15 @@ describe(__filename + "#", function() {
     var i = 0;
 
     sift.use({
-      operators: {
-        abba: function (a, b) {
+      $abba: function (a) {
+        return function(b) {
           i++;
-        }
+        };
       }
     });
 
     sift({ a: {$abba:-1}}, [1,2,3]);
-    
+
     // expect(i).to.be(3);
     assert.equal(i, 3);
   });
@@ -29,32 +29,11 @@ describe(__filename + "#", function() {
   });
 
 
-  it("can make a traversable op", function () {
-
-    var i = 0;
-
-    sift.use({
-      operators: {
-        baab: {
-          traverse:true,
-          test: function (a, b) {
-            i++;
-            return a && b;
-          }
-        }
-      }
-    });
-
-    sift({a:{$baab:1}})({a:1});
-    assert.equal(i, 1);
-  });
-
-
   sift.use({
-    operators: {
-      notb: function(a, b) {
+    $notb: function(a) {
+      return function(b) {
         return a != b ? true : false;
-      }
+      };
     }
   });
 

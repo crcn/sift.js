@@ -84,7 +84,7 @@ describe(__filename + "#", function () {
     // $size
     [{$size:3},["123",[1,2,3],"1"],["123",[1,2,3]]],
     [{$size:1},["123",[1,2,3],"1", void 0],["1"]],
-    
+
     // $or
     [{$or:[1,2,3]},[1,2,3,4],[1,2,3]],
     [{$or:[{$ne:1},2]},[1,2,3,4,5,6],[2,3,4,5,6]],
@@ -95,7 +95,7 @@ describe(__filename + "#", function () {
 
     // $and
     [{$and:[{$gt:1},{$lt:4}]},[1,2,3,4],[2,3]],
-    
+
     // $regex
     [{$regex:"^a"},["a","ab","abc","bc","bcd"],["a","ab","abc"]],
 
@@ -108,13 +108,13 @@ describe(__filename + "#", function () {
     [{a:{$elemMatch:{b:1,c:2}}}, [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]},{a:{b:2,c:3}}], [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]}]],
     [{a:{$elemMatch:{b:2,c:{$gt:2}}}}, [{a:{b:1,c:2}},{a:{b:1,c:2,d:3}},{a:{b:2,c:3}}], [{a:{b:2,c:3}}]],
 
-  ].forEach(function (operation) {
+  ].forEach(function (operation, i) {
 
     var filter = operation[0],
     array      = operation[1],
     matchArray = operation[2];
 
-    it(JSON.stringify(filter), function () {
+    it(i + ": " + JSON.stringify(filter), function () {
       assert.equal(JSON.stringify(array.filter(sift(filter))), JSON.stringify(matchArray));
     });
   });

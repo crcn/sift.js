@@ -28,16 +28,16 @@ describe(__filename + "#", function() {
     assert.equal(filtered[0], people[0]);
   });
 
-  xit("throws an error if the selector is invalid", function () {
+  it("throws an error if the operation is invalid", function () {
 
     var err;
     try {
-      sift({$aaa:1}, 1)("b");
+      sift({$aaa:1})("b");
     } catch (e) {
       err = e;
     }
 
-    assert.equal(err.message, "Unknown sift selector 1");
+    assert.equal(err.message, "Unknown operation $aaa");
 
   });
 

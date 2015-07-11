@@ -1,4 +1,4 @@
-## MongoDB inspired array filtering 
+## MongoDB inspired array filtering
 [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js) [![Coverage Status](https://coveralls.io/repos/crcn/sift.js/badge.svg)](https://coveralls.io/r/crcn/sift.js) [![Join the chat at https://gitter.im/crcn/sift.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/sift.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 **For extended documentation, checkout http://docs.mongodb.org/manual/reference/operator/query/**
@@ -12,7 +12,7 @@
 - dot notation searching
 - Supports node.js, and web
 - Small (2 kb minified) library
-- Custom Expressions 
+- Custom Expressions
 
 
 
@@ -76,7 +76,7 @@ siftPeople.test({ name: 'tim' }); //false\
 
 - `filter` - the filter to use against the target array
 - `array` - sifts against target array. Without this, a function is returned
-- `selectorFn` - selector for the values within the array. 
+- `selectorFn` - selector for the values within the array.
 
 With an array:
 
@@ -127,11 +127,11 @@ See MongoDB's [advanced queries](http://www.mongodb.org/display/DOCS/Advanced+Qu
 array value must be *$in* the given query:
 
 Intersecting two arrays:
- 
+
 ```javascript
 //filtered: ['Brazil']
-sift({ $in: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']); 
-``` 
+sift({ $in: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']);
+```
 
 Here's another example. This acts more like the $or operator:
 
@@ -145,8 +145,8 @@ Opposite of $in:
 
 ```javascript
 //filtered: ['Haiti','Peru','Chile']
-sift({ $nin: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']); 
-``` 
+sift({ $nin: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']);
+```
 
 ### $exists
 
@@ -154,14 +154,14 @@ Checks if whether a value exists:
 
 ```javascript
 //filtered: ['Craig','Tim']
-sift({ $exists: true }, ['Craig',null,'Tim']); 
-``` 
+sift({ $exists: true }, ['Craig',null,'Tim']);
+```
 
 You can also filter out values that don't exist
 
 ```javascript
 //filtered: [{ name: 'Craig', city: 'Minneapolis' }]
-sift({ city: { $exists: false } }, [ { name: 'Craig', city: 'Minneapolis' }, { name: 'Tim' }]); 
+sift({ city: { $exists: false } }, [ { name: 'Craig', city: 'Minneapolis' }, { name: 'Tim' }]);
 ```
 
 ### $gte
@@ -170,7 +170,7 @@ Checks if a number is >= value:
 
 ```javascript
 //filtered: [2, 3]
-sift({ $gte: 2 }, [0, 1, 2, 3]); 
+sift({ $gte: 2 }, [0, 1, 2, 3]);
 ```
 
 ### $gt
@@ -179,7 +179,7 @@ Checks if a number is > value:
 
 ```javascript
 //filtered: [3]
-sift({ $gt: 2 }, [0, 1, 2, 3]); 
+sift({ $gt: 2 }, [0, 1, 2, 3]);
 ```
 
 ### $lte
@@ -188,7 +188,7 @@ Checks if a number is <= value.
 
 ```javascript
 //filtered: [0, 1, 2]
-sift({ $lte: 2 }, [0, 1, 2, 3]); 
+sift({ $lte: 2 }, [0, 1, 2, 3]);
 ```
 
 ### $lt
@@ -197,7 +197,7 @@ Checks if number is < value.
 
 ```javascript
 //filtered: [0, 1]
-sift({ $lt: 2 }, [0, 1, 2, 3]); 
+sift({ $lt: 2 }, [0, 1, 2, 3]);
 ```
 
 ### $eq
@@ -206,14 +206,14 @@ Checks if query == value. Note that **$eq can be omitted**. For **$eq**, and **$
 
 ```javascript
 //filtered: [{ state: 'MN' }]
-sift({ state: {$eq: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); 
+sift({ state: {$eq: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' });
 ```
 
 Or:
 
 ```javascript
 //filtered: [{ state: 'MN' }]
-sift({ state: 'MN' }, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); 
+sift({ state: 'MN' }, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' });
 ```
 
 ### $ne
@@ -221,8 +221,8 @@ sift({ state: 'MN' }, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' });
 Checks if query != value.
 
 ```javascript
-//filtered: [{ state: 'CA' }, { state: 'WI'}] 
-sift({ state: {$ne: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }); 
+//filtered: [{ state: 'CA' }, { state: 'WI'}]
+sift({ state: {$ne: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' });
 ```
 
 ### $mod
@@ -231,7 +231,7 @@ Modulus:
 
 ```javascript
 //filtered: [300, 600]
-sift({ $mod: [3, 0] }, [100, 200, 300, 400, 500, 600]); 
+sift({ $mod: [3, 0] }, [100, 200, 300, 400, 500, 600]);
 ```
 
 ### $all
@@ -241,8 +241,8 @@ values must match **everything** in array:
 ```javascript
 //filtered: [ { tags: ['books','programming','travel' ]} ]
 sift({ tags: {$all: ['books','programming'] }}, [
-{ tags: ['books','programming','travel' ] }, 
-{ tags: ['travel','cooking'] } ]); 
+{ tags: ['books','programming','travel' ] },
+{ tags: ['travel','cooking'] } ]);
 ```
 
 ### $and
@@ -252,10 +252,10 @@ ability to use an array of expressions. All expressions must test true.
 ```javascript
 //filtered: [ { name: 'Craig', state: 'MN' }]
 
-sift({ $and: [ { name: 'Craig' }, { state: 'MN' } ] }, [ 
-{ name: 'Craig', state: 'MN' }, 
-{ name: 'Tim', state: 'MN' }, 
-{ name: 'Joe', state: 'CA' } ]); 
+sift({ $and: [ { name: 'Craig' }, { state: 'MN' } ] }, [
+{ name: 'Craig', state: 'MN' },
+{ name: 'Tim', state: 'MN' },
+{ name: 'Joe', state: 'CA' } ]);
 ```
 
 ### $or
@@ -264,10 +264,10 @@ OR array of expressions.
 
 ```javascript
 //filtered: [ { name: 'Craig', state: 'MN' }, { name: 'Tim', state: 'MN' }]
-sift({ $or: [ { name: 'Craig' }, { state: 'MN' } ] }, [ 
-{ name: 'Craig', state: 'MN' }, 
-{ name: 'Tim', state: 'MN' }, 
-{ name: 'Joe', state: 'CA' } ]); 
+sift({ $or: [ { name: 'Craig' }, { state: 'MN' } ] }, [
+{ name: 'Craig', state: 'MN' },
+{ name: 'Tim', state: 'MN' },
+{ name: 'Joe', state: 'CA' } ]);
 ```
 
 ### $nor
@@ -276,10 +276,10 @@ opposite of or:
 
 ```javascript
 //filtered: [ { name: 'Tim', state: 'MN' }, { name: 'Joe', state: 'CA' }]
-sift({ $nor: [ { name: 'Craig' }, { state: 'MN' } ] }, [ 
-{ name: 'Craig', state: 'MN' }, 
-{ name: 'Tim', state: 'MN' }, 
-{ name: 'Joe', state: 'CA' } ]); 
+sift({ $nor: [ { name: 'Craig' }, { state: 'MN' } ] }, [
+{ name: 'Craig', state: 'MN' },
+{ name: 'Tim', state: 'MN' },
+{ name: 'Joe', state: 'CA' } ]);
 ```
 
 
@@ -289,7 +289,7 @@ Matches an array - must match given size:
 
 ```javascript
 //filtered: ['food','cooking']
-sift({ tags: { $size: 2 } }, [ { tags: ['food','cooking'] }, { tags: ['traveling'] }]); 
+sift({ tags: { $size: 2 } }, [ { tags: ['food','cooking'] }, { tags: ['traveling'] }]);
 ```
 
 ### $type
@@ -315,8 +315,8 @@ Matches based on some javascript comparison
 
 ```javascript
 sift({ $where: "this.name === 'frank'" }, [{name:'frank'},{name:'joe'}]); // ["frank"]
-sift({ 
-	$where: function() { 
+sift({
+	$where: function() {
 		return this.name === "frank"
 	}
 }, [{name:'frank'},{name:'joe'}]); // ["frank"]

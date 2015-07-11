@@ -1,4 +1,4 @@
-## MongoDB inspired array filtering
+## validate objects & filter arrays with mongodb queries
 [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js) [![Coverage Status](https://coveralls.io/repos/crcn/sift.js/badge.svg)](https://coveralls.io/r/crcn/sift.js) [![Join the chat at https://gitter.im/crcn/sift.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/sift.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 **For extended documentation, checkout http://docs.mongodb.org/manual/reference/operator/query/**
@@ -362,12 +362,10 @@ You can add your own expressions. For instance - say you want to do some bitmask
 ```javascript
 
 sift.use({
-	operators: {
-		band: function(a, b) {
-			return (a & b) ? 0 : -1; // 0 = exists, -1 = doesn't exist
-		}
+	$band: function(a, b) {
+		return (a & b) ? 0 : -1; // 0 = exists, -1 = doesn't exist
 	}
-})
+});
 
 // ops
 var IS_ANIMAL = 2,

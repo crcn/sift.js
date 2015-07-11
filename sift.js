@@ -405,9 +405,9 @@
   };
 
   /* istanbul ignore next */
-  if (typeof module !== "undefined" && typeof module.exports != "undefined") {
+  if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = sift;
-  } else if (typeof window != "undefined") {
+  } else if (typeof window !== "undefined") {
     window.sift = sift;
   }
 })();

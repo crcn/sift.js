@@ -24,7 +24,7 @@
   function isArray(value) {
     return Object.prototype.toString.call(value) === "[object Array]";
   }
-  
+
   /**
    */
 
@@ -91,7 +91,7 @@
       var validators = a.map(parse);
       var n = validators.length;
       return function(b) {
-        for (var i = 0; i < n; i++) if (validators[i](comparable(b))) return true;
+        for (var i = 0; i < n; i++) if (validators[i](b)) return true;
         return false;
       };
     },
@@ -137,7 +137,7 @@
 
     $mod: function(a) {
       return function(b) {
-        return comparable(b) % a[0] == a[1];
+        return b % a[0] == a[1];
       };
     },
 
@@ -165,7 +165,7 @@
     $nin: function(a) {
       var $in = validator.$in(a);
       return function(b) {
-        return !$in(comparable(b));
+        return !$in(b);
       };
     },
 
@@ -175,7 +175,7 @@
     $not: function(a) {
       var validate = parse(a);
       return function(b) {
-        return !validate(comparable(b));
+        return !validate(b);
       };
     },
 
@@ -219,7 +219,7 @@
       var validators = a.map(parse);
       var n = validators.length;
       return function(b) {
-        for (var i = 0; i < n; i++) if (validators[i](comparable(b))) return false;
+        for (var i = 0; i < n; i++) if (validators[i](b)) return false;
         return true;
       };
     },

@@ -114,11 +114,6 @@ arrays.forEach(function(array) {
       sift(query, array);
     });
 
-    var sifter = sift(query);
-    suite.add(JSON.stringify(query) + " x " + array.length + " items (cached)", function() {
-      array.filter(sifter);
-    });
-
   });
 });
 

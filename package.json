@@ -20,6 +20,6 @@
   },
   "main": "./sift.js",
   "scripts": {
-    "test": "make lint test-coveralls"
+    "test": "gulp test-coveralls"
   }
 }

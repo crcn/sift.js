@@ -58,6 +58,8 @@ describe(__filename + "#", function () {
     [{$in:[0,false,1,"1"]},[0,1,2,3,4,false],[0,1,false]],
     [{$in:[1,"1","2"]},["1","2","3"],["1","2"]],
     [{$in:[new Date(1)]},[new Date(1), new Date(2)],[new Date(1)]],
+    [{"a.b.status":{"$in": [0]}}, [{"a":{"b":[{"status":0}]}},{"a":{"b":[{"status":2}]}}],[{"a":{"b":[{"status":0}]}}]],
+    [{"a.b.status":{"$in": [0, 2]}}, [{"a":{"b":[{"status":0}]}},{"a":{"b":[{"status":2}]}}], [{"a":{"b":[{"status":0}]}},{"a":{"b":[{"status":2}]}}]],
 
     // $nin
     [{$nin:[0,false,1,"1"]},[0,1,2,3,4,false],[2,3,4]],

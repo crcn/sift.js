@@ -16,7 +16,8 @@ var pkg = require("./package");
 
 var paths = {
   testFiles  : ["test/**/*-test.js"],
-  allFiles   : ["sift.js"]
+  appFiles   : ["sift.js"],
+  allFiles   : ["test/**/*-test.js", "sift.js"]
 };
 
 /**

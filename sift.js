@@ -24,14 +24,7 @@
   function isArray(value) {
     return Object.prototype.toString.call(value) === "[object Array]";
   }
-
-  /**
-   */
-
-  function isPrimitive(value) {
-    return typeof value !== "object" || value == void 0;
-  }
-
+  
   /**
    */
 

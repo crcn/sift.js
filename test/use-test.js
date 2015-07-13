@@ -8,10 +8,8 @@ describe(__filename + "#", function() {
     var i = 0;
 
     sift.use({
-      $abba: function(a) {
-        return function(b) {
-          i++;
-        };
+      $abba: function(a, b) {
+        i++;
       }
     });
 
@@ -29,10 +27,8 @@ describe(__filename + "#", function() {
   });
 
   sift.use({
-    $notb: function(a) {
-      return function(b) {
-        return a != b ? true : false;
-      };
+    $notb: function(a, b) {
+      return a != b ? true : false;
     }
   });
 

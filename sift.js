@@ -38,6 +38,17 @@
     }
   }
 
+  /**
+   */
+
+  function or(validator) {
+    return function(a, b) {
+      if (!isArray(b)) return validator(a, b);
+      for (var i = 0, n = b.length; i < n; i++) if (validator(a, b[i])) return true;
+      return false;
+    }
+  }
+
   function validate(validator, b) {
     return validator.v(validator.a, b);
   }
@@ -48,16 +59,16 @@
     /**
      */
 
-    $eq: function(a, b) {
+    $eq: or(function(a, b) {
       return a(b);
-    },
+    }),
 
     /**
      */
 
-    $ne: function(a, b) {
+    $ne: or(function(a, b) {
       return !a(b);
-    },
+    }),
 
     /**
      */
@@ -70,37 +81,37 @@
     /**
      */
 
-    $gt: function(a, b) {
+    $gt: or(function(a, b) {
       return comparable(b) > a;
-    },
+    }),
 
     /**
      */
 
-    $gte: function(a, b) {
+    $gte: or(function(a, b) {
       return comparable(b) >= a;
-    },
+    }),
 
     /**
      */
 
-    $lt: function(a, b) {
+    $lt: or(function(a, b) {
       return comparable(b) < a;
-    },
+    }),
 
     /**
      */
 
-    $lte: function(a, b) {
+    $lte: or(function(a, b) {
       return comparable(b) <= a;
-    },
+    }),
 
     /**
      */
 
-    $mod: function(a, b) {
+    $mod: or(function(a, b) {
       return b % a[0] == a[1];
-    },
+    }),
 
     /**
      */
@@ -223,11 +234,7 @@
       }
 
       return function(b) {
-        if (b instanceof Array) {
-          return ~comparable(b).indexOf(a);
-        } else {
-          return a === comparable(b);
-        }
+        return a === comparable(b);
       };
     },
 
@@ -322,7 +329,11 @@
   function nestedValidator(a, b) {
     var values  = [];
     findValues(b, a.k, 0, values);
-    if (values.length === 1) return validate(a.nv, values[0]);
+
+    if (values.length === 1) {
+      return validate(a.nv, values[0]);
+    }
+
     return !!~search(values, a.nv);
   }
 

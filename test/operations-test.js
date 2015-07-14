@@ -20,6 +20,7 @@ describe(__filename + "#", function () {
     [1, [[1]], [[1]]],
     [new Date(1), [new Date(), new Date(1), new Date(2), new Date(3)], [new Date(1)]],
     [/^a/, ["a","ab","abc","b","bc"], ["a","ab","abc"]],
+
     [function(b) { return b === 1; }, [1,2,3],[1]],
 
     // object is not exact - there is no match here unless ObjectID is a comparable.
@@ -31,6 +32,7 @@ describe(__filename + "#", function () {
     [{$ne:false}, [false], []],
     [{$ne:void 0}, [false, 0, "0", void 0], [false, 0, "0"]],
     [{$ne:/^a/}, ["a","ab","abc","b","bc"], ["b","bc"]],
+    [{$ne:1}, [[2],[1]], [[2]]],
 
     // $lt
     [{$lt:5}, [3,4,5,6],[3,4]],
@@ -39,15 +41,19 @@ describe(__filename + "#", function () {
 
     // $lte
     [{$lte:5}, [3,4,5,6],[3,4,5]],
+    [{groups:{$lt:5}}, [{groups:[1,2,3,4]}, {groups:[7,8]}], [{groups:[1,2,3,4]}]],
 
     // $gt
     [{$gt:5}, [3,4,5,6],[6]],
+    [{groups:{$gt:5}}, [{groups:[1,2,3,4]}, {groups:[7,8]}], [{groups:[7,8]}]],
 
     // $gte
     [{$gte:5}, [3,4,5,6],[5, 6]],
+    [{groups:{$gte:5}}, [{groups:[1,2,3,4]}, {groups:[7,8]}], [{groups:[7,8]}]],
 
     // $mod
     [{$mod:[2,1]}, [1,2,3,4,5,6],[1,3,5]],
+    [{groups:{$mod:[2,0]}}, [{groups:[1,2,3,4]}, {groups:[7,9]}], [{groups:[1,2,3,4]}]],
 
     // $exists
     [{$exists:false}, [0,false,void 0, null],[void 0, void 0]],

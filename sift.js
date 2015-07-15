@@ -49,6 +49,17 @@
     }
   }
 
+  /**
+   */
+
+  function and(validator) {
+    return function(a, b) {
+      if (!isArray(b)) return validator(a, b);
+      for (var i = 0, n = b.length; i < n; i++) if (!validator(a, b[i])) return false;
+      return true;
+    };
+  }
+
   function validate(validator, b) {
     return validator.v(validator.a, b);
   }
@@ -66,7 +77,7 @@
     /**
      */
 
-    $ne: or(function(a, b) {
+    $ne: and(function(a, b) {
       return !a(b);
     }),
 

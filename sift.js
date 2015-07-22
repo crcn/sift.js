@@ -93,28 +93,28 @@
      */
 
     $gt: or(function(a, b) {
-      return comparable(b) > a;
+      return typeof comparable(b) === typeof a && comparable(b) > a;
     }),
 
     /**
      */
 
     $gte: or(function(a, b) {
-      return comparable(b) >= a;
+      return typeof comparable(b) === typeof a && comparable(b) >= a;
     }),
 
     /**
      */
 
     $lt: or(function(a, b) {
-      return comparable(b) < a;
+      return typeof comparable(b) === typeof a && comparable(b) < a;
     }),
 
     /**
      */
 
     $lte: or(function(a, b) {
-      return comparable(b) <= a;
+      return typeof comparable(b) === typeof a && comparable(b) <= a;
     }),
 
     /**

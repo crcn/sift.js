@@ -38,6 +38,7 @@ describe(__filename + "#", function () {
     // $lt
     [{$lt:5}, [3,4,5,6],[3,4]],
     [{$lt:"c"}, ["a","b","c"],["a","b"]],
+    [{$lt:null}, [-3,-4], []],
     [{$lt:new Date(3)}, [new Date(1), new Date(2), new Date(3)],[new Date(1), new Date(2)]],
 
     // $lte
@@ -46,6 +47,7 @@ describe(__filename + "#", function () {
 
     // $gt
     [{$gt:5}, [3,4,5,6],[6]],
+    [{$gt:null}, [3,4], []],
     [{groups:{$gt:5}}, [{groups:[1,2,3,4]}, {groups:[7,8]}], [{groups:[7,8]}]],
 
     // $gte

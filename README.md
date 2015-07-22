@@ -5,7 +5,7 @@
 
 ## Features:
 
-- Supported operators: [$in](#in), [$nin](#nin), [$exists](#exists), [$gte](#gte), [$gt](#gt), [$lte](#lte), [$lt](#lt), [$eq](#eq), [$ne](#ne), [$mod](#mod), [$all](#all), [$and](#and), [$or](#or), [$nor](#nor), [$not](#not), [$size](#size), [$type](#type), [$regex](#regex), [$where](#where)
+- Supported operators: [$in](#in), [$nin](#nin), [$exists](#exists), [$gte](#gte), [$gt](#gt), [$lte](#lte), [$lt](#lt), [$eq](#eq), [$ne](#ne), [$mod](#mod), [$all](#all), [$and](#and), [$or](#or), [$nor](#nor), [$not](#not), [$size](#size), [$type](#type), [$regex](#regex), [$where](#where), [$elemMatch](#elemMatch)
 - Regexp searches
 - Function filtering
 - sub object searching
@@ -320,6 +320,39 @@ sift({
 		return this.name === "frank"
 	}
 }, [{name:'frank'},{name:'joe'}]); // ["frank"]
+```
+
+### $elemMatch
+
+Matches elements of array
+
+```javascript
+var bills = [{
+    month: 'july',
+    casts: [{
+        id: 1,
+        value: 200
+    },{
+        id: 2,
+        value: 1000
+    }]
+},
+{
+    month: 'august',
+    casts: [{
+        id: 3,
+        value: 1000,
+    }, {
+        id: 4,
+        value: 4000
+    }]
+}];
+
+var result = sift({
+    casts: {$elemMatch:{
+        value: {$gt: 1000}
+    }}
+}, bills); // {month:'august', casts:[{id:2, value: 1000},{id: 4, value: 4000}]}
 ```
 
 ### $not

@@ -383,7 +383,7 @@
     query = comparable(query);
 
     if (!query || (query.constructor.toString() !== "Object" &&
-        query.constructor.toString() !== "function Object() { [native code] }")) {
+        query.constructor.toString().replace(/\n/g,'').replace(/ /g, '') !== "functionObject(){[nativecode]}")) { // cross browser support
       query = { $eq: query };
     }
 

@@ -307,6 +307,7 @@ Matches values based on the given regular expression
 
 ```javascript
 sift({ $regex: /^f/i, $nin: ["frank"] }, ["frank", "fred", "sam", "frost"]); // ["fred", "frost"]
+sift({ $regex: "^f", $options: "i", $nin: ["frank"] }, ["frank", "fred", "sam", "frost"]); // ["fred", "frost"]
 ```
 
 ### $where

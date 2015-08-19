@@ -287,8 +287,8 @@
     /**
      */
 
-    $regex: function(a) {
-      return new RegExp(a);
+    $regex: function(a, options) {
+      return new RegExp(a, options);
     },
 
     /**
@@ -379,7 +379,6 @@
    */
 
   function parse(query) {
-
     query = comparable(query);
 
     if (!query || (query.constructor.toString() !== "Object" &&
@@ -387,14 +386,17 @@
       query = { $eq: query };
     }
 
+    var options = query.$options;
+    delete query.$options;
+
+
     var validators = [];
 
     for (var key in query) {
       var a = query[key];
 
-
       if (operator[key]) {
-        if (prepare[key]) a = prepare[key](a);
+        if (prepare[key]) a = key === '$regex' ? prepare[key](a, options): prepare[key](a);
         validators.push(createValidator(comparable(a), operator[key]));
       } else {
         if (key.charCodeAt(0) === 36) {

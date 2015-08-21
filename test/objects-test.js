@@ -182,6 +182,31 @@ describe(__filename + "#", function () {
                 assert.notEqual(10, v.sub.num);
             });
         });
+
+        it("$regex for nested object (one missing key)", function () {
+            var persons = [{
+              id: 1,
+              prof: 'Mr. Moriarty'
+            }, {
+              id: 2,
+              prof: 'Mycroft Holmes'
+            }, {
+              id: 3,
+              name: 'Dr. Watson',
+              prof: 'Doctor'
+            }, {
+              id: 4,
+              name: 'Mr. Holmes',
+              prof: 'Detective'
+            }];
+            var q = { "name": { "$regex": "n" } };
+            var sifted = sift(q, persons);
+            assert.deepEqual(sifted, [{
+              id: 3,
+              name: 'Dr. Watson',
+              prof: 'Doctor'
+            }]);
+        });
     });
 
     describe("$where", function() {

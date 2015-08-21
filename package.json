@@ -2,7 +2,13 @@
   "name": "sift",
   "description": "mongodb query style array filtering",
   "version": "2.0.4",
-  "repository": {},
+  "repository": "crcn/sift.js",
+  "author": {
+    "name": "Craig Condon",
+    "email": "craig.j.condon@gmail.com",
+    "url": "http://crcn.io"
+  },
+  "license": "MIT",
   "engines": {},
   "dependencies": {},
   "devDependencies": {

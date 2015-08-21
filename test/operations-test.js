@@ -111,6 +111,8 @@ describe(__filename + "#", function () {
     [{$regex:"^a"},["a","ab","abc","bc","bcd"],["a","ab","abc"]],
     // $options
     [{$regex:"^a", $options: 'i'},["a","Ab","abc","bc","bcd"],["a","Ab","abc"]],
+    // undefined
+    [{$regex:"a"},[undefined, null, true, false, 0, "aa"],["aa"]],
 
     // $where
     [{$where:function () { return this.v === 1 }}, [{v:1},{v:2}],[{v:1}]],

@@ -200,7 +200,7 @@
      */
 
     $regex: function(a, b) {
-      return a.test(b);
+      return b && a.test(b);
     },
 
     /**

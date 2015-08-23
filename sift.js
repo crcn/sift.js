@@ -200,7 +200,7 @@
      */
 
     $regex: function(a, b) {
-      return b && a.test(b);
+      return typeof b === "string" && a.test(b);
     },
 
     /**
@@ -238,7 +238,7 @@
 
       if (a instanceof RegExp) {
         return function(b) {
-          return a.test(comparable(b));
+          return typeof b === "string" && a.test(b);
         };
       } else if (a instanceof Function) {
         return a;

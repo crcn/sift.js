@@ -387,13 +387,13 @@
     }
 
     var options = query.$options;
-    delete query.$options;
-
 
     var validators = [];
 
     for (var key in query) {
       var a = query[key];
+
+      if (key === '$options') continue;
 
       if (operator[key]) {
         if (prepare[key]) a = key === '$regex' ? prepare[key](a, options): prepare[key](a);

@@ -64,4 +64,18 @@ describe(__filename + "#", function() {
 
     assert.equal(index, -1);
   });
+
+  it("can match empty arrays", function () {
+    var statusQuery = {$or: [{status: {$exists: false}},
+                             {status: []},
+                             {status: {$in: ["urgent", "completed", "today"]}}
+                            ]};
+
+    var filtered = sift(statusQuery, [{ status: [] },
+                                      { status: ["urgent"] },
+                                      { status: ["nope"] }
+                                     ]);
+
+    assert.equal(filtered.length, 2);
+  });
 });

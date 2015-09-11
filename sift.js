@@ -43,7 +43,7 @@
 
   function or(validator) {
     return function(a, b) {
-      if (!isArray(b)) return validator(a, b);
+      if (!isArray(b) || !b.length) return validator(a, b);
       for (var i = 0, n = b.length; i < n; i++) if (validator(a, b[i])) return true;
       return false;
     }
@@ -242,6 +242,11 @@
         };
       } else if (a instanceof Function) {
         return a;
+      } else if (isArray(a) && !a.length) {
+        // Special case of a == []
+        return function(b) {
+          return (isArray(b) && !b.length);
+        };
       }
 
       return function(b) {

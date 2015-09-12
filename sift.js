@@ -54,7 +54,7 @@
 
   function and(validator) {
     return function(a, b) {
-      if (!isArray(b)) return validator(a, b);
+      if (!isArray(b) || !b.length) return validator(a, b);
       for (var i = 0, n = b.length; i < n; i++) if (!validator(a, b[i])) return false;
       return true;
     };

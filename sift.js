@@ -78,6 +78,7 @@
      */
 
     $ne: and(function(a, b) {
+      if(typeof b == 'undefined') return false;
       return !a(b);
     }),
 

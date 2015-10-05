@@ -78,4 +78,31 @@ describe(__filename + "#", function() {
 
     assert.equal(filtered.length, 2);
   });
+
+  it("$ne does not hit when field does not exist", function () {
+    var sifter = sift({ age: { $ne: 5 }});
+
+    var people = [{}],
+    filtered = people.filter(sifter);
+
+    assert.equal(filtered.length, 0);
+  });
+
+  it("$ne does not hit when field is different", function () {
+    var sifter = sift({ age: { $ne: 5 }});
+
+    var people = [{ age: 5 }],
+    filtered = people.filter(sifter);
+
+    assert.equal(filtered.length, 0);
+  });
+
+  it("$ne does hit when field exists", function () {
+    var sifter = sift({ age: { $ne: 4 }});
+
+    var people = [{ age: 5 }],
+    filtered = people.filter(sifter);
+
+    assert.equal(filtered.length, 1);
+  });
 });

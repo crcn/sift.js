@@ -1,43 +1,43 @@
-var assert   = require("assert");
-var sift     = require("../sift");
-var ObjectID = require("bson").pure().ObjectID;
+var assert   = require('assert');
+var sift     = require('../sift');
+var ObjectID = require('bson').pure().ObjectID;
 
 
-describe(__filename + "#", function () {
+describe(__filename + '#', function () {
 
 
   [
 
     // $eq
-    [{$eq:5}, [5,"5", 6], [5]],
-    ["5", [5,"5", 6], ["5"]],
-    [false, [false,"false", true], [false]],
+    [{$eq:5}, [5,'5', 6], [5]],
+    ['5', [5,'5', 6], ['5']],
+    [false, [false,'false', true], [false]],
     [true, [1, true], [true]],
-    [0, [0,"0"], [0]],
+    [0, [0,'0'], [0]],
     [null, [void 0, null], [null]],
     [void 0, [void 0, null], [void 0]],
     [1, [2,3,4,5], []],
     [1, [[1]], [[1]]],
     [new Date(1), [new Date(), new Date(1), new Date(2), new Date(3)], [new Date(1)]],
-    [/^a/, ["a","ab","abc","b","bc"], ["a","ab","abc"]],
+    [/^a/, ['a','ab','abc','b','bc'], ['a','ab','abc']],
 
     [function(b) { return b === 1; }, [1,2,3],[1]],
 
     // object is not exact - there is no match here unless ObjectID is a comparable.
-    [ObjectID("54dd5546b1d296a54d152e84"),[ObjectID(),ObjectID("54dd5546b1d296a54d152e84")],[]],
+    [ObjectID('54dd5546b1d296a54d152e84'),[ObjectID(),ObjectID('54dd5546b1d296a54d152e84')],[]],
 
     // $ne
-    [{$ne:5}, [5, "5", 6], ["5", 6]],
-    [{$ne:"5"}, ["5", 6], [6]],
+    [{$ne:5}, [5, '5', 6], ['5', 6]],
+    [{$ne:'5'}, ['5', 6], [6]],
     [{$ne:false}, [false], []],
-    [{$ne:void 0}, [false, 0, "0", void 0], [false, 0, "0"]],
-    [{$ne:/^a/}, ["a","ab","abc","b","bc"], ["b","bc"]],
+    [{$ne:void 0}, [false, 0, '0', void 0], [false, 0, '0']],
+    [{$ne:/^a/}, ['a','ab','abc','b','bc'], ['b','bc']],
     [{$ne:1}, [[2],[1]], [[2]]],
     [{groups:{$ne:111}}, [{groups:[111,222,333,444]},{groups:[222,333,444]}],[{groups:[222,333,444]}]],
 
     // $lt
     [{$lt:5}, [3,4,5,6],[3,4]],
-    [{$lt:"c"}, ["a","b","c"],["a","b"]],
+    [{$lt:'c'}, ['a','b','c'],['a','b']],
     [{$lt:null}, [-3,-4], []],
     [{$lt:new Date(3)}, [new Date(1), new Date(2), new Date(3)],[new Date(1), new Date(2)]],
 
@@ -64,15 +64,15 @@ describe(__filename + "#", function () {
 
     // $in
     // TODO - {$in:[Date]} doesn't work - make it work?
-    [{$in:[0,false,1,"1"]},[0,1,2,3,4,false],[0,1,false]],
-    [{$in:[1,"1","2"]},["1","2","3"],["1","2"]],
+    [{$in:[0,false,1,'1']},[0,1,2,3,4,false],[0,1,false]],
+    [{$in:[1,'1','2']},['1','2','3'],['1','2']],
     [{$in:[new Date(1)]},[new Date(1), new Date(2)],[new Date(1)]],
-    [{"a.b.status":{"$in": [0]}}, [{"a":{"b":[{"status":0}]}},{"a":{"b":[{"status":2}]}}],[{"a":{"b":[{"status":0}]}}]],
-    [{"a.b.status":{"$in": [0, 2]}}, [{"a":{"b":[{"status":0}]}},{"a":{"b":[{"status":2}]}}], [{"a":{"b":[{"status":0}]}},{"a":{"b":[{"status":2}]}}]],
+    [{'a.b.status':{'$in': [0]}}, [{'a':{'b':[{'status':0}]}},{'a':{'b':[{'status':2}]}}],[{'a':{'b':[{'status':0}]}}]],
+    [{'a.b.status':{'$in': [0, 2]}}, [{'a':{'b':[{'status':0}]}},{'a':{'b':[{'status':2}]}}], [{'a':{'b':[{'status':0}]}},{'a':{'b':[{'status':2}]}}]],
 
     // $nin
-    [{$nin:[0,false,1,"1"]},[0,1,2,3,4,false],[2,3,4]],
-    [{$nin:[1,"1","2"]},["1","2","3"],["3"]],
+    [{$nin:[0,false,1,'1']},[0,1,2,3,4,false],[2,3,4]],
+    [{$nin:[1,'1','2']},['1','2','3'],['3']],
     [{$nin:[new Date(1)]},[new Date(1), new Date(2)],[new Date(2)]],
 
     // $not
@@ -84,17 +84,17 @@ describe(__filename + "#", function () {
     [{$type:Date}, [0,new Date(1)],[new Date(1)]],
     [{$type:Number}, [0,false,1],[0,1]],
     [{$type:Boolean}, [0,false, void 0],[false]],
-    [{$type:String}, ["1",1,false],["1"]],
+    [{$type:String}, ['1',1,false],['1']],
 
     // $all
     [{$all:[1,2,3]},[[1,2,3,4],[1,2,4]],[[1,2,3,4]]],
-    [{$all:[0,false]},[[0,1,2],[0,false],["0","false"],void 0],[[0,false]]],
-    [{$all:["1"]},[[1]],[]],
+    [{$all:[0,false]},[[0,1,2],[0,false],['0','false'],void 0],[[0,false]]],
+    [{$all:['1']},[[1]],[]],
     [{$all:[new Date(1),new Date(2)]},[[new Date(1), new Date(2)],[new Date(1)]],[[new Date(1), new Date(2)]]],
 
     // $size
-    [{$size:3},["123",[1,2,3],"1"],["123",[1,2,3]]],
-    [{$size:1},["123",[1,2,3],"1", void 0],["1"]],
+    [{$size:3},['123',[1,2,3],'1'],['123',[1,2,3]]],
+    [{$size:1},['123',[1,2,3],'1', void 0],['1']],
 
     // $or
     [{$or:[1,2,3]},[1,2,3,4],[1,2,3]],
@@ -108,21 +108,23 @@ describe(__filename + "#", function () {
     [{$and:[{$gt:1},{$lt:4}]},[1,2,3,4],[2,3]],
 
     // $regex
-    [{$regex:"^a"},["a","ab","abc","bc","bcd"],["a","ab","abc"]],
+    [{$regex:'^a'},['a','ab','abc','bc','bcd'],['a','ab','abc']],
     // $options
-    [{$regex:"^a", $options: 'i'},["a","Ab","abc","bc","bcd"],["a","Ab","abc"]],
+    [{$regex:'^a', $options: 'i'},['a','Ab','abc','bc','bcd'],['a','Ab','abc']],
+    [{'text':{'$regex':'.*lis.*','$options':'i'}}, [{text:['Bob','Melissa','Joe','Sherry']}], [{text:['Bob','Melissa','Joe','Sherry']}]],
+
     // undefined
-    [{$regex:"a"},[undefined, null, true, false, 0, "aa"],["aa"]],
-    [/a/,[undefined, null, true, false, 0, "aa"],["aa"]],
-    [/.+/,[undefined, null, true, false, 0, "aa", {}],["aa"]],
+    [{$regex:'a'},[undefined, null, true, false, 0, 'aa'],['aa']],
+    [/a/,[undefined, null, true, false, 0, 'aa'],['aa']],
+    [/.+/,[undefined, null, true, false, 0, 'aa', {}],['aa']],
 
     // $where
     [{$where:function () { return this.v === 1 }}, [{v:1},{v:2}],[{v:1}]],
-    [{$where:"this.v === 1"}, [{v:1},{v:2}],[{v:1}]],
-    [{$where:"obj.v === 1"}, [{v:1},{v:2}],[{v:1}]],
+    [{$where:'this.v === 1'}, [{v:1},{v:2}],[{v:1}]],
+    [{$where:'obj.v === 1'}, [{v:1},{v:2}],[{v:1}]],
 
     // $elemMatch
-    //{"person": {"$elemMatch": {"gender": "male", "age": {"$lt": 30}}}}
+    //{'person': {'$elemMatch': {'gender': 'male', 'age': {'$lt': 30}}}}
     [{a:{$elemMatch:{b:1,c:2}}}, [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]},{a:{b:2,c:3}}], [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]}]],
     [{a:{$elemMatch:{b:2,c:{$gt:2}}}}, [{a:{b:1,c:2}},{a:{b:1,c:2,d:3}},[{a:{b:2,c:3}}]], [[{a:{b:2,c:3}}]]],
 
@@ -132,7 +134,7 @@ describe(__filename + "#", function () {
     var array      = operation[1];
     var matchArray = operation[2];
 
-    it(i + ": " + JSON.stringify(filter), function() {
+    it(i + ': ' + JSON.stringify(filter), function() {
       assert.equal(JSON.stringify(array.filter(sift(filter))), JSON.stringify(matchArray));
     });
   });

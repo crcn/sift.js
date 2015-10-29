@@ -9,20 +9,20 @@
 
 (function() {
 
-  "use strict";
+  'use strict';
 
   /**
    */
 
   function isFunction(value) {
-    return typeof value === "function";
+    return typeof value === 'function';
   }
 
   /**
    */
 
   function isArray(value) {
-    return Object.prototype.toString.call(value) === "[object Array]";
+    return Object.prototype.toString.call(value) === '[object Array]';
   }
 
   /**
@@ -200,9 +200,9 @@
     /**
      */
 
-    $regex: function(a, b) {
-      return typeof b === "string" && a.test(b);
-    },
+    $regex: or(function(a, b) {
+      return typeof b === 'string' && a.test(b);
+    }),
 
     /**
      */
@@ -239,7 +239,7 @@
 
       if (a instanceof RegExp) {
         return function(b) {
-          return typeof b === "string" && a.test(b);
+          return typeof b === 'string' && a.test(b);
         };
       } else if (a instanceof Function) {
         return a;
@@ -293,15 +293,15 @@
     /**
      */
 
-    $regex: function(a, options) {
-      return new RegExp(a, options);
+    $regex: function(a, query) {
+      return new RegExp(a, query.$options);
     },
 
     /**
      */
 
     $where: function(a) {
-      return typeof a === "string" ? new Function("obj", "return " + a) : a;
+      return typeof a === 'string' ? new Function('obj', 'return ' + a) : a;
     },
 
     /**
@@ -387,12 +387,10 @@
   function parse(query) {
     query = comparable(query);
 
-    if (!query || (query.constructor.toString() !== "Object" &&
-        query.constructor.toString().replace(/\n/g,'').replace(/ /g, '') !== "functionObject(){[nativecode]}")) { // cross browser support
+    if (!query || (query.constructor.toString() !== 'Object' &&
+        query.constructor.toString().replace(/\n/g,'').replace(/ /g, '') !== 'functionObject(){[nativecode]}')) { // cross browser support
       query = { $eq: query };
     }
-
-    var options = query.$options;
 
     var validators = [];
 
@@ -402,13 +400,13 @@
       if (key === '$options') continue;
 
       if (operator[key]) {
-        if (prepare[key]) a = key === '$regex' ? prepare[key](a, options): prepare[key](a);
+        if (prepare[key]) a = prepare[key](a, query);
         validators.push(createValidator(comparable(a), operator[key]));
       } else {
         if (key.charCodeAt(0) === 36) {
-          throw new Error("Unknown operation " + key);
+          throw new Error('Unknown operation ' + key);
         }
-        validators.push(createNestedValidator(key.split("."), parse(a)));
+        validators.push(createNestedValidator(key.split('.'), parse(a)));
       }
     }
 
@@ -472,9 +470,9 @@
   };
 
   /* istanbul ignore next */
-  if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
+  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = sift;
-  } else if (typeof window !== "undefined") {
+  } else if (typeof window !== 'undefined') {
     window.sift = sift;
   }
 })();

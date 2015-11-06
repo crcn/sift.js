@@ -83,12 +83,13 @@ describe(__filename + "#", function() {
     var sifter = sift({age: {$ne: null}});
 
     var people = [
-      {age: 'whatever'},
-      {noage: 1}
+      {age: "matched"},
+      {missed: 1}
     ];
     var filtered = people.filter(sifter);
 
     assert.equal(filtered.length, 1);
+    assert.equal(filtered[0].age, "matched");
   });
 
   it("$ne does not hit when field is different", function () {

@@ -78,7 +78,6 @@
      */
 
     $ne: and(function(a, b) {
-      if(typeof b == 'undefined') return false;
       return !a(b);
     }),
 
@@ -248,6 +247,11 @@
         return function(b) {
           return (isArray(b) && !b.length);
         };
+      } else if (a === null){
+        return function(b){
+          //will match both null and undefined
+          return b == null;
+        }
       }
 
       return function(b) {

@@ -79,13 +79,17 @@ describe(__filename + "#", function() {
     assert.equal(filtered.length, 2);
   });
 
-  it("$ne does not hit when field does not exist", function () {
-    var sifter = sift({ age: { $ne: 5 }});
+  it("$ne: null does not hit when field is present", function(){
+    var sifter = sift({age: {$ne: null}});
 
-    var people = [{}],
-    filtered = people.filter(sifter);
+    var people = [
+      {age: "matched"},
+      {missed: 1}
+    ];
+    var filtered = people.filter(sifter);
 
-    assert.equal(filtered.length, 0);
+    assert.equal(filtered.length, 1);
+    assert.equal(filtered[0].age, "matched");
   });
 
   it("$ne does not hit when field is different", function () {
@@ -97,11 +101,20 @@ describe(__filename + "#", function() {
     assert.equal(filtered.length, 0);
   });
 
-  it("$ne does hit when field exists", function () {
+  it("$ne does hit when field exists with different value", function () {
     var sifter = sift({ age: { $ne: 4 }});
 
     var people = [{ age: 5 }],
     filtered = people.filter(sifter);
+
+    assert.equal(filtered.length, 1);
+  });
+
+  it("$ne does hit when field does not exist", function(){
+    var sifter = sift({ age: { $ne: 5 }});
+
+    var people = [{}],
+      filtered = people.filter(sifter);
 
     assert.equal(filtered.length, 1);
   });

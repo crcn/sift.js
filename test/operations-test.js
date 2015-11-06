@@ -14,7 +14,7 @@ describe(__filename + '#', function () {
     [false, [false,'false', true], [false]],
     [true, [1, true], [true]],
     [0, [0,'0'], [0]],
-    [null, [void 0, null], [null]],
+    [null, [null], [null]],
     [void 0, [void 0, null], [void 0]],
     [1, [2,3,4,5], []],
     [1, [[1]], [[1]]],

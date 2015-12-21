@@ -28,6 +28,12 @@ var sifted = sift({ $in: ['hello','world'] }, ['hello','sifted','array!']); //['
 //regexp filter
 var sifted = sift(/^j/, ['craig','john','jake']); //['john','jake']
 
+//objects
+var data = {
+	'aapl': { name: 'apple', price: 302 },
+	'msft': { name: 'microsoft', price: 109 }
+};
+var sifted = sift({ price: { $gt: 200 } }, data); //{'aapl': { name: 'apple', price: 302 }}
 
 //A *sifter* is returned if the second parameter is omitted
 var testQuery = sift({
@@ -430,4 +436,23 @@ var people = [{
 }];
 
 var index = sift.indexOf({ address: { city: 'Minneapolis' }}, people); // index = 0
+```
+
+## Get key of first matching value
+
+Get the key of first matching element in target object. Returns `undefined` if no match is found.
+
+```javascript
+var people = {
+	'craig': {
+		name: 'craig',
+		address: { city: 'Minneapolis' }
+	},
+	'tim': {
+		name: 'tim',
+		address: { city: 'St. Paul' }
+	}
+};
+
+var key = sift.keyOf({ address: { city: 'Minneapolis' }}, people); // key = 'craig'
 ```

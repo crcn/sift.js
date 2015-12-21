@@ -450,7 +450,11 @@
     }
 
     if (array) {
-      return array.filter(filter);
+      if (Array.isArray(array)) {
+        return array.filter(filter);
+      } else {
+        return objectFilter(array, filter);
+      }
     }
 
     return filter;
@@ -472,6 +476,35 @@
   sift.indexOf = function(query, array, getter) {
     return search(array, createRootValidator(query, getter));
   };
+
+  /**
+   */
+
+  sift.keyOf = function(query, object, getter) {
+    var validator = createRootValidator(query, getter);
+
+    for (var key in object) {
+      if (!object.hasOwnProperty(key)) continue;
+      if (validate(validator, object[key])) {
+        return key;
+      }
+    }
+  };
+
+  /**
+   */
+
+  function objectFilter(object, filter) {
+    var result = {};
+
+    for (var key in object) {
+      if (!object.hasOwnProperty(key)) continue;
+      var value = object[key];
+      if (filter(value)) result[key] = value;
+    }
+
+    return result;
+  }
 
   /* istanbul ignore next */
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {

@@ -118,4 +118,24 @@ describe(__filename + "#", function() {
 
     assert.equal(filtered.length, 1);
   });
+
+  it("can accomodate objects", function () {
+    var users = {
+      100: { name: 'john' },
+      200: { name: 'blaise' }
+    };
+
+    var result = sift({ name: 'blaise' }, users);
+    assert.equal(result[200].name, 'blaise');
+  });
+
+  it(".keyOf works", function () {
+    var users = {
+      100: { name: 'john' },
+      200: { name: 'blaise' }
+    };
+
+    var result = sift.keyOf({ name: 'blaise' }, users);
+    assert.equal(result, 200);
+  });
 });

@@ -1,5 +1,5 @@
 /*
- * Sift 2.x
+ * Sift 3.x
  *
  * Copryright 2015, Craig Condon
  * Licensed under MIT

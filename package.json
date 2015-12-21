@@ -28,7 +28,8 @@
   },
   "main": "./sift.js",
   "scripts": {
-    "test": "gulp test-coveralls",
+    "test": "gulp test-coverage",
+    "test-coveralls": "gulp test-coveralls",
     "tdd": "nodangel --ignore node_modules --watch test --watch sift.js --exec 'npm run test'"
   }
 }

@@ -93,28 +93,28 @@
      */
 
     $gt: or(function(a, b) {
-      return typeof comparable(b) === typeof a && comparable(b) > a;
+      return sift.compare(comparable(b), a) > 0;
     }),
 
     /**
      */
 
     $gte: or(function(a, b) {
-      return typeof comparable(b) === typeof a && comparable(b) >= a;
+      return sift.compare(comparable(b), a) >= 0;
     }),
 
     /**
      */
 
     $lt: or(function(a, b) {
-      return typeof comparable(b) === typeof a && comparable(b) < a;
+      return sift.compare(comparable(b), a) < 0;
     }),
 
     /**
      */
 
     $lte: or(function(a, b) {
-      return typeof comparable(b) === typeof a && comparable(b) <= a;
+      return sift.compare(comparable(b), a) <= 0;
     }),
 
     /**
@@ -255,7 +255,7 @@
       }
 
       return function(b) {
-        return a === comparable(b);
+        return sift.compare(comparable(b), a) === 0;
       };
     },
 
@@ -471,6 +471,17 @@
 
   sift.indexOf = function(query, array, getter) {
     return search(array, createRootValidator(query, getter));
+  };
+
+  /**
+   */
+
+  sift.compare = function(a, b) {
+    if(a===b) return 0;
+    if(typeof a === typeof b) {
+      if (a > b) return 1;
+      if (a < b) return -1;
+    }
   };
 
   /* istanbul ignore next */

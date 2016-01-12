@@ -125,9 +125,23 @@ describe(__filename + '#', function () {
 
     // $elemMatch
     //{'person': {'$elemMatch': {'gender': 'male', 'age': {'$lt': 30}}}}
-    [{a:{$elemMatch:{b:1,c:2}}}, [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]},{a:{b:2,c:3}}], [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]}]],
+    [
+      {a:{$elemMatch:{b:1,c:2}}},
+      [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]},{a:{b:2,c:3}}], [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]}]
+    ],
     [{a:{$elemMatch:{b:2,c:{$gt:2}}}}, [{a:{b:1,c:2}},{a:{b:1,c:2,d:3}},[{a:{b:2,c:3}}]], [[{a:{b:2,c:3}}]]],
 
+    // dot-notation
+    [
+      {'a.b': /c/ },
+      [{a:{b:'c'}}, {a:{b:'cd'}}, {'a.b':'c'},{a:{b:'e'}}],
+      [{a:{b:'c'}}, {a:{b:'cd'}}]
+    ],
+    [
+      {'foo.0': 'baz' },
+      [{foo:['bar', 'baz']}, {foo:['baz', 'bar']}],
+      [{foo:['baz', 'bar']}]
+    ]
   ].forEach(function (operation, i) {
 
     var filter     = operation[0];

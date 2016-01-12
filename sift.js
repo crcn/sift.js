@@ -368,12 +368,17 @@
       return;
     }
 
-    if (isArray(current)) {
+    var k = keypath[index];
+
+    // ensure that if current is an array, that the current key
+    // is NOT an array index. This sort of thing needs to work:
+    // sift({'foo.0':42}, [{foo: [42]}]);
+    if (isArray(current) && isNaN(Number(k))) {
       for (var i = 0, n = current.length; i < n; i++) {
         findValues(current[i], keypath, index, values);
       }
     } else {
-      findValues(current[keypath[index]], keypath, index + 1, values);
+      findValues(current[k], keypath, index + 1, values);
     }
   }
 
@@ -407,9 +412,11 @@
         if (prepare[key]) a = prepare[key](a, query);
         validators.push(createValidator(comparable(a), operator[key]));
       } else {
+
         if (key.charCodeAt(0) === 36) {
           throw new Error('Unknown operation ' + key);
         }
+
         validators.push(createNestedValidator(key.split('.'), parse(a)));
       }
     }

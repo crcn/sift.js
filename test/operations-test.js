@@ -141,6 +141,11 @@ describe(__filename + '#', function () {
       {'foo.0': 'baz' },
       [{foo:['bar', 'baz']}, {foo:['baz', 'bar']}],
       [{foo:['baz', 'bar']}]
+    ],
+    [
+      {'foo.0.name': 'baz' },
+      [{foo:[{ name: 'bar' }, { name: 'baz' }]}, {foo:[{ name: 'baz' }, { name: 'bar' }]}],
+      [{foo:[{ name: 'baz' }, { name: 'bar' }]}]
     ]
   ].forEach(function (operation, i) {
 

@@ -1,0 +1,113 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'publish' ]
+2 info using npm@3.3.12
+3 info using node@v5.3.0
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/Users/crcn/Developer/public/sift.js',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /Users/crcn/.npm/sift/3.0.0/package.tgz not in flight; packing
+9 info lifecycle sift@3.0.0~prepublish: sift@3.0.0
+10 silly lifecycle sift@3.0.0~prepublish: no script for prepublish, continuing
+11 verbose tar pack [ '/Users/crcn/.npm/sift/3.0.0/package.tgz',
+11 verbose tar pack   '/Users/crcn/Developer/public/sift.js' ]
+12 verbose tarball /Users/crcn/.npm/sift/3.0.0/package.tgz
+13 verbose folder /Users/crcn/Developer/public/sift.js
+14 verbose addLocalTarball adding from inside cache /Users/crcn/.npm/sift/3.0.0/package.tgz
+15 silly cache afterAdd sift@3.0.0
+16 verbose afterAdd /Users/crcn/.npm/sift/3.0.0/package/package.json not in flight; writing
+17 verbose afterAdd /Users/crcn/.npm/sift/3.0.0/package/package.json written
+18 silly publish { name: 'sift',
+18 silly publish   description: 'mongodb query style array filtering',
+18 silly publish   version: '3.0.0',
+18 silly publish   repository: { type: 'git', url: 'git+https://github.com/crcn/sift.js.git' },
+18 silly publish   author:
+18 silly publish    { name: 'Craig Condon',
+18 silly publish      email: 'craig.j.condon@gmail.com',
+18 silly publish      url: 'http://crcn.io' },
+18 silly publish   license: 'MIT',
+18 silly publish   engines: {},
+18 silly publish   dependencies: {},
+18 silly publish   devDependencies:
+18 silly publish    { benchmark: '^1.0.0',
+18 silly publish      bson: '^0.2.18',
+18 silly publish      gulp: '^3.9.0',
+18 silly publish      'gulp-coveralls': '^0.1.4',
+18 silly publish      'gulp-istanbul': '^0.10.0',
+18 silly publish      'gulp-jscs': '^1.6.0',
+18 silly publish      'gulp-jshint': '^1.11.2',
+18 silly publish      'gulp-mocha': '^2.1.2',
+18 silly publish      'gulp-plumber': '^1.0.1',
+18 silly publish      'gulp-rename': '^1.2.2',
+18 silly publish      'gulp-uglify': '^1.2.0',
+18 silly publish      nodangel: '^1.3.8',
+18 silly publish      yargs: '^3.15.0' },
+18 silly publish   main: './sift.js',
+18 silly publish   scripts:
+18 silly publish    { test: 'gulp test-coverage',
+18 silly publish      'test-coveralls': 'gulp test-coveralls',
+18 silly publish      tdd: 'nodangel --ignore node_modules --watch test --watch sift.js --exec \'npm run test\'' },
+18 silly publish   readme: '## validate objects & filter arrays with mongodb queries\n[![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js) [![Coverage Status](https://coveralls.io/repos/crcn/sift.js/badge.svg)](https://coveralls.io/r/crcn/sift.js) [![Join the chat at https://gitter.im/crcn/sift.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/sift.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)\n\n**For extended documentation, checkout http://docs.mongodb.org/manual/reference/operator/query/**\n\n## Features:\n\n- Supported operators: [$in](#in), [$nin](#nin), [$exists](#exists), [$gte](#gte), [$gt](#gt), [$lte](#lte), [$lt](#lt), [$eq](#eq), [$ne](#ne), [$mod](#mod), [$all](#all), [$and](#and), [$or](#or), [$nor](#nor), [$not](#not), [$size](#size), [$type](#type), [$regex](#regex), [$where](#where), [$elemMatch](#elemMatch)\n- Regexp searches\n- Function filtering\n- sub object searching\n- dot notation searching\n- Supports node.js, and web\n- Small (2 kb minified) library\n- Custom Expressions\n\n\n\n## Node.js Examples\n\n```javascript\n\nvar sift = require(\'sift\');\n\n//intersecting arrays\nvar sifted = sift({ $in: [\'hello\',\'world\'] }, [\'hello\',\'sifted\',\'array!\']); //[\'hello\']\n\n//regexp filter\nvar sifted = sift(/^j/, [\'craig\',\'john\',\'jake\']); //[\'john\',\'jake\']\n\n\n//A *sifter* is returned if the second parameter is omitted\nvar testQuery = sift({\n\n\t//you can also filter against functions\n\tname: function(value) {\n\t\treturn value.length == 5;\n\t}\n});\n\n//filtered: [{ name: \'craig\' }]\n[{\n\tname: \'craig\',\n},\n{\n\tname: \'john\'\n},\n{\n\tname: \'jake\'\n}].filter(testQuery);\n\n\n//you can test *single values* against your custom sifter\ntestQuery({ name: \'sarah\' }); //true\ntestQuery({ name: \'tim\' }); //false\\\n```\n\n## Browser Examples\n```html\n<html>\n\t<head>\n\t\t<script src="https://raw.github.com/crcn/sift.js/master/sift.min.js" type="text/javascript"></script>\n\t\t<script type="text/javascript">\n\t\t\t//regexp filter\n\t\t\tvar sifted = sift(/^j/, [\'craig\',\'john\',\'jake\']); //[\'john\',\'jake\']\n\t\t</script>\n\t</head>\n\t<body>\n\t</body>\n</html>\n```\n\n## API\n\n### .sift(filter[, array][, selectorFn])\n\n- `filter` - the filter to use against the target array\n- `array` - sifts against target array. Without this, a function is returned\n- `selectorFn` - selector for the values within the array.\n\nWith an array:\n\n```javascript\nsift({$exists:true}, [\'craig\',null]); //[\'craig\']\n```\n\nWithout an array, a sifter is returned:\n\n```javascript\nvar siftExists = sift({$exists:true});\n\nsiftExists([\'craig\',null]); //[\'craig\']\n```\n\nWith a selector:\n\n```javascript\nvar sifter = sift({$exists:true}, function(user) {\n\treturn !!user.name;\n});\n\n\nsifter([\n\t{\n\t\tname: "Craig"\n\t},\n\t{\n\t\tname: null\n\t}\n])\n```\n\nWith your sifter, you can also **test** values:\n\n```javascript\nsiftExists(null); //false\nsiftExists(\'craig\'); //true\n```\n\n\n## Supported Operators:\n\nSee MongoDB\'s [advanced queries](http://www.mongodb.org/display/DOCS/Advanced+Queries) for more info.\n\n### $in\n\narray value must be *$in* the given query:\n\nIntersecting two arrays:\n\n```javascript\n//filtered: [\'Brazil\']\nsift({ $in: [\'Costa Rica\',\'Brazil\'] }, [\'Brazil\',\'Haiti\',\'Peru\',\'Chile\']);\n```\n\nHere\'s another example. This acts more like the $or operator:\n\n```javascript\nsift({ location: { $in: [\'Costa Rica\',\'Brazil\'] } }, { name: \'Craig\', location: \'Brazil\' });\n```\n\n### $nin\n\nOpposite of $in:\n\n```javascript\n//filtered: [\'Haiti\',\'Peru\',\'Chile\']\nsift({ $nin: [\'Costa Rica\',\'Brazil\'] }, [\'Brazil\',\'Haiti\',\'Peru\',\'Chile\']);\n```\n\n### $exists\n\nChecks if whether a value exists:\n\n```javascript\n//filtered: [\'Craig\',\'Tim\']\nsift({ $exists: true }, [\'Craig\',null,\'Tim\']);\n```\n\nYou can also filter out values that don\'t exist\n\n```javascript\n//filtered: [{ name: \'Craig\', city: \'Minneapolis\' }]\nsift({ city: { $exists: false } }, [ { name: \'Craig\', city: \'Minneapolis\' }, { name: \'Tim\' }]);\n```\n\n### $gte\n\nChecks if a number is >= value:\n\n```javascript\n//filtered: [2, 3]\nsift({ $gte: 2 }, [0, 1, 2, 3]);\n```\n\n### $gt\n\nChecks if a number is > value:\n\n```javascript\n//filtered: [3]\nsift({ $gt: 2 }, [0, 1, 2, 3]);\n```\n\n### $lte\n\nChecks if a number is <= value.\n\n```javascript\n//filtered: [0, 1, 2]\nsift({ $lte: 2 }, [0, 1, 2, 3]);\n```\n\n### $lt\n\nChecks if number is < value.\n\n```javascript\n//filtered: [0, 1]\nsift({ $lt: 2 }, [0, 1, 2, 3]);\n```\n\n### $eq\n\nChecks if query == value. Note that **$eq can be omitted**. For **$eq**, and **$ne**\n\n```javascript\n//filtered: [{ state: \'MN\' }]\nsift({ state: {$eq: \'MN\' }}, [{ state: \'MN\' }, { state: \'CA\' }, { state: \'WI\' });\n```\n\nOr:\n\n```javascript\n//filtered: [{ state: \'MN\' }]\nsift({ state: \'MN\' }, [{ state: \'MN\' }, { state: \'CA\' }, { state: \'WI\' });\n```\n\n### $ne\n\nChecks if query != value.\n\n```javascript\n//filtered: [{ state: \'CA\' }, { state: \'WI\'}]\nsift({ state: {$ne: \'MN\' }}, [{ state: \'MN\' }, { state: \'CA\' }, { state: \'WI\' });\n```\n\n### $mod\n\nModulus:\n\n```javascript\n//filtered: [300, 600]\nsift({ $mod: [3, 0] }, [100, 200, 300, 400, 500, 600]);\n```\n\n### $all\n\nvalues must match **everything** in array:\n\n```javascript\n//filtered: [ { tags: [\'books\',\'programming\',\'travel\' ]} ]\nsift({ tags: {$all: [\'books\',\'programming\'] }}, [\n{ tags: [\'books\',\'programming\',\'travel\' ] },\n{ tags: [\'travel\',\'cooking\'] } ]);\n```\n\n### $and\n\nability to use an array of expressions. All expressions must test true.\n\n```javascript\n//filtered: [ { name: \'Craig\', state: \'MN\' }]\n\nsift({ $and: [ { name: \'Craig\' }, { state: \'MN\' } ] }, [\n{ name: \'Craig\', state: \'MN\' },\n{ name: \'Tim\', state: \'MN\' },\n{ name: \'Joe\', state: \'CA\' } ]);\n```\n\n### $or\n\nOR array of expressions.\n\n```javascript\n//filtered: [ { name: \'Craig\', state: \'MN\' }, { name: \'Tim\', state: \'MN\' }]\nsift({ $or: [ { name: \'Craig\' }, { state: \'MN\' } ] }, [\n{ name: \'Craig\', state: \'MN\' },\n{ name: \'Tim\', state: \'MN\' },\n{ name: \'Joe\', state: \'CA\' } ]);\n```\n\n### $nor\n\nopposite of or:\n\n```javascript\n//filtered: [ { name: \'Tim\', state: \'MN\' }, { name: \'Joe\', state: \'CA\' }]\nsift({ $nor: [ { name: \'Craig\' }, { state: \'MN\' } ] }, [\n{ name: \'Craig\', state: \'MN\' },\n{ name: \'Tim\', state: \'MN\' },\n{ name: \'Joe\', state: \'CA\' } ]);\n```\n\n\n### $size\n\nMatches an array - must match given size:\n\n```javascript\n//filtered: [\'food\',\'cooking\']\nsift({ tags: { $size: 2 } }, [ { tags: [\'food\',\'cooking\'] }, { tags: [\'traveling\'] }]);\n```\n\n### $type\n\nMatches a values based on the type\n\n```javascript\nsift({ $type: Date }, [new Date(), 4342, \'hello world\']); //returns single date\nsift({ $type: String }, [new Date(), 4342, \'hello world\']); //returns [\'hello world\']\n```\n\n### $regex\n\nMatches values based on the given regular expression\n\n```javascript\nsift({ $regex: /^f/i, $nin: ["frank"] }, ["frank", "fred", "sam", "frost"]); // ["fred", "frost"]\nsift({ $regex: "^f", $options: "i", $nin: ["frank"] }, ["frank", "fred", "sam", "frost"]); // ["fred", "frost"]\n```\n\n### $where\n\nMatches based on some javascript comparison\n\n```javascript\nsift({ $where: "this.name === \'frank\'" }, [{name:\'frank\'},{name:\'joe\'}]); // ["frank"]\nsift({\n\t$where: function() {\n\t\treturn this.name === "frank"\n\t}\n}, [{name:\'frank\'},{name:\'joe\'}]); // ["frank"]\n```\n\n### $elemMatch\n\nMatches elements of array\n\n```javascript\nvar bills = [{\n    month: \'july\',\n    casts: [{\n        id: 1,\n        value: 200\n    },{\n        id: 2,\n        value: 1000\n    }]\n},\n{\n    month: \'august\',\n    casts: [{\n        id: 3,\n        value: 1000,\n    }, {\n        id: 4,\n        value: 4000\n    }]\n}];\n\nvar result = sift({\n    casts: {$elemMatch:{\n        value: {$gt: 1000}\n    }}\n}, bills); // {month:\'august\', casts:[{id:2, value: 1000},{id: 4, value: 4000}]}\n```\n\n### $not\n\nNot expression:\n\n```javascript\nsift({$not:{$in:[\'craig\',\'tim\']}}, [\'craig\',\'tim\',\'jake\']); //[\'jake\']\nsift({$not:{$size:5}}, [\'craig\',\'tim\',\'jake\']); //[\'tim\',\'jake\']\n```\n\n## sub object Searching\n\n\n```javascript\nvar people = [{\n\tname: \'craig\',\n\taddress: {\n\t\tcity: \'Minneapolis\'\n\t}\n},\n{\n\tname: \'tim\',\n\taddress: {\n\t\tcity: \'St. Paul\'\n\t}\n}];\n\nvar sifted = sift({ address: { city: \'Minneapolis\' }}, people); // count = 1\n\n//or\nvar sifted = sift({\'address.city\': \'minneapolis\'}, people);//count = 1\n```\n\n\n## Custom Expressions\n\nYou can add your own expressions. For instance - say you want to do some bitmask filtering, you could add this example:\n\n```javascript\n\nsift.use({\n\t$band: function(a, b) {\n\t\treturn (a & b) ? 0 : -1; // 0 = exists, -1 = doesn\'t exist\n\t}\n});\n\n// ops\nvar IS_ANIMAL = 2,\nIS_PERSON     = IS_ANIMAL   << 1,\nIS_DOG        = IS_PERSON   << 1,\nEATS_CEREAL   = IS_DOG      << 1,\nEATS_BONES    = EATS_CEREAL << 1;\n\nsift({ $band: IS_PERSON }, [ S_PERSON|EATS_CEREAL, IS_DOG|EATS_BONES, IS_PERSON ]);\n```\n\n## Get index of first matching element\n\nGet the index (0-based) of first matching element in target array. Returns `-1` if no match is found.\n\n```javascript\nvar people = [{\n\tname: \'craig\',\n\taddress: {\n\t\tcity: \'Minneapolis\'\n\t}\n},\n{\n\tname: \'tim\',\n\taddress: {\n\t\tcity: \'St. Paul\'\n\t}\n}];\n\nvar index = sift.indexOf({ address: { city: \'Minneapolis\' }}, people); // index = 0\n```\n',
+18 silly publish   readmeFilename: 'README.md',
+18 silly publish   gitHead: '74cce57e97bdc35297dfaf58513afae29d4def4f',
+18 silly publish   bugs: { url: 'https://github.com/crcn/sift.js/issues' },
+18 silly publish   homepage: 'https://github.com/crcn/sift.js#readme',
+18 silly publish   _id: 'sift@3.0.0',
+18 silly publish   _shasum: 'c6a280b73d0e4a415180fc5a03901a9fa9258a12',
+18 silly publish   _from: '.' }
+19 verbose getPublishConfig undefined
+20 silly mapToRegistry name sift
+21 silly mapToRegistry using default registry
+22 silly mapToRegistry registry https://registry.npmjs.org/
+23 silly mapToRegistry uri https://registry.npmjs.org/sift
+24 verbose publish registryBase https://registry.npmjs.org/
+25 silly publish uploading /Users/crcn/.npm/sift/3.0.0/package.tgz
+26 verbose request uri https://registry.npmjs.org/sift
+27 verbose request sending authorization for write operation
+28 info attempt registry request try #1 at 10:35:43 AM
+29 verbose request using bearer token for auth
+30 verbose request id 8b55359b85b7586f
+31 http request PUT https://registry.npmjs.org/sift
+32 http 403 https://registry.npmjs.org/sift
+33 verbose headers { 'content-type': 'application/json',
+33 verbose headers   'cache-control': 'max-age=300',
+33 verbose headers   'content-length': '95',
+33 verbose headers   'accept-ranges': 'bytes',
+33 verbose headers   date: 'Tue, 12 Jan 2016 18:35:44 GMT',
+33 verbose headers   via: '1.1 varnish',
+33 verbose headers   connection: 'keep-alive',
+33 verbose headers   'x-served-by': 'cache-sjc3121-SJC',
+33 verbose headers   'x-cache': 'MISS',
+33 verbose headers   'x-cache-hits': '0',
+33 verbose headers   'x-timer': 'S1452623743.828655,VS0,VE252' }
+34 verbose request invalidating /Users/crcn/.npm/registry.npmjs.org/sift on PUT
+35 error publish Failed PUT 403
+36 verbose stack Error: "You cannot publish over the previously published version 3.0.0." : sift
+36 verbose stack     at makeError (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:264:12)
+36 verbose stack     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:252:14)
+36 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:172:14)
+36 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:198:22)
+36 verbose stack     at emitTwo (events.js:87:13)
+36 verbose stack     at Request.emit (events.js:172:7)
+36 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1082:10)
+36 verbose stack     at emitOne (events.js:82:20)
+36 verbose stack     at Request.emit (events.js:169:7)
+36 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1009:12)
+37 verbose statusCode 403
+38 verbose pkgid sift
+39 verbose cwd /Users/crcn/Developer/public/sift.js
+40 error Darwin 15.2.0
+41 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "publish"
+42 error node v5.3.0
+43 error npm  v3.3.12
+44 error code E403
+45 error "You cannot publish over the previously published version 3.0.0." : sift
+46 error If you need help, you may report this error at:
+46 error     <https://github.com/npm/npm/issues>
+47 verbose exit [ 1, true ]

@@ -38,13 +38,18 @@
     }
   }
 
+  function get(obj, key) {
+    if (obj.get) return obj.get(key);
+    return obj[key];
+  }
+
   /**
    */
 
   function or(validator) {
     return function(a, b) {
       if (!isArray(b) || !b.length) return validator(a, b);
-      for (var i = 0, n = b.length; i < n; i++) if (validator(a, b[i])) return true;
+      for (var i = 0, n = b.length; i < n; i++) if (validator(a, get(b,i))) return true;
       return false;
     }
   }
@@ -55,7 +60,7 @@
   function and(validator) {
     return function(a, b) {
       if (!isArray(b) || !b.length) return validator(a, b);
-      for (var i = 0, n = b.length; i < n; i++) if (!validator(a, b[i])) return false;
+      for (var i = 0, n = b.length; i < n; i++) if (!validator(a, get(b, i))) return false;
       return true;
     };
   }
@@ -85,7 +90,7 @@
      */
 
     $or: function(a, b) {
-      for (var i = 0, n = a.length; i < n; i++) if (validate(a[i], b)) return true;
+      for (var i = 0, n = a.length; i < n; i++) if (validate(get(a, i), b)) return true;
       return false;
     },
 
@@ -131,7 +136,7 @@
 
       if (b instanceof Array) {
         for (var i = b.length; i--;) {
-          if (~a.indexOf(comparable(b[i]))) return true;
+          if (~a.indexOf(comparable(get(b, i)))) return true;
         }
       } else {
         return !!~a.indexOf(comparable(b));
@@ -167,7 +172,7 @@
     $all: function(a, b) {
       if (!b) b = [];
       for (var i = a.length; i--;) {
-        if (!~comparable(b).indexOf(a[i])) return false;
+        if (!~comparable(b).indexOf(get(a, i))) return false;
       }
       return true;
     },
@@ -184,7 +189,7 @@
 
     $nor: function(a, b) {
       // todo - this suffice? return !operator.$in(a)
-      for (var i = 0, n = a.length; i < n; i++) if (validate(a[i], b)) return false;
+      for (var i = 0, n = a.length; i < n; i++) if (validate(get(a, i), b)) return false;
       return true;
     },
 
@@ -192,7 +197,7 @@
      */
 
     $and: function(a, b) {
-      for (var i = 0, n = a.length; i < n; i++) if (!validate(a[i], b)) return false;
+      for (var i = 0, n = a.length; i < n; i++) if (!validate(get(a, i), b)) return false;
       return true;
     },
 
@@ -329,7 +334,7 @@
   function search(array, validator) {
 
     for (var i = 0; i < array.length; i++) {
-      if (validate(validator, array[i])) {
+      if (validate(validator, get(array, i))) {
         return i;
       }
     }
@@ -368,17 +373,17 @@
       return;
     }
 
-    var k = keypath[index];
+    var k = get(keypath, index);
 
     // ensure that if current is an array, that the current key
     // is NOT an array index. This sort of thing needs to work:
     // sift({'foo.0':42}, [{foo: [42]}]);
     if (isArray(current) && isNaN(Number(k))) {
       for (var i = 0, n = current.length; i < n; i++) {
-        findValues(current[i], keypath, index, values);
+        findValues(get(current, i), keypath, index, values);
       }
     } else {
-      findValues(current[k], keypath, index + 1, values);
+      findValues(get(current, k), keypath, index + 1, values);
     }
   }
 

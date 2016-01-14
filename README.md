@@ -13,6 +13,7 @@
 - Supports node.js, and web
 - Small (2 kb minified) library
 - Custom Expressions
+- filtering of immutable datastructures
 
 
 

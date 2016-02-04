@@ -109,6 +109,9 @@ describe(__filename + '#', function () {
 
     // $regex
     [{$regex:'^a'},['a','ab','abc','bc','bcd'],['a','ab','abc']],
+    [{a:{$regex:'b|c'}}, [{a:['b']},{a:['c']},{a:'c'},{a:'d'}], [{a:['b']},{a:['c']},{a:'c'}]],
+    [{ folder: { $regex:'^[0-9]{4}$' }}, [{ folder:['1234','3212'] }], [{ folder:['1234','3212'] }]],
+
     // $options
     [{$regex:'^a', $options: 'i'},['a','Ab','abc','bc','bcd'],['a','Ab','abc']],
     [{'text':{'$regex':'.*lis.*','$options':'i'}}, [{text:['Bob','Melissa','Joe','Sherry']}], [{text:['Bob','Melissa','Joe','Sherry']}]],

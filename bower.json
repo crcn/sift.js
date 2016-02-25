@@ -16,6 +16,6 @@
     "test",
     "benchmark",
     "gulpfile.js",
-    "package.json",
+    "package.json"
   ]
 }

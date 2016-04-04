@@ -90,7 +90,9 @@ Without an array, a sifter is returned:
 ```javascript
 var siftExists = sift({$exists:true});
 
-siftExists(['craig',null]); //['craig']
+siftExists('craig'); //true
+siftExists(null); //false
+['craig',null].filter(siftExists); //['craig']
 ```
 
 With a selector:

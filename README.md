@@ -209,14 +209,14 @@ Checks if query == value. Note that **$eq can be omitted**. For **$eq**, and **$
 
 ```javascript
 //filtered: [{ state: 'MN' }]
-sift({ state: {$eq: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' });
+sift({ state: {$eq: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }]);
 ```
 
 Or:
 
 ```javascript
 //filtered: [{ state: 'MN' }]
-sift({ state: 'MN' }, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' });
+sift({ state: 'MN' }, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }]);
 ```
 
 ### $ne
@@ -225,7 +225,7 @@ Checks if query != value.
 
 ```javascript
 //filtered: [{ state: 'CA' }, { state: 'WI'}]
-sift({ state: {$ne: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' });
+sift({ state: {$ne: 'MN' }}, [{ state: 'MN' }, { state: 'CA' }, { state: 'WI' }]);
 ```
 
 ### $mod

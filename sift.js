@@ -1,3 +1,5 @@
+var through = require('through');
+
 /*
  * Sift 3.x
  *
@@ -466,6 +468,15 @@
     }
 
     return filter;
+  }
+
+  sift.stream = function(query) {
+    var validator = createRootValidator(query)
+    return through(function write(obj) {
+      if(validate(validator, obj)) {
+        this.queue(obj)
+      }
+    })
   }
 
   /**

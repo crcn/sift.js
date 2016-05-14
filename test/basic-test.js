@@ -1,5 +1,6 @@
 var assert = require("assert"),
-sift = require("..");
+sift = require("..")
+, through = require('through');
 
 describe(__filename + "#", function() {
 
@@ -117,5 +118,24 @@ describe(__filename + "#", function() {
       filtered = people.filter(sifter);
 
     assert.equal(filtered.length, 1);
+  });
+
+  it("allows the use of streams", function(done) {
+    var s = through();
+    var filtered = []
+    s.pipe(sift.stream({ age: { $gt: 10 } }))
+      .on('data', function(d) {
+        filtered.push(d);
+      })
+      .on('end', function() {
+        assert.equal(filtered.length, 2);
+        done();
+      });
+
+    s.emit('data', { age: 5 })
+    s.emit('data', { age: 10 })
+    s.emit('data', { age: 15 })
+    s.emit('data', { age: 20 })
+    s.emit('end')
   });
 });

@@ -10,7 +10,9 @@
   },
   "license": "MIT",
   "engines": {},
-  "dependencies": {},
+  "dependencies": {
+    "through": "^2.3.8"
+  },
   "devDependencies": {
     "benchmark": "^1.0.0",
     "bson": "^0.2.18",

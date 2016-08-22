@@ -411,7 +411,7 @@ IS_DOG        = IS_PERSON   << 1,
 EATS_CEREAL   = IS_DOG      << 1,
 EATS_BONES    = EATS_CEREAL << 1;
 
-sift({ $band: IS_PERSON }, [ S_PERSON|EATS_CEREAL, IS_DOG|EATS_BONES, IS_PERSON ]);
+sift({ $band: IS_PERSON }, [ IS_PERSON|EATS_CEREAL, IS_DOG|EATS_BONES, IS_PERSON ]);
 ```
 
 ## Get index of first matching element

@@ -3,7 +3,7 @@ declare module sift {
 
     }
 
-    export interface ISifter<T> {
+    export interface ISifter<T> extends Function {
 
     }
 

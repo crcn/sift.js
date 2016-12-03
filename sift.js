@@ -163,7 +163,8 @@
      */
 
     $type: function(a, b) {
-      return b != void 0 ? b instanceof a || b.constructor == a : false;
+      return b != void 0 ? b instanceof a || b.
+        == a : false;
      },
 
     /**
@@ -401,7 +402,7 @@
   function parse(query) {
     query = comparable(query);
 
-    if (!query || (query.constructor.toString() !== 'Object' &&
+    if (!query || (query.constructor && query.constructor.toString() !== 'Object' &&
         query.constructor.toString().replace(/\n/g,'').replace(/ /g, '') !== 'functionObject(){[nativecode]}')) { // cross browser support
       query = { $eq: query };
     }

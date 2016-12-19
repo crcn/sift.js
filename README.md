@@ -139,7 +139,7 @@ sift({ $in: ['Costa Rica','Brazil'] }, ['Brazil','Haiti','Peru','Chile']);
 Here's another example. This acts more like the $or operator:
 
 ```javascript
-sift({ location: { $in: ['Costa Rica','Brazil'] } }, { name: 'Craig', location: 'Brazil' });
+sift({ location: { $in: ['Costa Rica','Brazil'] } }, [ { name: 'Craig', location: 'Brazil' } ]);
 ```
 
 ### $nin

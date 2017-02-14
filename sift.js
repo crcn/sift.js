@@ -69,7 +69,6 @@
     return validator.v(validator.a, b);
   }
 
-
   var operator = {
 
     /**
@@ -170,11 +169,7 @@
      */
 
     $all: function(a, b) {
-      if (!b) b = [];
-      for (var i = a.length; i--;) {
-        if (!~comparable(b).indexOf(get(a, i))) return false;
-      }
-      return true;
+      return operator.$and(a, b);
     },
 
     /**
@@ -197,6 +192,7 @@
      */
 
     $and: function(a, b) {
+      if (!b) b = [];
       for (var i = 0, n = a.length; i < n; i++) if (!validate(get(a, i), b)) return false;
       return true;
     },
@@ -276,6 +272,13 @@
 
     $and: function(a) {
       return a.map(parse);
+    },
+
+    /**
+     */
+
+    $all: function(a) {
+      return prepare.$and(a);
     },
 
     /**

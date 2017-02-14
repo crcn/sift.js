@@ -133,6 +133,10 @@ describe(__filename + '#', function () {
       [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]},{a:{b:2,c:3}}], [{a:{b:1,c:2}},{a:[{b:1,c:2,d:3}]}]
     ],
     [{a:{$elemMatch:{b:2,c:{$gt:2}}}}, [{a:{b:1,c:2}},{a:{b:1,c:2,d:3}},[{a:{b:2,c:3}}]], [[{a:{b:2,c:3}}]]],
+    [
+      {tags: {$all: [{$elemMatch: {a: 1}}]}}, 
+      [{tags: [{a: 1}]}, {tags: [{a: 1}, {b: 1}]}], [{tags: [{a: 1}]}, {tags: [{a: 1}, {b: 1}]}]
+    ],
 
     // dot-notation
     [

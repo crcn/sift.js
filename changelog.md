@@ -1,3 +1,7 @@
+### 3.3.x
+
+- `$in` now uses `toString()` when evaluating objects. Fixes #116.
+
 #### 2.x
 
 - `use()` now uses a different format:

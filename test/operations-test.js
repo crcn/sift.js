@@ -153,6 +153,20 @@ describe(__filename + '#', function () {
       {'foo.0.name': 'baz' },
       [{foo:[{ name: 'bar' }, { name: 'baz' }]}, {foo:[{ name: 'baz' }, { name: 'bar' }]}],
       [{foo:[{ name: 'baz' }, { name: 'bar' }]}]
+    ],
+
+    // various comparisons
+    [
+      { c: { d: 'd' }}, 
+      [{ a: 'b', b: 'c', c: { d: 'd', e: 'e' }}, { c: { d: 'e' }}], 
+      [{ a: 'b', b: 'c', c: { d: 'd', e: 'e' }}]
+    ],
+
+    // object.toString() tests
+    [
+      { $in: [{ toString: function(){ return 'a'; }}]},
+      [{toString: function(){ return 'a'; }}, {toString: function(){ return 'b' }}],
+      [{toString: function(){ return 'a'; }}]
     ]
   ].forEach(function (operation, i) {
 

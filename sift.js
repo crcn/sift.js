@@ -39,7 +39,9 @@
   }
 
   function get(obj, key) {
-    if (obj.get) return obj.get(key);
+    if (obj.get) {
+      return obj.get(key);
+    }
     return obj[key];
   }
 
@@ -48,8 +50,12 @@
 
   function or(validator) {
     return function(a, b) {
-      if (!isArray(b) || !b.length) return validator(a, b);
-      for (var i = 0, n = b.length; i < n; i++) if (validator(a, get(b,i))) return true;
+      if (!isArray(b) || !b.length) {
+        return validator(a, b);
+      }
+      for (var i = 0, n = b.length; i < n; i++) {
+        if (validator(a, get(b,i))) return true;
+      }
       return false;
     }
   }
@@ -59,8 +65,12 @@
 
   function and(validator) {
     return function(a, b) {
-      if (!isArray(b) || !b.length) return validator(a, b);
-      for (var i = 0, n = b.length; i < n; i++) if (!validator(a, get(b, i))) return false;
+      if (!isArray(b) || !b.length) {
+        return validator(a, b);
+      }
+      for (var i = 0, n = b.length; i < n; i++) {
+        if (!validator(a, get(b, i))) return false;
+      }
       return true;
     };
   }
@@ -135,9 +145,19 @@
 
       if (b instanceof Array) {
         for (var i = b.length; i--;) {
-          if (~a.indexOf(comparable(get(b, i)))) return true;
+          if (~a.indexOf(comparable(get(b, i)))) {
+            return true;
+          }
         }
       } else {
+        const comparableB = comparable(b);
+        if (comparableB === b && typeof b === 'object') {
+          for (var i = a.length; i--;) {
+            if (String(a[i]) === String(b)) {
+              return true;
+            }
+          }
+        }
         return !!~a.indexOf(comparable(b));
       }
 
@@ -184,7 +204,11 @@
 
     $nor: function(a, b) {
       // todo - this suffice? return !operator.$in(a)
-      for (var i = 0, n = a.length; i < n; i++) if (validate(get(a, i), b)) return false;
+      for (var i = 0, n = a.length; i < n; i++) {
+        if (validate(get(a, i), b)) {
+          return false;
+        }
+      }
       return true;
     },
 
@@ -192,8 +216,14 @@
      */
 
     $and: function(a, b) {
-      if (!b) b = [];
-      for (var i = 0, n = a.length; i < n; i++) if (!validate(get(a, i), b)) return false;
+      if (!b) {
+        b = [];
+      }
+      for (var i = 0, n = a.length; i < n; i++) {
+        if (!validate(get(a, i), b)) {
+          return false;
+        }
+      }
       return true;
     },
 
@@ -215,7 +245,9 @@
      */
 
     $elemMatch: function(a, b) {
-      if (isArray(b)) return !!~search(b, a);
+      if (isArray(b)) {
+        return !!~search(b, a);
+      }
       return validate(a, b);
     },
 
@@ -414,7 +446,9 @@
     for (var key in query) {
       var a = query[key];
 
-      if (key === '$options') continue;
+      if (key === '$options') {
+        continue;
+      }
 
       if (operator[key]) {
         if (prepare[key]) a = prepare[key](a, query);
@@ -477,7 +511,9 @@
   sift.use = function(plugin) {
     if (isFunction(plugin)) return plugin(sift);
     for (var key in plugin) {
-      if (key.charCodeAt(0) === 36) operator[key] = plugin[key];
+      if (key.charCodeAt(0) === 36) {
+        operator[key] = plugin[key];
+      }
     }
   };
 
@@ -494,8 +530,12 @@
   sift.compare = function(a, b) {
     if(a===b) return 0;
     if(typeof a === typeof b) {
-      if (a > b) return 1;
-      if (a < b) return -1;
+      if (a > b) {
+        return 1;
+      }
+      if (a < b) {
+        return -1;
+      }
     }
   };
 

@@ -155,19 +155,26 @@ describe(__filename + '#', function () {
       [{foo:[{ name: 'baz' }, { name: 'bar' }]}]
     ],
 
+    // object.toString() tests
+    [
+      { $in: [{ toString: function(){ return 'a'; }}]},
+      [{toString: function(){ return 'a'; }}, {toString: function(){ return 'b' }}],
+      [{toString: function(){ return 'a'; }}]
+    ],
+
     // various comparisons
     [
       { c: { d: 'd' }}, 
       [{ a: 'b', b: 'c', c: { d: 'd', e: 'e' }}, { c: { d: 'e' }}], 
       [{ a: 'b', b: 'c', c: { d: 'd', e: 'e' }}]
     ],
-
-    // object.toString() tests
+    
+    // based on https://gist.github.com/jdnichollsc/00ea8cf1204b17d9fb9a991fbd1dfee6
     [
-      { $in: [{ toString: function(){ return 'a'; }}]},
-      [{toString: function(){ return 'a'; }}, {toString: function(){ return 'b' }}],
-      [{toString: function(){ return 'a'; }}]
-    ]
+      { $and: [{ 'a.s': { $lte: new Date("2017-01-29T05:00:00.000Z") }}, {'a.e': { $gte: new Date("2017-01-08T05:00:00.000Z") }}]}, 
+      [{ a: { s: new Date("2017-01-13T05:00:00.000Z"), e: new Date("2017-01-31T05:00:00.000Z") }}], 
+      [{ a: { s: new Date("2017-01-13T05:00:00.000Z"), e: new Date("2017-01-31T05:00:00.000Z") }}]
+    ],
   ].forEach(function (operation, i) {
 
     var filter     = operation[0];

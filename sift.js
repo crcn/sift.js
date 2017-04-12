@@ -150,7 +150,7 @@
           }
         }
       } else {
-        const comparableB = comparable(b);
+        var comparableB = comparable(b);
         if (comparableB === b && typeof b === 'object') {
           for (var i = a.length; i--;) {
             if (String(a[i]) === String(b)) {

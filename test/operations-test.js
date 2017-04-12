@@ -161,6 +161,11 @@ describe(__filename + '#', function () {
       [{toString: function(){ return 'a'; }}, {toString: function(){ return 'b' }}],
       [{toString: function(){ return 'a'; }}]
     ],
+    [
+      { $in: [{}]},
+      [{}, {}],
+      []
+    ],
 
     // various comparisons
     [
@@ -175,6 +180,7 @@ describe(__filename + '#', function () {
       [{ a: { s: new Date("2017-01-13T05:00:00.000Z"), e: new Date("2017-01-31T05:00:00.000Z") }}], 
       [{ a: { s: new Date("2017-01-13T05:00:00.000Z"), e: new Date("2017-01-31T05:00:00.000Z") }}]
     ],
+    
   ].forEach(function (operation, i) {
 
     var filter     = operation[0];

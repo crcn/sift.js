@@ -153,7 +153,7 @@
         var comparableB = comparable(b);
         if (comparableB === b && typeof b === 'object') {
           for (var i = a.length; i--;) {
-            if (String(a[i]) === String(b)) {
+            if (String(a[i]) === String(b) && String(b) !== '[object Object]') {
               return true;
             }
           }
@@ -433,11 +433,14 @@
    * flatten the query
    */
 
+  function isVanillaObject(value) {
+    return String(value.constructor) === 'Object' || String(value.constructor).replace(/[\r\n\s\t]/g, '') === 'functionObject(){[nativecode]}';
+  }
+
   function parse(query) {
     query = comparable(query);
 
-    if (!query || (query.constructor.toString() !== 'Object' &&
-        query.constructor.toString().replace(/\n/g,'').replace(/ /g, '') !== 'functionObject(){[nativecode]}')) { // cross browser support
+    if (!query || !isVanillaObject(query)) { // cross browser support
       query = { $eq: query };
     }
 

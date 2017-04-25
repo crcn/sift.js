@@ -74,6 +74,8 @@ describe(__filename + '#', function () {
     [{$nin:[0,false,1,'1']},[0,1,2,3,4,false],[2,3,4]],
     [{$nin:[1,'1','2']},['1','2','3'],['3']],
     [{$nin:[new Date(1)]},[new Date(1), new Date(2)],[new Date(2)]],
+    [{"root.notDefined": {$nin: [1, 2, 3]}}, [{"root": {"defined": 1337}}], [{"root": {"defined": 1337}}]],
+    [{"root.notDefined": {$nin: [1, 2, 3, null]}}, [{"root": {"defined": 1337}}], []],
 
     // $not
     [{$not:false},[0,false],[0]],

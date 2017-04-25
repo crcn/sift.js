@@ -158,6 +158,18 @@
             }
           }
         }
+
+        /*
+          Handles documents that are undefined, whilst also
+          having a 'null' element in the parameters to $in.
+        */
+        if (typeof comparableB == 'undefined') {
+          for (var i = a.length; i--;) {
+            if (a[i] == null) {
+              return true;
+            }
+          }
+        }
         return !!~a.indexOf(comparable(b));
       }
 

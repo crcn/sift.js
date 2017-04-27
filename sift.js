@@ -170,7 +170,7 @@
             }
           }
         }
-        return !!~a.indexOf(comparable(b));
+        return Boolean(!!~a.indexOf(comparable(b)));
       }
 
       return false;

@@ -63,4 +63,5 @@ declare global {
     const sift: Sift
 }
 
+declare const Sift: Sift
 export default Sift

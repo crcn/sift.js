@@ -556,9 +556,13 @@
 
   /* istanbul ignore next */
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-    module.exports = sift;
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports['default'] = sift;
+
+    module.exports = exports['default'];
   }
 
+  /* istanbul ignore next */
   if (typeof window !== 'undefined') {
     window.sift = sift;
   }

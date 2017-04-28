@@ -35,7 +35,7 @@ export type WhereFn<T extends SupportedTypes> = (this: T[0], value: T[0], index:
 
 export type FilterFn = <T>(value: T, index?: number, array?: T[]) => boolean;
 
-export type SiftQuery<T extends SupportedTypes> = ExternalQuery<T> | InternalQuery<T>;
+export type SiftQuery<T extends SupportedTypes> = ExternalQuery<T> & InternalQuery<T>;
 export type SiftQueryNumber = Query<number>;
 export type SiftQueryString = Query<string>;
 

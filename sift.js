@@ -526,6 +526,7 @@
   sift.use = function(plugin) {
     if (isFunction(plugin)) return plugin(sift);
     for (var key in plugin) {
+      /* istanbul ignore else */
       if (key.charCodeAt(0) === 36) {
         operator[key] = plugin[key];
       }
@@ -556,10 +557,12 @@
 
   /* istanbul ignore next */
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports['default'] = sift;
+    Object.defineProperty(exports, "__esModule", {
+      value: true
+    });
 
-    module.exports = exports['default'];
+    module.exports = sift;
+    exports['default'] = module.exports.default = sift;
   }
 
   /* istanbul ignore next */

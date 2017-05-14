@@ -1,4 +1,4 @@
-export type SupportedTypes = Array<string | { [index: string]: any } | number | null>;
+export type SupportedTypes = Array<string | { [index: string]: any } | number | null | any>;
 export type KeyOrValue<T extends SupportedTypes> = T & T[0];
 
 export type Query<T extends SupportedTypes> = {

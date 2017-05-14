@@ -38,7 +38,7 @@ export type FilterFn = <T>(value: T, index?: number, array?: T[]) => boolean;
 
 export type SiftQuery<T extends SupportedTypes> = ExternalQuery<T> & InternalQuery<T>;
 
-export type PluginDefinition<T = any> = {
+export type PluginDefinition<T> = {
     [index: string]: (a: T, b: T) => boolean | number;
 }
 
@@ -48,11 +48,11 @@ export type Exec = <T extends SupportedTypes>(array: T) => T;
 
 export interface Sift {
     <T extends SupportedTypes>(query: RegExp, target: T, rawSelector?: any): T;
-    <T = any>(query: SiftQuery<any>, rawSelector: (item: T) => boolean): Exec;
-    <T extends SupportedTypes = any[]>(query: SiftQuery<T>): FilterFn;
+    <T>(query: SiftQuery<any>, rawSelector: (item: T) => boolean): Exec;
+    <T extends SupportedTypes[]>(query: SiftQuery<T>): FilterFn;
     <T extends SupportedTypes>(query: SiftQuery<T>, target: T, rawSelector?: any): T;
     indexOf<T extends SupportedTypes>(query: SiftQuery<T>, target: T, rawSelector?: any): number;
-    use<K = any>(plugin: PluginFunction<K> | PluginDefinition<K>): void;
+    use<K>(plugin: PluginFunction<K> | PluginDefinition<K>): void;
     compare<T, K>(a: T, b: K): 0 | -1 | 1;
 }
 

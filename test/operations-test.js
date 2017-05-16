@@ -69,15 +69,11 @@ describe(__filename + '#', function () {
     [{$in:[new Date(1)]},[new Date(1), new Date(2)],[new Date(1)]],
     [{'a.b.status':{'$in': [0]}}, [{'a':{'b':[{'status':0}]}},{'a':{'b':[{'status':2}]}}],[{'a':{'b':[{'status':0}]}}]],
     [{'a.b.status':{'$in': [0, 2]}}, [{'a':{'b':[{'status':0}]}},{'a':{'b':[{'status':2}]}}], [{'a':{'b':[{'status':0}]}},{'a':{'b':[{'status':2}]}}]],
-    [{'a.b.status':{'$in': [0]}}, [{'a':{'b':[{'status':0}]}},{'a':{'b':[{'status':2}]}}],[{'a':{'b':[{'status':0}]}}]],
-    [{'a.b.status':{'$in': [0, 2]}}, [{'a':{'b':[{'status':0}]}},{'a':{'b':[{'status':2}]}}], [{'a':{'b':[{'status':0}]}},{'a':{'b':[{'status':2}]}}]],
 
     // $nin
     [{$nin:[0,false,1,'1']},[0,1,2,3,4,false],[2,3,4]],
     [{$nin:[1,'1','2']},['1','2','3'],['3']],
     [{$nin:[new Date(1)]},[new Date(1), new Date(2)],[new Date(2)]],
-    [{"root.notDefined": {$nin: [1, 2, 3]}}, [{"root": {"defined": 1337}}], [{"root": {"defined": 1337}}]],
-    [{"root.notDefined": {$nin: [1, 2, 3, null]}}, [{"root": {"defined": 1337}}], []],
     [{"root.notDefined": {$nin: [1, 2, 3]}}, [{"root": {"defined": 1337}}], [{"root": {"defined": 1337}}]],
     [{"root.notDefined": {$nin: [1, 2, 3, null]}}, [{"root": {"defined": 1337}}], []],
 

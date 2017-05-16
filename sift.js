@@ -170,6 +170,18 @@
             }
           }
         }
+
+        /*
+          Handles the case of {'field': {$in: [/regexp1/, /regexp2/, ...]}}
+        */
+        for (var i = a.length; i--;) {
+          var validator = createRootValidator(get(a, i), undefined);
+          var result = validate(validator, b);
+          if ((result) && (String(result) !== '[object Object]') && (String(b) !== '[object Object]')) {
+            return true;
+          }
+        }
+
         return Boolean(!!~a.indexOf(comparable(b)));
       }
 

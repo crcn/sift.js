@@ -69,6 +69,8 @@ describe(__filename + '#', function () {
     [{$in:[new Date(1)]},[new Date(1), new Date(2)],[new Date(1)]],
     [{'a.b.status':{'$in': [0]}}, [{'a':{'b':[{'status':0}]}},{'a':{'b':[{'status':2}]}}],[{'a':{'b':[{'status':0}]}}]],
     [{'a.b.status':{'$in': [0, 2]}}, [{'a':{'b':[{'status':0}]}},{'a':{'b':[{'status':2}]}}], [{'a':{'b':[{'status':0}]}},{'a':{'b':[{'status':2}]}}]],
+    [{'x': {$in: [{$regex: '.*aaa.*'}, {$regex: '.*bbb.*'}]}}, [{'x': {'b': 'aaa'}}, {'x': 'bbb'}, {'x': 'ccc'}, {'x': 'aaa'}], [{'x': 'bbb'}, {'x': 'aaa'}]],
+    [{'x': {$in: [/.*aaa.*/, /.*bbb.*/]}}, [{'x': {'b': 'aaa'}}, {'x': 'bbb'}, {'x': 'ccc'}, {'x': 'aaa'}], [{'x': 'bbb'}, {'x': 'aaa'}]],
 
     // $nin
     [{$nin:[0,false,1,'1']},[0,1,2,3,4,false],[2,3,4]],
@@ -76,6 +78,8 @@ describe(__filename + '#', function () {
     [{$nin:[new Date(1)]},[new Date(1), new Date(2)],[new Date(2)]],
     [{"root.notDefined": {$nin: [1, 2, 3]}}, [{"root": {"defined": 1337}}], [{"root": {"defined": 1337}}]],
     [{"root.notDefined": {$nin: [1, 2, 3, null]}}, [{"root": {"defined": 1337}}], []],
+    [{'x': {$nin: [{$regex: '.*aaa.*'}, {$regex: '.*bbb.*'}]}}, [{'x': {'b': 'aaa'}}, {'x': 'bbb'}, {'x': 'ccc'}, {'x': 'aaa'}], [{'x': {'b': 'aaa'}},{'x': 'ccc'}]],
+    [{'x': {$nin: [/.*aaa.*/, /.*bbb.*/]}}, [{'x': {'b': 'aaa'}}, {'x': 'bbb'}, {'x': 'ccc'}, {'x': 'aaa'}], [{'x': {'b': 'aaa'}},{'x': 'ccc'}]],
 
     // $not
     [{$not:false},[0,false],[0]],

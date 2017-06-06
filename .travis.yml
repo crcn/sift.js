@@ -6,7 +6,7 @@ script: npm run test-coveralls
 
 notifications:
   email: 
-    - craig@spiceapps.com
+    - craig.j.condon@gmail.com
 
 branches:
   only:

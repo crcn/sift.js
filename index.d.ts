@@ -56,9 +56,6 @@ export interface Sift {
     compare<T, K>(a: T, b: K): 0 | -1 | 1;
 }
 
-declare global {
-    const sift: Sift
-}
 
 declare const Sift: Sift
 export default Sift

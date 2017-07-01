@@ -61,6 +61,7 @@ describe(__filename + '#', function () {
     // $exists
     [{$exists:false}, [0,false,void 0, null],[void 0, void 0]],
     [{$exists:true}, [0,false,void 0, 1, {}],[0, false, 1, {}]],
+    [{"a.b": {$exists: true}}, [{a: {b: "exists"}}, {a: {c: "does not exist"}}], [{a: {b: "exists"}}]],
 
     // $in
     // TODO - {$in:[Date]} doesn't work - make it work?
@@ -127,6 +128,9 @@ describe(__filename + '#', function () {
     [/a/,[undefined, null, true, false, 0, 'aa'],['aa']],
     [/.+/,[undefined, null, true, false, 0, 'aa', {}],['aa']],
 
+    // Multiple conditions on an undefined root
+    [{"a.b": {$exists: true, $nin: [null]}}, [{a: {b: "exists"}}, {a: {c: "does not exist"}}], [{a: {b: "exists"}}]],
+
     // $where
     [{$where:function () { return this.v === 1 }}, [{v:1},{v:2}],[{v:1}]],
     [{$where:'this.v === 1'}, [{v:1},{v:2}],[{v:1}]],
@@ -140,7 +144,7 @@ describe(__filename + '#', function () {
     ],
     [{a:{$elemMatch:{b:2,c:{$gt:2}}}}, [{a:{b:1,c:2}},{a:{b:1,c:2,d:3}},[{a:{b:2,c:3}}]], [[{a:{b:2,c:3}}]]],
     [
-      {tags: {$all: [{$elemMatch: {a: 1}}]}}, 
+      {tags: {$all: [{$elemMatch: {a: 1}}]}},
       [{tags: [{a: 1}]}, {tags: [{a: 1}, {b: 1}]}], [{tags: [{a: 1}]}, {tags: [{a: 1}, {b: 1}]}]
     ],
 
@@ -175,18 +179,18 @@ describe(__filename + '#', function () {
 
     // various comparisons
     [
-      { c: { d: 'd' }}, 
-      [{ a: 'b', b: 'c', c: { d: 'd', e: 'e' }}, { c: { d: 'e' }}], 
+      { c: { d: 'd' }},
+      [{ a: 'b', b: 'c', c: { d: 'd', e: 'e' }}, { c: { d: 'e' }}],
       [{ a: 'b', b: 'c', c: { d: 'd', e: 'e' }}]
     ],
-    
+
     // based on https://gist.github.com/jdnichollsc/00ea8cf1204b17d9fb9a991fbd1dfee6
     [
-      { $and: [{ 'a.s': { $lte: new Date("2017-01-29T05:00:00.000Z") }}, {'a.e': { $gte: new Date("2017-01-08T05:00:00.000Z") }}]}, 
-      [{ a: { s: new Date("2017-01-13T05:00:00.000Z"), e: new Date("2017-01-31T05:00:00.000Z") }}], 
+      { $and: [{ 'a.s': { $lte: new Date("2017-01-29T05:00:00.000Z") }}, {'a.e': { $gte: new Date("2017-01-08T05:00:00.000Z") }}]},
+      [{ a: { s: new Date("2017-01-13T05:00:00.000Z"), e: new Date("2017-01-31T05:00:00.000Z") }}],
       [{ a: { s: new Date("2017-01-13T05:00:00.000Z"), e: new Date("2017-01-31T05:00:00.000Z") }}]
     ],
-    
+
   ].forEach(function (operation, i) {
 
     var filter     = operation[0];

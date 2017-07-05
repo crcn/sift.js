@@ -240,9 +240,6 @@
      */
 
     $and: function(a, b) {
-      if (!b) {
-        b = [];
-      }
       for (var i = 0, n = a.length; i < n; i++) {
         if (!validate(get(a, i), b)) {
           return false;

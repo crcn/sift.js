@@ -427,7 +427,6 @@
   function findValues(current, keypath, index, object, values) {
 
     if (index === keypath.length || current == void 0) {
-      // console.log([object, keypath[index - 1], current]);
       values.push([current, keypath[index - 1], object]);
       return;
     }

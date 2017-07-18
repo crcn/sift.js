@@ -23,8 +23,7 @@ describe(__filename + '#', function () {
 
     [function(b) { return b === 1; }, [1,2,3],[1]],
 
-    // object is not exact - there is no match here unless ObjectID is a comparable.
-    [ObjectID('54dd5546b1d296a54d152e84'),[ObjectID(),ObjectID('54dd5546b1d296a54d152e84')],[]],
+    [ObjectID('54dd5546b1d296a54d152e84'),[ObjectID(),ObjectID('54dd5546b1d296a54d152e84')],[ObjectID('54dd5546b1d296a54d152e84')]],
 
     // $ne
     [{$ne:5}, [5, '5', 6], ['5', 6]],

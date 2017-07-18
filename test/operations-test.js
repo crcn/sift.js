@@ -7,7 +7,6 @@ describe(__filename + '#', function () {
 
 
   [
-
     // $eq
     [{$eq:5}, [5,'5', 6], [5]],
     ['5', [5,'5', 6], ['5']],
@@ -58,9 +57,10 @@ describe(__filename + '#', function () {
     [{groups:{$mod:[2,0]}}, [{groups:[1,2,3,4]}, {groups:[7,9]}], [{groups:[1,2,3,4]}]],
 
     // $exists
-    [{$exists:false}, [0,false,void 0, null],[void 0, void 0]],
-    [{$exists:true}, [0,false,void 0, 1, {}],[0, false, 1, {}]],
+    [{$exists:false}, [0,false,void 0, null],[]],
+    [{$exists:true}, [0,false,void 0, 1, {}],[0, false, void 0, 1, {}]],
     [{"a.b": {$exists: true}}, [{a: {b: "exists"}}, {a: {c: "does not exist"}}], [{a: {b: "exists"}}]],
+    [{field: { $exists: false }}, [{a: 1}, {a: 2, field: 5}, {a: 3, field: 0}, {a: 4, field: undefined}, {a: 5}],[{a: 1}, {a: 5}]],
 
     // $in
     // TODO - {$in:[Date]} doesn't work - make it work?
@@ -112,6 +112,7 @@ describe(__filename + '#', function () {
 
     // $and
     [{$and:[{$gt:1},{$lt:4}]},[1,2,3,4],[2,3]],
+    [{$and: [{field: {$not: {$type: String}}}, {field: {$ne: null}}]}, [{a: 1, field: 1}, {a: 2, field: '2'}], [{a: 1, field: 1}]],
 
     // $regex
     [{$regex:'^a'},['a','ab','abc','bc','bcd'],['a','ab','abc']],

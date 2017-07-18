@@ -74,8 +74,8 @@
     };
   }
 
-  function validate(validator, b) {
-    return validator.v(validator.a, b);
+  function validate(validator, b, k, o) {
+    return validator.v(validator.a, b, k, o);
   }
 
   var OPERATORS = {
@@ -167,7 +167,7 @@
         */
         for (var i = a.length; i--;) {
           var validator = createRootValidator(get(a, i), undefined);
-          var result = validate(validator, b);
+          var result = validate(validator, b, i, a);
           if ((result) && (String(result) !== '[object Object]') && (String(b) !== '[object Object]')) {
             return true;
           }
@@ -182,15 +182,15 @@
     /**
      */
 
-    $nin: function(a, b) {
-      return !OPERATORS.$in(a, b);
+    $nin: function(a, b, k, o) {
+      return !OPERATORS.$in(a, b, k, o);
     },
 
     /**
      */
 
-    $not: function(a, b) {
-      return !validate(a, b);
+    $not: function(a, b, k, o) {
+      return !validate(a, b, k, o);
     },
 
     /**
@@ -203,8 +203,8 @@
     /**
      */
 
-    $all: function(a, b) {
-      return OPERATORS.$and(a, b);
+    $all: function(a, b, k, o) {
+      return OPERATORS.$and(a, b, k, o);
     },
 
     /**
@@ -217,24 +217,24 @@
     /**
      */
 
-    $or: function(a, b) {
-      for (var i = 0, n = a.length; i < n; i++) if (validate(get(a, i), b)) return true;
+    $or: function(a, b, k, o) {
+      for (var i = 0, n = a.length; i < n; i++) if (validate(get(a, i), b, k, o)) return true;
       return false;
     },
 
     /**
      */
 
-    $nor: function(a, b) {
-      return !OPERATORS.$or(a, b);
+    $nor: function(a, b, k, o) {
+      return !OPERATORS.$or(a, b, k, o);
     },
 
     /**
      */
 
-    $and: function(a, b) {
+    $and: function(a, b, k, o) {
       for (var i = 0, n = a.length; i < n; i++) {
-        if (!validate(get(a, i), b)) {
+        if (!validate(get(a, i), b, k, o)) {
           return false;
         }
       }
@@ -251,25 +251,25 @@
     /**
      */
 
-    $where: function(a, b) {
-      return a.call(b, b);
+    $where: function(a, b, k, o) {
+      return a.call(b, b, k, o);
     },
 
     /**
      */
 
-    $elemMatch: function(a, b) {
+    $elemMatch: function(a, b, k, o) {
       if (isArray(b)) {
         return !!~search(b, a);
       }
-      return validate(a, b);
+      return validate(a, b, k, o);
     },
 
     /**
      */
 
-    $exists: function(a, b) {
-      return (b != void 0) === a;
+    $exists: function(a, b, k, o) {
+      return o.hasOwnProperty(k) === a;
     }
   };
 
@@ -383,6 +383,7 @@
   function search(array, validator) {
 
     for (var i = 0; i < array.length; i++) {
+      var result = get(array, i);
       if (validate(validator, get(array, i))) {
         return i;
       }
@@ -403,22 +404,31 @@
 
   function nestedValidator(a, b) {
     var values  = [];
-    findValues(b, a.k, 0, values);
+    findValues(b, a.k, 0, b, values);
 
     if (values.length === 1) {
-      return validate(a.nv, values[0]);
+      var first = values[0];
+      return validate(a.nv, first[0], first[1], first[2]);
     }
 
-    return !!~search(values, a.nv);
+    for (var i = 0; i < values.length; i++) {
+      var result = values[i];
+      if (validate(a.nv, result[0], result[1], result[2])) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
    */
 
-  function findValues(current, keypath, index, values) {
+  function findValues(current, keypath, index, object, values) {
 
     if (index === keypath.length || current == void 0) {
-      values.push(current);
+      // console.log([object, keypath[index - 1], current]);
+      values.push([current, keypath[index - 1], object]);
       return;
     }
 
@@ -429,10 +439,10 @@
     // sift({'foo.0':42}, [{foo: [42]}]);
     if (isArray(current) && isNaN(Number(k))) {
       for (var i = 0, n = current.length; i < n; i++) {
-        findValues(get(current, i), keypath, index, values);
+        findValues(get(current, i), keypath, index, current, values);
       }
     } else {
-      findValues(get(current, k), keypath, index + 1, values);
+      findValues(get(current, k), keypath, index + 1, current, values);
     }
   }
 
@@ -491,8 +501,8 @@
     if (getter) {
       validator = {
         a: validator,
-        v: function(a, b) {
-          return validate(a, getter(b));
+        v: function(a, b, k, o) {
+          return validate(a, getter(b), k, o);
         }
       };
     }
@@ -511,8 +521,8 @@
 
     var validator = createRootValidator(query, getter);
 
-    function filter(b) {
-      return validate(validator, b);
+    function filter(b, k, o) {
+      return validate(validator, b, k, o);
     }
 
     if (array) {

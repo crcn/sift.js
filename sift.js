@@ -31,18 +31,17 @@
   function comparable(value) {
     if (value instanceof Date) {
       return value.getTime();
-    } else if (value instanceof Array) {
+    } else if (isArray(value)) {
       return value.map(comparable);
+    } else if (value && typeof value.toJSON === 'function') {
+      return value.toJSON();
     } else {
       return value;
     }
   }
 
   function get(obj, key) {
-    if (obj.get) {
-      return obj.get(key);
-    }
-    return obj[key];
+    return isFunction(obj.get) ? obj.get(key) : obj[key];
   }
 
   /**
@@ -79,7 +78,7 @@
     return validator.v(validator.a, b);
   }
 
-  var operator = {
+  var OPERATORS = {
 
     /**
      */
@@ -94,14 +93,6 @@
     $ne: and(function(a, b) {
       return !a(b);
     }),
-
-    /**
-     */
-
-    $or: function(a, b) {
-      for (var i = 0, n = a.length; i < n; i++) if (validate(get(a, i), b)) return true;
-      return false;
-    },
 
     /**
      */
@@ -182,7 +173,7 @@
           }
         }
 
-        return Boolean(!!~a.indexOf(comparable(b)));
+        return !!~a.indexOf(comparableB);
       }
 
       return false;
@@ -192,7 +183,7 @@
      */
 
     $nin: function(a, b) {
-      return !operator.$in(a, b);
+      return !OPERATORS.$in(a, b);
     },
 
     /**
@@ -213,7 +204,7 @@
      */
 
     $all: function(a, b) {
-      return operator.$and(a, b);
+      return OPERATORS.$and(a, b);
     },
 
     /**
@@ -226,14 +217,16 @@
     /**
      */
 
+    $or: function(a, b) {
+      for (var i = 0, n = a.length; i < n; i++) if (validate(get(a, i), b)) return true;
+      return false;
+    },
+
+    /**
+     */
+
     $nor: function(a, b) {
-      // todo - this suffice? return !operator.$in(a)
-      for (var i = 0, n = a.length; i < n; i++) {
-        if (validate(get(a, i), b)) {
-          return false;
-        }
-      }
-      return true;
+      return !OPERATORS.$or(a, b);
     },
 
     /**
@@ -455,7 +448,7 @@
    */
 
   function isVanillaObject(value) {
-    return String(value.constructor) === 'Object' || String(value.constructor).replace(/[\r\n\s\t]/g, '') === 'functionObject(){[nativecode]}';
+    return value && value.constructor === Object;
   }
 
   function parse(query) {
@@ -474,9 +467,9 @@
         continue;
       }
 
-      if (operator[key]) {
+      if (OPERATORS[key]) {
         if (prepare[key]) a = prepare[key](a, query);
-        validators.push(createValidator(comparable(a), operator[key]));
+        validators.push(createValidator(comparable(a), OPERATORS[key]));
       } else {
 
         if (key.charCodeAt(0) === 36) {
@@ -487,7 +480,7 @@
       }
     }
 
-    return validators.length === 1 ? validators[0] : createValidator(validators, operator.$and);
+    return validators.length === 1 ? validators[0] : createValidator(validators, OPERATORS.$and);
   }
 
   /**
@@ -537,7 +530,7 @@
     for (var key in plugin) {
       /* istanbul ignore else */
       if (key.charCodeAt(0) === 36) {
-        operator[key] = plugin[key];
+        OPERATORS[key] = plugin[key];
       }
     }
   };

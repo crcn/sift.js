@@ -132,6 +132,32 @@
     /**
      */
 
+    $like: or(function(a, b) {
+      if (typeof a === 'undefined' || typeof b === 'undefined') {
+        return false;
+      }
+      a = String(a);
+      b = String(b);
+
+      return b.indexOf(a) > -1;
+    }),
+
+    /**
+     */
+
+    $iLike: or(function(a, b) {
+      if (typeof a === 'undefined' || typeof b === 'undefined') {
+        return false;
+      }
+      a = String(a);
+      b = String(b);
+
+      return b.toLowerCase().indexOf(a.toLowerCase()) > -1;
+    }),
+
+    /**
+     */
+
     $in: function(a, b) {
 
       if (b instanceof Array) {

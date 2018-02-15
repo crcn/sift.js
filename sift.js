@@ -555,14 +555,12 @@
    */
 
   sift.compare = function(a, b) {
-    if(a===b) return 0;
-    if(typeof a === typeof b) {
-      if (a > b) {
-        return 1;
-      }
-      if (a < b) {
-        return -1;
-      }
+    if(a==b) return 0;
+    if (a > b) {
+      return 1;
+    }
+    if (a < b) {
+      return -1;
     }
   };
 

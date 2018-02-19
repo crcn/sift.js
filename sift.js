@@ -40,6 +40,22 @@
     }
   }
 
+  function numberComparable(value) {
+    if (typeof value === 'number') {
+      return value;
+    }
+
+    if (typeof value === 'string') {
+      return parseFloat(value);
+    }
+
+    return NaN;
+  }
+
+  function isComparable(a, b) {
+    return !(isNaN(a) && isNaN(b));;
+  }
+
   function get(obj, key) {
     return isFunction(obj.get) ? obj.get(key) : obj[key];
   }
@@ -98,28 +114,52 @@
      */
 
     $gt: or(function(a, b) {
-      return sift.compare(comparable(b), a) > 0;
+      a = numberComparable(a);
+      b = numberComparable(b);
+      if (!isComparable(a, b)) {
+        return false;
+      }
+
+      return sift.compare(b, a) > 0;
     }),
 
     /**
      */
 
     $gte: or(function(a, b) {
-      return sift.compare(comparable(b), a) >= 0;
+      a = numberComparable(a);
+      b = numberComparable(b);
+      if (!isComparable(a, b)) {
+        return false;
+      }
+
+      return sift.compare(b, a) >= 0;
     }),
 
     /**
      */
 
     $lt: or(function(a, b) {
-      return sift.compare(comparable(b), a) < 0;
+      a = numberComparable(a);
+      b = numberComparable(b);
+      if (!isComparable(a, b)) {
+        return false;
+      }
+
+      return sift.compare(b, a) < 0;
     }),
 
     /**
      */
 
     $lte: or(function(a, b) {
-      return sift.compare(comparable(b), a) <= 0;
+      a = numberComparable(a);
+      b = numberComparable(b);
+      if (!isComparable(a, b)) {
+        return false;
+      }
+
+      return sift.compare(b, a) <= 0;
     }),
 
     /**

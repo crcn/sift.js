@@ -46,7 +46,7 @@
     }
 
     if (typeof value === 'string') {
-      return parseFloat(value);
+      return parseFloat(value.replace(/[^0-9,\.-]+/, ''));
     }
 
     return NaN;

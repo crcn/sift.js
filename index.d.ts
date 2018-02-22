@@ -1,6 +1,10 @@
 export type SupportedTypes = Array<string | { [index: string]: any } | number | null | any>;
 export type KeyOrValue<T extends SupportedTypes> = T & T[0];
 
+export type ElemMatch<T extends { [index: string]: any[] }> = {
+  [P in keyof T]?: SiftQuery<T[P]>;
+}
+
 export type Query<T extends SupportedTypes> = {
     $eq?: T[0];
     $ne?: T[0];
@@ -19,7 +23,7 @@ export type Query<T extends SupportedTypes> = {
     $nor?: Array<Partial<T[0]>>;
     $and?: Array<Partial<T[0]>>;
     $regex?: RegExp | string;
-    $elemMatch?: { [index in keyof T[0]]?: SiftQuery<T[0][index]> };
+    $elemMatch?: ExternalQuery<T>;
     $exists?: boolean;
     $where?: string | WhereFn<T>;
     $options?: "i" | "g" | "m" | "u";
@@ -28,9 +32,7 @@ export type Query<T extends SupportedTypes> = {
 export interface InternalQuery<T extends SupportedTypes> extends Query<T> {
 }
 
-export type ExternalQuery<T extends SupportedTypes> = {
-    [P in keyof T[0]]?: SiftQuery<T[0][P]>;
-}
+export type ExternalQuery<T extends SupportedTypes> = ElemMatch<T[0]>;
 
 export type WhereFn<T extends SupportedTypes> = (this: T[0], value: T[0], index: number, array: T) => boolean;
 

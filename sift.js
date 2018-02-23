@@ -40,6 +40,36 @@
     }
   }
 
+  /**
+   * Given a value, most of the times would be a string try to return
+   * a value to compare. It will work for things like:
+   * "-$1", "01-01-2018", "1 dollar"
+   * Return NaN if we can't get something
+   * @param {*} value - Value to compare
+   */
+  function flComparable(value) {
+    var result;
+    if (typeof value === 'number') {
+      return value;
+    }
+
+    if (typeof value === 'string') {
+      result = parseFloat(value.replace(/[^0-9,\.-]+/, ''));
+    }
+
+    if (isNaN(result)) {
+      // Try to parse is as a Date
+      var date = new Date(value);
+      result = date.getTime();
+    }
+
+    return result;
+  }
+
+  function isComparable(a, b) {
+    return !(isNaN(a) && isNaN(b));;
+  }
+
   function get(obj, key) {
     return isFunction(obj.get) ? obj.get(key) : obj[key];
   }
@@ -98,28 +128,52 @@
      */
 
     $gt: or(function(a, b) {
-      return sift.compare(comparable(b), a) > 0;
+      a = flComparable(a);
+      b = flComparable(b);
+      if (!isComparable(a, b)) {
+        return false;
+      }
+
+      return sift.compare(b, a) > 0;
     }),
 
     /**
      */
 
     $gte: or(function(a, b) {
-      return sift.compare(comparable(b), a) >= 0;
+      a = flComparable(a);
+      b = flComparable(b);
+      if (!isComparable(a, b)) {
+        return false;
+      }
+
+      return sift.compare(b, a) >= 0;
     }),
 
     /**
      */
 
     $lt: or(function(a, b) {
-      return sift.compare(comparable(b), a) < 0;
+      a = flComparable(a);
+      b = flComparable(b);
+      if (!isComparable(a, b)) {
+        return false;
+      }
+
+      return sift.compare(b, a) < 0;
     }),
 
     /**
      */
 
     $lte: or(function(a, b) {
-      return sift.compare(comparable(b), a) <= 0;
+      a = flComparable(a);
+      b = flComparable(b);
+      if (!isComparable(a, b)) {
+        return false;
+      }
+
+      return sift.compare(b, a) <= 0;
     }),
 
     /**
@@ -127,6 +181,32 @@
 
     $mod: or(function(a, b) {
       return b % a[0] == a[1];
+    }),
+
+    /**
+     */
+
+    $like: or(function(a, b) {
+      if (typeof a === 'undefined' || typeof b === 'undefined') {
+        return false;
+      }
+      a = String(a);
+      b = String(b);
+
+      return b.indexOf(a) > -1;
+    }),
+
+    /**
+     */
+
+    $iLike: or(function(a, b) {
+      if (typeof a === 'undefined' || typeof b === 'undefined') {
+        return false;
+      }
+      a = String(a);
+      b = String(b);
+
+      return b.toLowerCase().indexOf(a.toLowerCase()) > -1;
     }),
 
     /**
@@ -555,14 +635,12 @@
    */
 
   sift.compare = function(a, b) {
-    if(a===b) return 0;
-    if(typeof a === typeof b) {
-      if (a > b) {
-        return 1;
-      }
-      if (a < b) {
-        return -1;
-      }
+    if(a==b) return 0;
+    if (a > b) {
+      return 1;
+    }
+    if (a < b) {
+      return -1;
     }
   };
 

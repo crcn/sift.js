@@ -40,16 +40,30 @@
     }
   }
 
-  function numberComparable(value) {
+  /**
+   * Given a value, most of the times would be a string try to return
+   * a value to compare. It will work for things like:
+   * "-$1", "01-01-2018", "1 dollar"
+   * Return NaN if we can't get something
+   * @param {*} value - Value to compare
+   */
+  function flComparable(value) {
+    var result;
     if (typeof value === 'number') {
       return value;
     }
 
     if (typeof value === 'string') {
-      return parseFloat(value.replace(/[^0-9,\.-]+/, ''));
+      result = parseFloat(value.replace(/[^0-9,\.-]+/, ''));
     }
 
-    return NaN;
+    if (isNaN(result)) {
+      // Try to parse is as a Date
+      var date = new Date(value);
+      result = date.getTime();
+    }
+
+    return result;
   }
 
   function isComparable(a, b) {
@@ -114,8 +128,8 @@
      */
 
     $gt: or(function(a, b) {
-      a = numberComparable(a);
-      b = numberComparable(b);
+      a = flComparable(a);
+      b = flComparable(b);
       if (!isComparable(a, b)) {
         return false;
       }
@@ -127,8 +141,8 @@
      */
 
     $gte: or(function(a, b) {
-      a = numberComparable(a);
-      b = numberComparable(b);
+      a = flComparable(a);
+      b = flComparable(b);
       if (!isComparable(a, b)) {
         return false;
       }
@@ -140,8 +154,8 @@
      */
 
     $lt: or(function(a, b) {
-      a = numberComparable(a);
-      b = numberComparable(b);
+      a = flComparable(a);
+      b = flComparable(b);
       if (!isComparable(a, b)) {
         return false;
       }
@@ -153,8 +167,8 @@
      */
 
     $lte: or(function(a, b) {
-      a = numberComparable(a);
-      b = numberComparable(b);
+      a = flComparable(a);
+      b = flComparable(b);
       if (!isComparable(a, b)) {
         return false;
       }

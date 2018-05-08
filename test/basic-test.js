@@ -119,6 +119,48 @@ describe(__filename + '#', function() {
     assert.equal(filtered.length, 1);
   });
 
+  it('$eq matches objects that serialize to the same value', function() {
+    var counter = 0;
+    function Book(name) {
+      this.name = name;
+      this.copyNumber = counter;
+      this.toJSON = function() {
+        return this.name; // discard the copy when serializing.
+      };
+      counter += 1;
+    }
+
+    var warAndPeace = new Book('War and Peace');
+
+    var sifter = sift({ $eq: warAndPeace});
+
+    var books = [ new Book('War and Peace')];
+    var filtered = books.filter(sifter);
+
+    assert.equal(filtered.length, 1);
+  });
+
+  it('$neq does not match objects that serialize to the same value', function() {
+    var counter = 0;
+    function Book(name) {
+      this.name = name;
+      this.copyNumber = counter;
+      this.toJSON = function() {
+        return this.name; // discard the copy when serializing.
+      };
+      counter += 1;
+    }
+
+    var warAndPeace = new Book('War and Peace');
+
+    var sifter = sift({ $ne: warAndPeace});
+
+    var books = [ new Book('War and Peace')];
+    var filtered = books.filter(sifter);
+
+    assert.equal(filtered.length, 0);
+  });
+
   // https://gist.github.com/jdnichollsc/00ea8cf1204b17d9fb9a991fbd1dfee6
   it('returns a period between start and end dates', function() {
 

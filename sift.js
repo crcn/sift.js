@@ -302,7 +302,7 @@
       }
 
       return function(b) {
-        return sift.compare(comparable(b), a) === 0;
+        return sift.compare(comparable(b), comparable(a)) === 0;
       };
     },
 

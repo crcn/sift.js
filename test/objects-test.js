@@ -209,6 +209,57 @@ describe(__filename + "#", function () {
         });
     });
 
+    describe("arrays of objects", function () {
+        var objects = [
+            {
+                things: [
+                    {
+                        id: 123
+                    }, {
+                        id: 456
+                    }
+                ]
+            }, {
+                things: [
+                    {
+                        id: 123
+                    },
+                    {
+                        id: 789
+                    }
+                ]
+            }
+        ];
+        it("$eq for array of objects, matches if at least one exists", function () {
+            let q = {
+                'things.id': 123
+            }
+            var sifted = sift(q, objects)
+            assert.deepEqual(sifted, objects)
+            let q2 = {
+                'things.id': 789
+            }
+            var sifted2 = sift(q2, objects)
+            assert.deepEqual(sifted2, [objects[1]])
+        })
+        it("$ne for array of objects, returns if none of the array elements match the query", function () {
+            let q = {
+                'things.id': {
+                    $ne: 123
+                }
+            }
+            var sifted = sift(q, objects)
+            assert.deepEqual(sifted, [])
+            let q2 = {
+                'things.id': {
+                    $ne: 789
+                }
+            }
+            var sifted2 = sift(q2, objects)
+            assert.deepEqual(sifted2, [objects[0]])
+        })
+    })
+
     describe("$where", function() {
 
       var couples = [{

@@ -411,14 +411,19 @@
       return validate(a.nv, first[0], first[1], first[2]);
     }
 
+    // If the query contains $ne, need to test all elements ANDed together
+    var inclusive = a && a.q && typeof a.q.$ne !== 'undefined';
+    var allValid = inclusive;
     for (var i = 0; i < values.length; i++) {
       var result = values[i];
-      if (validate(a.nv, result[0], result[1], result[2])) {
-        return true;
+      var isValid = validate(a.nv, result[0], result[1], result[2]);
+      if (inclusive) {
+        allValid &= isValid;
+      } else {
+        allValid |= isValid;
       }
     }
-
-    return false;
+    return allValid;
   }
 
   /**
@@ -427,6 +432,7 @@
   function findValues(current, keypath, index, object, values) {
 
     if (index === keypath.length || current == void 0) {
+
       values.push([current, keypath[index - 1], object]);
       return;
     }
@@ -448,8 +454,8 @@
   /**
    */
 
-  function createNestedValidator(keypath, a) {
-    return { a: { k: keypath, nv: a }, v: nestedValidator };
+  function createNestedValidator(keypath, a, q) {
+    return { a: { k: keypath, nv: a, q: q }, v: nestedValidator };
   }
 
   /**
@@ -484,8 +490,7 @@
         if (key.charCodeAt(0) === 36) {
           throw new Error('Unknown operation ' + key);
         }
-
-        validators.push(createNestedValidator(key.split('.'), parse(a)));
+        validators.push(createNestedValidator(key.split('.'), parse(a), a));
       }
     }
 

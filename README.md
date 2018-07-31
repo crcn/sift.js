@@ -356,7 +356,7 @@ var result = sift({
     casts: {$elemMatch:{
         value: {$gt: 1000}
     }}
-}, bills); // {month:'august', casts:[{id:2, value: 1000},{id: 4, value: 4000}]}
+}, bills); // {month:'august', casts:[{id:3, value: 1000},{id: 4, value: 4000}]}
 ```
 
 ### $not

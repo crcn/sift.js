@@ -1,7 +1,6 @@
-var assert   = require('assert');
-var sift     = require('../sift');
-var ObjectID = require('bson').pure().ObjectID;
-
+import * as assert from 'assert';
+import sift from '..';
+var ObjectID = require('bson').ObjectID;
 
 describe(__filename + '#', function () {
 
@@ -59,7 +58,7 @@ describe(__filename + '#', function () {
     // $exists
     [{$exists:false}, [0,false,void 0, null],[]],
     [{$exists:true}, [0,false,void 0, 1, {}],[0, false, void 0, 1, {}]],
-    [{"a.b": {$exists: true}}, [{a: {b: "exists"}}, {a: {c: "does not exist"}}], [{a: {b: "exists"}}]],
+    [{'a.b': {$exists: true}}, [{a: {b: 'exists'}}, {a: {c: 'does not exist'}}], [{a: {b: 'exists'}}]],
     [{field: { $exists: false }}, [{a: 1}, {a: 2, field: 5}, {a: 3, field: 0}, {a: 4, field: undefined}, {a: 5}],[{a: 1}, {a: 5}]],
 
     // $in
@@ -76,8 +75,8 @@ describe(__filename + '#', function () {
     [{$nin:[0,false,1,'1']},[0,1,2,3,4,false],[2,3,4]],
     [{$nin:[1,'1','2']},['1','2','3'],['3']],
     [{$nin:[new Date(1)]},[new Date(1), new Date(2)],[new Date(2)]],
-    [{"root.notDefined": {$nin: [1, 2, 3]}}, [{"root": {"defined": 1337}}], [{"root": {"defined": 1337}}]],
-    [{"root.notDefined": {$nin: [1, 2, 3, null]}}, [{"root": {"defined": 1337}}], []],
+    [{'root.notDefined': {$nin: [1, 2, 3]}}, [{'root': {'defined': 1337}}], [{'root': {'defined': 1337}}]],
+    [{'root.notDefined': {$nin: [1, 2, 3, null]}}, [{'root': {'defined': 1337}}], []],
     [{'x': {$nin: [{$regex: '.*aaa.*'}, {$regex: '.*bbb.*'}]}}, [{'x': {'b': 'aaa'}}, {'x': 'bbb'}, {'x': 'ccc'}, {'x': 'aaa'}], [{'x': {'b': 'aaa'}},{'x': 'ccc'}]],
     [{'x': {$nin: [/.*aaa.*/, /.*bbb.*/]}}, [{'x': {'b': 'aaa'}}, {'x': 'bbb'}, {'x': 'ccc'}, {'x': 'aaa'}], [{'x': {'b': 'aaa'}},{'x': 'ccc'}]],
 
@@ -129,7 +128,7 @@ describe(__filename + '#', function () {
     [/.+/,[undefined, null, true, false, 0, 'aa', {}],['aa']],
 
     // Multiple conditions on an undefined root
-    [{"a.b": {$exists: true, $nin: [null]}}, [{a: {b: "exists"}}, {a: {c: "does not exist"}}], [{a: {b: "exists"}}]],
+    [{'a.b': {$exists: true, $nin: [null]}}, [{a: {b: 'exists'}}, {a: {c: 'does not exist'}}], [{a: {b: 'exists'}}]],
 
     // $where
     [{$where:function () { return this.v === 1 }}, [{v:1},{v:2}],[{v:1}]],
@@ -186,9 +185,9 @@ describe(__filename + '#', function () {
 
     // based on https://gist.github.com/jdnichollsc/00ea8cf1204b17d9fb9a991fbd1dfee6
     [
-      { $and: [{ 'a.s': { $lte: new Date("2017-01-29T05:00:00.000Z") }}, {'a.e': { $gte: new Date("2017-01-08T05:00:00.000Z") }}]},
-      [{ a: { s: new Date("2017-01-13T05:00:00.000Z"), e: new Date("2017-01-31T05:00:00.000Z") }}],
-      [{ a: { s: new Date("2017-01-13T05:00:00.000Z"), e: new Date("2017-01-31T05:00:00.000Z") }}]
+      { $and: [{ 'a.s': { $lte: new Date('2017-01-29T05:00:00.000Z') }}, {'a.e': { $gte: new Date('2017-01-08T05:00:00.000Z') }}]},
+      [{ a: { s: new Date('2017-01-13T05:00:00.000Z'), e: new Date('2017-01-31T05:00:00.000Z') }}],
+      [{ a: { s: new Date('2017-01-13T05:00:00.000Z'), e: new Date('2017-01-31T05:00:00.000Z') }}]
     ],
 
   ].forEach(function (operation, i) {

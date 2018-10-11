@@ -1,3 +1,8 @@
+### 7.0.0
+
+- Remove global `*.use()` function.
+- converted to ES6
+
 ### 3.3.x
 
 - `$in` now uses `toString()` when evaluating objects. Fixes #116.

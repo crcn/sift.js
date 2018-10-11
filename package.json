@@ -1,7 +1,7 @@
 {
   "name": "sift",
   "description": "mongodb query style array filtering",
-  "version": "6.0.0",
+  "version": "7.0.0",
   "repository": "crcn/sift.js",
   "author": {
     "name": "Craig Condon",
@@ -13,25 +13,20 @@
   "dependencies": {},
   "typings": "./index.d.ts",
   "devDependencies": {
-    "benchmark": "^1.0.0",
-    "bson": "^0.2.18",
-    "gulp": "^3.9.0",
-    "gulp-coveralls": "^0.1.4",
-    "gulp-istanbul": "^0.10.0",
-    "gulp-jscs": "^1.6.0",
-    "gulp-jshint": "^1.11.2",
-    "gulp-mocha": "^2.1.2",
-    "gulp-plumber": "^1.0.1",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^1.2.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2015-loose": "^8.0.0",
+    "bson": "^3.0.2",
     "immutable": "^3.7.6",
-    "nodangel": "^1.3.8",
+    "mocha": "^5.2.0",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2",
     "yargs": "^3.15.0"
   },
-  "main": "./sift.js",
+  "main": "./lib/index.js",
   "scripts": {
-    "test": "gulp test-coverage",
-    "test-coveralls": "gulp test-coveralls",
-    "tdd": "nodangel --ignore node_modules --watch test --watch sift.js --exec 'npm run test'"
+    "build": "mkdir -p lib; babel src/index.js > lib/index.js; webpack",
+    "test": "mocha ./test -R spec --compilers js:babel-core/register"
   }
 }

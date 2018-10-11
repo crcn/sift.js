@@ -15,7 +15,7 @@
     "bower_components",
     "test",
     "benchmark",
-    "gulpfile.js",
+    "webpack.js",
     "package.json"
   ]
 }

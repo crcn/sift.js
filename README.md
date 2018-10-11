@@ -1,5 +1,7 @@
 ## validate objects & filter arrays with mongodb queries
-[![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js) [![Coverage Status](https://coveralls.io/repos/crcn/sift.js/badge.svg)](https://coveralls.io/r/crcn/sift.js) [![Join the chat at https://gitter.im/crcn/sift.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/sift.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js) 
+<!-- [![Coverage Status](https://coveralls.io/repos/crcn/sift.js/badge.svg)](https://coveralls.io/r/crcn/sift.js)  -->
+<!-- [![Join the chat at https://gitter.im/crcn/sift.js](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/crcn/sift.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) -->
 
 **For extended documentation, checkout http://docs.mongodb.org/manual/reference/operator/query/**
 
@@ -21,7 +23,7 @@
 
 ```javascript
 
-var sift = require('sift');
+import sift from 'sift';
 
 //intersecting arrays
 var sifted = sift({ $in: ['hello','world'] }, ['hello','sifted','array!']); //['hello']
@@ -392,33 +394,12 @@ var sifted = sift({'address.city': 'minneapolis'}, people);//count = 1
 ```
 
 
-## Custom Expressions
-
-You can add your own expressions. For instance - say you want to do some bitmask filtering, you could add this example:
-
-```javascript
-
-sift.use({
-	$band: function(a, b) {
-		return (a & b) ? 0 : -1; // 0 = exists, -1 = doesn't exist
-	}
-});
-
-// ops
-var IS_ANIMAL = 2,
-IS_PERSON     = IS_ANIMAL   << 1,
-IS_DOG        = IS_PERSON   << 1,
-EATS_CEREAL   = IS_DOG      << 1,
-EATS_BONES    = EATS_CEREAL << 1;
-
-sift({ $band: IS_PERSON }, [ IS_PERSON|EATS_CEREAL, IS_DOG|EATS_BONES, IS_PERSON ]);
-```
-
 ## Get index of first matching element
 
 Get the index (0-based) of first matching element in target array. Returns `-1` if no match is found.
 
 ```javascript
+import {indexOf as siftIndexOf} from 'sift';
 var people = [{
 	name: 'craig',
 	address: {
@@ -432,5 +413,5 @@ var people = [{
 	}
 }];
 
-var index = sift.indexOf({ address: { city: 'Minneapolis' }}, people); // index = 0
+var index = siftIndexOf({ address: { city: 'Minneapolis' }}, people); // index = 0
 ```

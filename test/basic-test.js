@@ -1,5 +1,5 @@
-var assert = require('assert'),
-sift = require('..');
+import * as assert from 'assert';
+import sift, {indexOf as siftIndexOf} from '..';
 
 describe(__filename + '#', function() {
 
@@ -54,13 +54,13 @@ describe(__filename + '#', function() {
   });
 
   it('can get the first index of a matching element', function () {
-    var index = sift.indexOf({ val: { $gt: 5}}, [{val: 4}, {val: 3}, {val: 6}, {val: 7}]);
+    var index = siftIndexOf({ val: { $gt: 5}}, [{val: 4}, {val: 3}, {val: 6}, {val: 7}]);
 
     assert.equal(index, 2);
   });
 
   it('returns -1 as index if no matching element is found', function () {
-    var index = sift.indexOf({ val: { $gt: 7}}, [{val: 4}, {val: 3}, {val: 6}, {val: 7}]);
+    var index = siftIndexOf({ val: { $gt: 7}}, [{val: 4}, {val: 3}, {val: 6}, {val: 7}]);
 
     assert.equal(index, -1);
   });

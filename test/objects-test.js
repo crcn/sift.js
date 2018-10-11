@@ -1,8 +1,7 @@
-var sift = require(".."),
-    assert = require("assert");
+import assert from 'assert';
+import sift from '..';
 
-
-describe(__filename + "#", function () {
+describe(__filename + '#', function () {
 
 
     var topic = [
@@ -58,14 +57,14 @@ describe(__filename + "#", function () {
             ]
         }
     ];
-    xit("throws error if $not is incorrect", function () {
+    xit('throws error if $not is incorrect', function () {
         assert.throws(function () {
             sift({
                 $not: ['abc']
             }, topic);
         }, Error);
     });
-    it("has sifted through photography in brazil count of 1", function () {
+    it('has sifted through photography in brazil count of 1', function () {
         var sifted = sift({
             hobbies: {
                 name: 'photography',
@@ -76,7 +75,7 @@ describe(__filename + "#", function () {
         }, topic);
         assert.equal(sifted.length, 1);
     });
-    it("has sifted through photography in brazil, haiti, and costa rica count of 1", function () {
+    it('has sifted through photography in brazil, haiti, and costa rica count of 1', function () {
         var sifted = sift({
             hobbies: {
                 name: 'photography',
@@ -88,7 +87,7 @@ describe(__filename + "#", function () {
         assert.equal(sifted.length, 1);
         assert.equal(sifted[0], topic[0]);
     });
-    it("has a sifted hobbies of photography, cooking, or biking count of 2", function () {
+    it('has a sifted hobbies of photography, cooking, or biking count of 2', function () {
         var sifted = sift({
             hobbies: {
                 name: {
@@ -98,7 +97,7 @@ describe(__filename + "#", function () {
         }, topic);
         assert.equal(sifted.length, 2);
     });
-    it("has sifted to complex count of 2", function () {
+    it('has sifted to complex count of 2', function () {
         var sifted = sift({
             hobbies: {
                 name: 'photography',
@@ -116,7 +115,7 @@ describe(__filename + "#", function () {
 
         assert.equal(sifted.length, 2);
     });
-    it("has sifted to complex count of 0", function () {
+    it('has sifted to complex count of 0', function () {
         var sifted = sift({
             hobbies: {
                 name: 'photos',
@@ -127,37 +126,37 @@ describe(__filename + "#", function () {
         }, topic);
         assert.equal(sifted.length, 0);
     });
-    it("has sifted subobject hobbies count of 3", function () {
+    it('has sifted subobject hobbies count of 3', function () {
         var sifted = sift({
-            "hobbies.name": "photography"
+            'hobbies.name': 'photography'
         }, topic);
         assert.equal(sifted.length, 2);
     });
     it('has sifted dot-notation hobbies of photography, cooking, and biking count of 3', function () {
         var sifted = sift({
-            "hobbies.name": {
+            'hobbies.name': {
                 $in: ['photography', 'cooking', 'biking']
             }
         }, topic);
         assert.equal(sifted.length, 2);
     });
-    it("has sifted to complex dot-search count of 2", function () {
+    it('has sifted to complex dot-search count of 2', function () {
         var sifted = sift({
-            "hobbies.name": "photography",
-            "hobbies.places": {
+            'hobbies.name': 'photography',
+            'hobbies.places': {
                 $in: ['costa rica']
             },
-            "address.state": "MN",
-            "address.phone": {
+            'address.state': 'MN',
+            'address.phone': {
                 $exists: true
             }
         }, topic);
         assert.equal(sifted.length, 2);
     });
-    it("has sifted with selector function count of 2", function () {
+    it('has sifted with selector function count of 2', function () {
         var sifted = sift({
-            "name": "photography",
-            "places": {
+            'name': 'photography',
+            'places': {
                 $in: ['costa rica']
             }
         }, topic, function (item) {
@@ -166,8 +165,8 @@ describe(__filename + "#", function () {
         assert.equal(sifted.length, 2);
     });
 
-    describe("nesting", function () {
-        it("$eq for nested object", function () {
+    describe('nesting', function () {
+        it('$eq for nested object', function () {
             var sifted = sift({'sub.num': {'$eq': 10}}, loremArr);
             assert(sifted.length > 0);
             sifted.forEach(function (v) {
@@ -175,7 +174,7 @@ describe(__filename + "#", function () {
             });
         });
 
-        it("$ne for nested object", function () {
+        it('$ne for nested object', function () {
             var sifted = sift({'sub.num': {'$ne': 10}}, loremArr);
             assert(sifted.length > 0);
             sifted.forEach(function (v) {
@@ -183,7 +182,7 @@ describe(__filename + "#", function () {
             });
         });
 
-        it("$regex for nested object (one missing key)", function () {
+        it('$regex for nested object (one missing key)', function () {
             var persons = [{
               id: 1,
               prof: 'Mr. Moriarty'
@@ -199,7 +198,7 @@ describe(__filename + "#", function () {
               name: 'Mr. Holmes',
               prof: 'Detective'
             }];
-            var q = { "name": { "$regex": "n" } };
+            var q = { 'name': { '$regex': 'n' } };
             var sifted = sift(q, persons);
             assert.deepEqual(sifted, [{
               id: 3,
@@ -209,7 +208,7 @@ describe(__filename + "#", function () {
         });
     });
 
-    describe("arrays of objects", function () {
+    describe('arrays of objects', function () {
         var objects = [
             {
                 things: [
@@ -230,7 +229,7 @@ describe(__filename + "#", function () {
                 ]
             }
         ];
-        it("$eq for array of objects, matches if at least one exists", function () {
+        it('$eq for array of objects, matches if at least one exists', function () {
             let q = {
                 'things.id': 123
             }
@@ -242,7 +241,7 @@ describe(__filename + "#", function () {
             var sifted2 = sift(q2, objects)
             assert.deepEqual(sifted2, [objects[1]])
         })
-        it("$ne for array of objects, returns if none of the array elements match the query", function () {
+        it('$ne for array of objects, returns if none of the array elements match the query', function () {
             let q = {
                 'things.id': {
                     $ne: 123
@@ -260,46 +259,46 @@ describe(__filename + "#", function () {
         })
     })
 
-    describe("$where", function() {
+    describe('$where', function() {
 
       var couples = [{
-          name: "SMITH",
+          name: 'SMITH',
           person: [{
-                  firstName: "craig",
-                  gender: "female",
+                  firstName: 'craig',
+                  gender: 'female',
                   age: 29
               }, {
-                  firstName: "tim",
-                  gender: "male",
+                  firstName: 'tim',
+                  gender: 'male',
                   age: 32
               }
 
           ]
       }, {
-          name: "JOHNSON",
+          name: 'JOHNSON',
           person: [{
-                  firstName: "emily",
-                  gender: "female",
+                  firstName: 'emily',
+                  gender: 'female',
                   age: 35
               }, {
-                  firstName: "jacob",
-                  gender: "male",
+                  firstName: 'jacob',
+                  gender: 'male',
                   age: 32
               }
 
           ]
       }];
 
-      it("can filter people", function() {
-          var results = sift({"person": {$elemMatch: { "gender": "female", "age": {"$lt": 30}}}}, couples);
-          assert.equal(results[0].name, "SMITH");
+      it('can filter people', function() {
+          var results = sift({'person': {$elemMatch: { 'gender': 'female', 'age': {'$lt': 30}}}}, couples);
+          assert.equal(results[0].name, 'SMITH');
 
-          var results = sift({"person": {$elemMatch: { "gender": "male", "age": {"$lt": 30}}}}, [couples[0]]);
+          var results = sift({'person': {$elemMatch: { 'gender': 'male', 'age': {'$lt': 30}}}}, [couples[0]]);
           assert.equal(results.length, 0);
       });
     });
 
-    describe("keypath", function () {
+    describe('keypath', function () {
 
         var arr = [
             {
@@ -311,8 +310,8 @@ describe(__filename + "#", function () {
                 }
             }
         ]
-        it("can be used", function () {
-            assert.equal(sift({"a.b.c":1})(arr[0]), true);
+        it('can be used', function () {
+            assert.equal(sift({'a.b.c':1})(arr[0]), true);
         });
     });
 });
@@ -320,91 +319,91 @@ describe(__filename + "#", function () {
 
 var loremArr = [
     {
-        "num": 1,
-        "pum": 1,
-        "sub": {
-            "num": 1,
-            "pum": 1
+        'num': 1,
+        'pum': 1,
+        'sub': {
+            'num': 1,
+            'pum': 1
         }
     },
     {
-        "num": 2,
-        "pum": 2,
-        "sub": {
-            "num": 2,
-            "pum": 2
+        'num': 2,
+        'pum': 2,
+        'sub': {
+            'num': 2,
+            'pum': 2
         }
     },
     {
-        "num": 3,
-        "pum": 3,
-        "sub": {
-            "num": 3,
-            "pum": 3
+        'num': 3,
+        'pum': 3,
+        'sub': {
+            'num': 3,
+            'pum': 3
         }
     },
     {
-        "num": 4,
-        "pum": 4,
-        "sub": {
-            "num": 4,
-            "pum": 4
+        'num': 4,
+        'pum': 4,
+        'sub': {
+            'num': 4,
+            'pum': 4
         }
     },
     {
-        "num": 5,
-        "pum": 5,
-        "sub": {
-            "num": 5,
-            "pum": 5
+        'num': 5,
+        'pum': 5,
+        'sub': {
+            'num': 5,
+            'pum': 5
         }
     },
     {
-        "num": 6,
-        "pum": 6,
-        "sub": {
-            "num": 6,
-            "pum": 6
+        'num': 6,
+        'pum': 6,
+        'sub': {
+            'num': 6,
+            'pum': 6
         }
     },
     {
-        "num": 7,
-        "pum": 7,
-        "sub": {
-            "num": 7,
-            "pum": 7
+        'num': 7,
+        'pum': 7,
+        'sub': {
+            'num': 7,
+            'pum': 7
         }
     },
     {
-        "num": 8,
-        "pum": 8,
-        "sub": {
-            "num": 8,
-            "pum": 8
+        'num': 8,
+        'pum': 8,
+        'sub': {
+            'num': 8,
+            'pum': 8
         }
     },
     {
-        "num": 9,
-        "pum": 9,
-        "sub": {
-            "num": 9,
-            "pum": 9
+        'num': 9,
+        'pum': 9,
+        'sub': {
+            'num': 9,
+            'pum': 9
         }
     },
     {
-        "num": 10,
-        "pum": 10,
-        "sub": {
-            "num": 10,
-            "pum": 10
+        'num': 10,
+        'pum': 10,
+        'sub': {
+            'num': 10,
+            'pum': 10
         }
     },
     {
-        "num": 11,
-        "pum": 11,
-        "sub": {
-            "num": 10,
-            "pum": 10
+        'num': 11,
+        'pum': 11,
+        'sub': {
+            'num': 10,
+            'pum': 10
         }
     }
 ];

@@ -6,19 +6,19 @@
  * Filter JavaScript objects with mongodb queries
  */
 
-/**
- */
-
-function isFunction(value) {
-  return typeof value === 'function';
+function typeChecker(type) {
+  var typeString = "[object " + type + "]";
+  return function(value) {
+    return Object.prototype.toString.call(value) === typeString;
+  };
 }
 
 /**
  */
 
-function isArray(value) {
-  return Object.prototype.toString.call(value) === '[object Array]';
-}
+var isArray = typeChecker("Array");
+var isObject = typeChecker("Object");
+var isFunction = typeChecker("Function");
 
 /**
  */
@@ -28,7 +28,7 @@ function comparable(value) {
     return value.getTime();
   } else if (isArray(value)) {
     return value.map(comparable);
-  } else if (value && typeof value.toJSON === 'function') {
+  } else if (value && typeof value.toJSON === "function") {
     return value.toJSON();
   } else {
     return value;
@@ -48,10 +48,10 @@ function or(validator) {
       return validator(a, b);
     }
     for (var i = 0, n = b.length; i < n; i++) {
-      if (validator(a, get(b,i))) return true;
+      if (validator(a, get(b, i))) return true;
     }
     return false;
-  }
+  };
 }
 
 /**
@@ -73,8 +73,7 @@ function validate(validator, b, k, o) {
   return validator.v(validator.a, b, k, o);
 }
 
-var OPERATORS = {
-
+var operators = {
   /**
    */
 
@@ -128,18 +127,17 @@ var OPERATORS = {
    */
 
   $in: function(a, b) {
-
     if (b instanceof Array) {
-      for (var i = b.length; i--;) {
+      for (var i = b.length; i--; ) {
         if (~a.indexOf(comparable(get(b, i)))) {
           return true;
         }
       }
     } else {
       var comparableB = comparable(b);
-      if (comparableB === b && typeof b === 'object') {
-        for (var i = a.length; i--;) {
-          if (String(a[i]) === String(b) && String(b) !== '[object Object]') {
+      if (comparableB === b && typeof b === "object") {
+        for (var i = a.length; i--; ) {
+          if (String(a[i]) === String(b) && String(b) !== "[object Object]") {
             return true;
           }
         }
@@ -149,8 +147,8 @@ var OPERATORS = {
         Handles documents that are undefined, whilst also
         having a 'null' element in the parameters to $in.
       */
-      if (typeof comparableB == 'undefined') {
-        for (var i = a.length; i--;) {
+      if (typeof comparableB == "undefined") {
+        for (var i = a.length; i--; ) {
           if (a[i] == null) {
             return true;
           }
@@ -160,10 +158,14 @@ var OPERATORS = {
       /*
         Handles the case of {'field': {$in: [/regexp1/, /regexp2/, ...]}}
       */
-      for (var i = a.length; i--;) {
+      for (var i = a.length; i--; ) {
         var validator = createRootValidator(get(a, i), undefined);
         var result = validate(validator, b, i, a);
-        if ((result) && (String(result) !== '[object Object]') && (String(b) !== '[object Object]')) {
+        if (
+          result &&
+          String(result) !== "[object Object]" &&
+          String(b) !== "[object Object]"
+        ) {
           return true;
         }
       }
@@ -178,7 +180,7 @@ var OPERATORS = {
    */
 
   $nin: function(a, b, k, o) {
-    return !OPERATORS.$in(a, b, k, o);
+    return !operators.$in(a, b, k, o);
   },
 
   /**
@@ -193,13 +195,13 @@ var OPERATORS = {
 
   $type: function(a, b) {
     return b != void 0 ? b instanceof a || b.constructor == a : false;
-    },
+  },
 
   /**
    */
 
   $all: function(a, b, k, o) {
-    return OPERATORS.$and(a, b, k, o);
+    return operators.$and(a, b, k, o);
   },
 
   /**
@@ -213,7 +215,8 @@ var OPERATORS = {
    */
 
   $or: function(a, b, k, o) {
-    for (var i = 0, n = a.length; i < n; i++) if (validate(get(a, i), b, k, o)) return true;
+    for (var i = 0, n = a.length; i < n; i++)
+      if (validate(get(a, i), b, k, o)) return true;
     return false;
   },
 
@@ -221,7 +224,7 @@ var OPERATORS = {
    */
 
   $nor: function(a, b, k, o) {
-    return !OPERATORS.$or(a, b, k, o);
+    return !operators.$or(a, b, k, o);
   },
 
   /**
@@ -240,7 +243,7 @@ var OPERATORS = {
    */
 
   $regex: or(function(a, b) {
-    return typeof b === 'string' && a.test(b);
+    return typeof b === "string" && a.test(b);
   }),
 
   /**
@@ -272,28 +275,26 @@ var OPERATORS = {
  */
 
 var prepare = {
-
   /**
    */
 
   $eq: function(a) {
-
     if (a instanceof RegExp) {
       return function(b) {
-        return typeof b === 'string' && a.test(b);
+        return typeof b === "string" && a.test(b);
       };
     } else if (a instanceof Function) {
       return a;
     } else if (isArray(a) && !a.length) {
       // Special case of a == []
       return function(b) {
-        return (isArray(b) && !b.length);
+        return isArray(b) && !b.length;
       };
-    } else if (a === null){
-      return function(b){
+    } else if (a === null) {
+      return function(b) {
         //will match both null and undefined
         return b == null;
-      }
+      };
     }
 
     return function(b) {
@@ -354,7 +355,7 @@ var prepare = {
    */
 
   $where: function(a) {
-    return typeof a === 'string' ? new Function('obj', 'return ' + a) : a;
+    return typeof a === "string" ? new Function("obj", "return " + a) : a;
   },
 
   /**
@@ -376,7 +377,6 @@ var prepare = {
  */
 
 function search(array, validator) {
-
   for (var i = 0; i < array.length; i++) {
     var result = get(array, i);
     if (validate(validator, get(array, i))) {
@@ -398,7 +398,7 @@ function createValidator(a, validate) {
  */
 
 function nestedValidator(a, b) {
-  var values  = [];
+  var values = [];
   findValues(b, a.k, 0, b, values);
 
   if (values.length === 1) {
@@ -407,7 +407,7 @@ function nestedValidator(a, b) {
   }
 
   // If the query contains $ne, need to test all elements ANDed together
-  var inclusive = a && a.q && typeof a.q.$ne !== 'undefined';
+  var inclusive = a && a.q && typeof a.q.$ne !== "undefined";
   var allValid = inclusive;
   for (var i = 0; i < values.length; i++) {
     var result = values[i];
@@ -425,9 +425,7 @@ function nestedValidator(a, b) {
  */
 
 function findValues(current, keypath, index, object, values) {
-
   if (index === keypath.length || current == void 0) {
-
     values.push([current, keypath[index - 1], object]);
     return;
   }
@@ -464,8 +462,13 @@ function isVanillaObject(value) {
 function parse(query) {
   query = comparable(query);
 
-  if (!query || !isVanillaObject(query)) { // cross browser support
+  if (!query || !isVanillaObject(query)) {
+    // cross browser support
     query = { $eq: query };
+  }
+
+  if (isExactObject(query)) {
+    return createValidator(query, isEqual);
   }
 
   var validators = [];
@@ -473,23 +476,75 @@ function parse(query) {
   for (var key in query) {
     var a = query[key];
 
-    if (key === '$options') {
+    if (key === "$options") {
       continue;
     }
 
-    if (OPERATORS[key]) {
+    if (operators[key]) {
       if (prepare[key]) a = prepare[key](a, query);
-      validators.push(createValidator(comparable(a), OPERATORS[key]));
+      validators.push(createValidator(comparable(a), operators[key]));
     } else {
-
       if (key.charCodeAt(0) === 36) {
-        throw new Error('Unknown operation ' + key);
+        throw new Error("Unknown operation " + key);
       }
-      validators.push(createNestedValidator(key.split('.'), parse(a), a));
+
+      var keyParts = key.split(".");
+      validators.push(createNestedValidator(keyParts, parse(a, key), a));
     }
   }
 
-  return validators.length === 1 ? validators[0] : createValidator(validators, OPERATORS.$and);
+  return validators.length === 1
+    ? validators[0]
+    : createValidator(validators, operators.$and);
+}
+
+function isEqual(a, b) {
+  if (Object.prototype.toString.call(a) !== Object.prototype.toString.call(b)) {
+    return false;
+  }
+
+  if (isObject(a)) {
+    if (Object.keys(a).length !== Object.keys(b).length) {
+      return false;
+    }
+
+    for (var key in a) {
+      if (!isEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+
+    return true;
+  } else if (isArray(a)) {
+    if (a.length !== b.length) {
+      return false;
+    }
+    for (var i = 0, n = a.length; i < n; i++) {
+      if (!isEqual(a[i], b[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  } else {
+    return a === b;
+  }
+}
+
+function getAllKeys(value, keys) {
+  if (!isObject(value)) {
+    return keys;
+  }
+  for (var key in value) {
+    keys.push(key);
+    getAllKeys(value[key], keys);
+  }
+  return keys;
+}
+
+function isExactObject(value) {
+  const allKeysHash = getAllKeys(value, []).join(",");
+  return allKeysHash.search(/[$.]/) === -1;
 }
 
 /**
@@ -511,24 +566,11 @@ function createRootValidator(query, getter) {
 /**
  */
 
-export default function sift(query, array, getter) {
-
-  if (isFunction(array)) {
-    getter = array;
-    array  = void 0;
-  }
-
+export default function sift(query, getter) {
   var validator = createRootValidator(query, getter);
-
-  function filter(b, k, o) {
+  return function(b, k, o) {
     return validate(validator, b, k, o);
-  }
-
-  if (array) {
-    return array.filter(filter);
-  }
-
-  return filter;
+  };
 }
 
 /**
@@ -536,14 +578,14 @@ export default function sift(query, array, getter) {
 
 export function indexOf(query, array, getter) {
   return search(array, createRootValidator(query, getter));
-};
+}
 
 /**
  */
 
 export function compare(a, b) {
-  if(a===b) return 0;
-  if(typeof a === typeof b) {
+  if (a === b) return 0;
+  if (typeof a === typeof b) {
     if (a > b) {
       return 1;
     }
@@ -551,4 +593,4 @@ export function compare(a, b) {
       return -1;
     }
   }
-};
+}

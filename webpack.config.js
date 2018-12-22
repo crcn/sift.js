@@ -1,23 +1,22 @@
-const {resolve} = require('path');
-const fs = require('fs');
+const { resolve } = require("path");
+const fs = require("fs");
 
 module.exports = {
-  devtool: 'none',
-  mode: 'production',
+  devtool: "none",
+  mode: "production",
   entry: {
-    index: [__dirname + '/lib/index.js']
+    index: [__dirname + "/src/index.js"]
   },
   output: {
     path: __dirname,
-    library: 'sift',
-    libraryTarget: 'umd',
-    filename: 'sift.min.js'
+    library: "sift",
+    libraryTarget: "umd",
+    filename: "sift.min.js"
   },
   resolve: {
-    extensions: ['.js']
+    extensions: [".js"]
   },
   module: {
-    rules: [
-    ]
+    rules: []
   }
 };

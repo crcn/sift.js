@@ -1,3 +1,8 @@
+## 8.0.0
+
+- Deprecated `sift(query, array)`. You must now use `array.filter(sift(query))`
+- Queries now expect exact object shape (based on https://github.com/crcn/sift.js/issues/117). E.g: `[{a: 1, b: 1}, {a: 1}]].filter(sift({ a: 1 })) === [{a: 1}]`
+
 ### 7.0.0
 
 - Remove global `*.use()` function.
@@ -18,7 +23,7 @@ sift.use({
       // compare here
     };
   }
-})
+});
 ```
 
 - all operators are traversable now

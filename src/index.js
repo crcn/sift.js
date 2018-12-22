@@ -362,7 +362,7 @@ var prepare = {
    */
 
   $elemMatch: function(a) {
-    return parse(a, false);
+    return parse(a);
   },
 
   /**
@@ -459,7 +459,7 @@ function isVanillaObject(value) {
   return value && value.constructor === Object;
 }
 
-function parse(query, allowExact) {
+function parse(query) {
   query = comparable(query);
 
   if (!query || !isVanillaObject(query)) {
@@ -467,7 +467,7 @@ function parse(query, allowExact) {
     query = { $eq: query };
   }
 
-  if (allowExact !== false && isExactObject(query)) {
+  if (isExactObject(query)) {
     return createValidator(query, isEqual);
   }
 
@@ -566,23 +566,11 @@ function createRootValidator(query, getter) {
 /**
  */
 
-export default function sift(query, array, getter) {
-  if (isFunction(array)) {
-    getter = array;
-    array = void 0;
-  }
-
+export default function sift(query, getter) {
   var validator = createRootValidator(query, getter);
-
-  function filter(b, k, o) {
+  return function(b, k, o) {
     return validate(validator, b, k, o);
-  }
-
-  if (array) {
-    return array.filter(filter);
-  }
-
-  return filter;
+  };
 }
 
 /**

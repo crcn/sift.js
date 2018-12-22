@@ -73,7 +73,7 @@ function validate(validator, b, k, o) {
   return validator.v(validator.a, b, k, o);
 }
 
-var operators = {
+var expressions = {
   /**
    */
 
@@ -180,7 +180,7 @@ var operators = {
    */
 
   $nin: function(a, b, k, o) {
-    return !operators.$in(a, b, k, o);
+    return !expressions.$in(a, b, k, o);
   },
 
   /**
@@ -201,7 +201,7 @@ var operators = {
    */
 
   $all: function(a, b, k, o) {
-    return operators.$and(a, b, k, o);
+    return expressions.$and(a, b, k, o);
   },
 
   /**
@@ -224,7 +224,7 @@ var operators = {
    */
 
   $nor: function(a, b, k, o) {
-    return !operators.$or(a, b, k, o);
+    return !expressions.$or(a, b, k, o);
   },
 
   /**
@@ -312,8 +312,8 @@ var prepare = {
   /**
    */
 
-  $and: function(a) {
-    return a.map(parse);
+  $and: function(a, query, options) {
+    return a.map(parse(options));
   },
 
   /**
@@ -326,22 +326,22 @@ var prepare = {
   /**
    */
 
-  $or: function(a) {
-    return a.map(parse);
+  $or: function(a, query, options) {
+    return a.map(parse(options));
   },
 
   /**
    */
 
-  $nor: function(a) {
-    return a.map(parse);
+  $nor: function(a, query, options) {
+    return a.map(parse(options));
   },
 
   /**
    */
 
-  $not: function(a) {
-    return parse(a);
+  $not: function(a, query, options) {
+    return parse(options)(a);
   },
 
   /**
@@ -361,8 +361,8 @@ var prepare = {
   /**
    */
 
-  $elemMatch: function(a) {
-    return parse(a);
+  $elemMatch: function(a, query, options) {
+    return parse(options)(a);
   },
 
   /**
@@ -459,43 +459,51 @@ function isVanillaObject(value) {
   return value && value.constructor === Object;
 }
 
-function parse(query) {
-  query = comparable(query);
+function parse(options) {
+  var parseSub = function(query) {
+    query = comparable(query);
 
-  if (!query || !isVanillaObject(query)) {
-    // cross browser support
-    query = { $eq: query };
-  }
-
-  if (isExactObject(query)) {
-    return createValidator(query, isEqual);
-  }
-
-  var validators = [];
-
-  for (var key in query) {
-    var a = query[key];
-
-    if (key === "$options") {
-      continue;
+    if (!query || !isVanillaObject(query)) {
+      // cross browser support
+      query = { $eq: query };
     }
 
-    if (operators[key]) {
-      if (prepare[key]) a = prepare[key](a, query);
-      validators.push(createValidator(comparable(a), operators[key]));
-    } else {
-      if (key.charCodeAt(0) === 36) {
-        throw new Error("Unknown operation " + key);
+    if (isExactObject(query)) {
+      return createValidator(query, isEqual);
+    }
+
+    var validators = [];
+
+    for (var key in query) {
+      var a = query[key];
+
+      if (key === "$options") {
+        continue;
       }
 
-      var keyParts = key.split(".");
-      validators.push(createNestedValidator(keyParts, parse(a, key), a));
-    }
-  }
+      var expression =
+        expressions[key] ||
+        (options && options.expressions && options.expressions[key]);
 
-  return validators.length === 1
-    ? validators[0]
-    : createValidator(validators, operators.$and);
+      if (expression) {
+        if (prepare[key]) a = prepare[key](a, query, options);
+        validators.push(createValidator(comparable(a), expression));
+      } else {
+        if (key.charCodeAt(0) === 36) {
+          throw new Error("Unknown operation " + key);
+        }
+
+        var keyParts = key.split(".");
+        validators.push(createNestedValidator(keyParts, parseSub(a, key), a));
+      }
+    }
+
+    return validators.length === 1
+      ? validators[0]
+      : createValidator(validators, expressions.$and);
+  };
+
+  return parseSub;
 }
 
 function isEqual(a, b) {
@@ -550,13 +558,13 @@ function isExactObject(value) {
 /**
  */
 
-function createRootValidator(query, getter) {
-  var validator = parse(query);
-  if (getter) {
+function createRootValidator(query, options) {
+  var validator = parse(options)(query);
+  if (options && options.select) {
     validator = {
       a: validator,
       v: function(a, b, k, o) {
-        return validate(a, getter(b), k, o);
+        return validate(a, options.select(b), k, o);
       }
     };
   }
@@ -566,8 +574,8 @@ function createRootValidator(query, getter) {
 /**
  */
 
-export default function sift(query, getter) {
-  var validator = createRootValidator(query, getter);
+export default function sift(query, options) {
+  var validator = createRootValidator(query, options);
   return function(b, k, o) {
     return validate(validator, b, k, o);
   };
@@ -576,8 +584,8 @@ export default function sift(query, getter) {
 /**
  */
 
-export function indexOf(query, array, getter) {
-  return search(array, createRootValidator(query, getter));
+export function indexOf(query, array, options) {
+  return search(array, createRootValidator(query, options));
 }
 
 /**

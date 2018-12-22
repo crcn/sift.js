@@ -16,9 +16,14 @@ describe(__filename + "#", function() {
   });
 
   it("can create a custom selector, and use it", function() {
-    var sifter = sift({ age: { $gt: 5 } }, function(item) {
-      return item.person;
-    });
+    var sifter = sift(
+      { age: { $gt: 5 } },
+      {
+        select: function(item) {
+          return item.person;
+        }
+      }
+    );
 
     var people = [{ person: { age: 6 } }],
       filtered = people.filter(sifter);
@@ -36,19 +41,6 @@ describe(__filename + "#", function() {
     }
 
     assert.equal(err.message, "Unknown operation $aaa");
-  });
-
-  it("can use a custom selector as the 3rd param", function() {
-    var people = [{ person: { age: 6 } }];
-
-    var filtered = people.filter(
-      sift({ age: { $gt: 5 } }, function(item) {
-        return item.person;
-      })
-    );
-
-    assert.equal(filtered.length, 1);
-    assert.equal(filtered[0], people[0]);
   });
 
   it("can get the first index of a matching element", function() {

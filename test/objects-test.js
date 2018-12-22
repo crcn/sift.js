@@ -170,8 +170,10 @@ describe(__filename + "#", function() {
             $in: ["costa rica"]
           }
         },
-        function(item) {
-          return item.hobbies;
+        {
+          select: function(item) {
+            return item.hobbies;
+          }
         }
       )
     );

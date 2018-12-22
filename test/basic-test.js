@@ -43,28 +43,6 @@ describe(__filename + "#", function() {
     assert.equal(err.message, "Unknown operation $aaa");
   });
 
-  it("can get the first index of a matching element", function() {
-    var index = siftIndexOf({ val: { $gt: 5 } }, [
-      { val: 4 },
-      { val: 3 },
-      { val: 6 },
-      { val: 7 }
-    ]);
-
-    assert.equal(index, 2);
-  });
-
-  it("returns -1 as index if no matching element is found", function() {
-    var index = siftIndexOf({ val: { $gt: 7 } }, [
-      { val: 4 },
-      { val: 3 },
-      { val: 6 },
-      { val: 7 }
-    ]);
-
-    assert.equal(index, -1);
-  });
-
   it("can match empty arrays", function() {
     var statusQuery = {
       $or: [

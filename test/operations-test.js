@@ -136,6 +136,13 @@ describe(__filename + "#", function() {
       [{ a: 1 }, { a: 5 }]
     ],
 
+    // based on https://github.com/crcn/sift.js/issues/146
+    [
+      { "formData.kg": { $exists: true } },
+      [{ formData: { kg: null } }, { a: 1 }],
+      [{ formData: { kg: null } }]
+    ],
+
     // $in
     // TODO - {$in:[Date]} doesn't work - make it work?
     [{ $in: [0, false, 1, "1"] }, [0, 1, 2, 3, 4, false], [0, 1, false]],

@@ -408,30 +408,6 @@ Not expression:
 ["craig", "tim", "jake"].filter(sift({ $not: { $size: 5 } })); //['tim','jake']
 ```
 
-## sub object Searching
-
-```javascript
-var people = [
-  {
-    name: "craig",
-    address: {
-      city: "Minneapolis"
-    }
-  },
-  {
-    name: "tim",
-    address: {
-      city: "St. Paul"
-    }
-  }
-];
-
-var sifted = people.filter(sift({ address: { city: "Minneapolis" } })); // count = 1
-
-//or
-var sifted = people.filter(sift({ "address.city": "minneapolis" })); //count = 1
-```
-
 ## Custom expressions
 
 ```javascript

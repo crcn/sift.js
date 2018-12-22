@@ -1,6 +1,8 @@
 ## 8.0.0
 
-- Deprecated `sift(query, array)`. You must now use `array.filter(sift(query))`
+- DEPRECATED `indexOf` in favor of `array.findIndex(sift(query))`
+- second param is now `options` instead of select function. E.g: `sift(query, { expressions: customExpressions, select: selectValue })`
+- DEPRECATED `sift(query, array)`. You must now use `array.filter(sift(query))`
 - Queries now expect exact object shape (based on https://github.com/crcn/sift.js/issues/117). E.g: `[{a: 1, b: 1}, {a: 1}]].filter(sift({ a: 1 })) === [{a: 1}]`
 
 ### 7.0.0

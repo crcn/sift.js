@@ -584,13 +584,6 @@ export default function sift(query, options) {
 /**
  */
 
-export function indexOf(query, array, options) {
-  return search(array, createRootValidator(query, options));
-}
-
-/**
- */
-
 export function compare(a, b) {
   if (a === b) return 0;
   if (typeof a === typeof b) {

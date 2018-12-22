@@ -77,11 +77,10 @@ testQuery({ name: "tim" }); //false\
 
 ## API
 
-### .sift(query: MongoQuery, selector?: Function): Function
+### .sift(query: MongoQuery, options?: SiftOptions): Function
 
 - `query` - the filter to use against the target array
-- `array` - sifts against target array. Without this, a function is returned
-- `selector` - selector for the values within the array.
+- `options` - `select` - value selector - `expressions` - custom expressions
 
 With an array:
 
@@ -433,26 +432,21 @@ var sifted = people.filter(sift({ address: { city: "Minneapolis" } })); // count
 var sifted = people.filter(sift({ "address.city": "minneapolis" })); //count = 1
 ```
 
-## Get index of first matching element
-
-Get the index (0-based) of first matching element in target array. Returns `-1` if no match is found.
+## Custom expressions
 
 ```javascript
-import { indexOf as siftIndexOf } from "sift";
-var people = [
+var filter = sift(
   {
-    name: "craig",
-    address: {
-      city: "Minneapolis"
-    }
+    $customMod: 2
   },
   {
-    name: "tim",
-    address: {
-      city: "St. Paul"
+    expressions: {
+      $customMod: function(query, value) {
+        return query % value;
+      }
     }
   }
-];
+);
 
-var index = people.filter(siftIndexOf({ address: { city: "Minneapolis" } })); // index = 0
+[1, 2, 3, 4, 5].filter(filter); // 1, 3, 5
 ```

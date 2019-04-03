@@ -1,6 +1,6 @@
 export type SupportedType =
   | string
-  | { [index: string]: any }
+  | { [index: string]: RegExp | any }
   | number
   | null
   | any;
@@ -43,7 +43,7 @@ export type WhereFn<T extends SupportedType> = (
   array: T
 ) => boolean;
 
-export type FilterFn<T> = (value: T, index?: number, array?: T[]) => boolean;
+export type FilterFn = <T>(value: T, index?: number, array?: T[]) => boolean;
 
 export type SiftQuery<T extends SupportedType> =
   | ExternalQuery<T>
@@ -71,7 +71,7 @@ export interface Sift {
   <T extends SupportedType>(
     query: SiftQuery<T>,
     options?: Options<T>
-  ): FilterFn<T>;
+  ): FilterFn;
   compare<T, K>(a: T, b: K): 0 | -1 | 1;
 }
 

@@ -1,62 +1,79 @@
-export type SupportedTypes = Array<string | { [index: string]: any } | number | null | any>;
-export type KeyOrValue<T extends SupportedTypes> = T & T[0];
+export type SupportedType =
+  | string
+  | { [index: string]: any }
+  | number
+  | null
+  | any;
+export type KeyOrValue<T extends SupportedType> = T;
 
-export type ElemMatch<T extends { [index: string]: any[] }> = {
-  [P in keyof T]?: SiftQuery<T[P]>;
-}
+export type ElemMatch<T> = { [P in keyof T]?: SiftQuery<T[P]> };
 
-export type Query<T extends SupportedTypes> = {
-    $eq?: T[0];
-    $ne?: T[0];
-    $or?: Array<Partial<T[0]>>;
-    $gt?: T[0];
-    $gte?: T[0];
-    $lt?: T[0];
-    $lte?: T[0];
-    $mod?: number[];
-    $in?: Array<Partial<T[0]>>;
-    $nin?: Array<Partial<T[0]>>;
-    $not?: SiftQuery<T>;
-    $type?: any;
-    $all?: Array<Partial<T[0]>>;
-    $size?: number;
-    $nor?: Array<Partial<T[0]>>;
-    $and?: Array<Partial<T[0]>>;
-    $regex?: RegExp | string;
-    $elemMatch?: ExternalQuery<T>;
-    $exists?: boolean;
-    $where?: string | WhereFn<T>;
-    $options?: "i" | "g" | "m" | "u";
-}
+export type Query<T extends SupportedType> = {
+  $eq?: T;
+  $ne?: T;
+  $or?: T[];
+  $gt?: T;
+  $gte?: T;
+  $lt?: T;
+  $lte?: T;
+  $mod?: number[];
+  $in?: T[];
+  $nin?: T[];
+  $not?: SiftQuery<T>;
+  $type?: any;
+  $all?: T[];
+  $size?: number;
+  $nor?: T[];
+  $and?: T[];
+  $regex?: RegExp | string;
+  $elemMatch?: ExternalQuery<T>;
+  $exists?: boolean;
+  $where?: string | WhereFn<T>;
+  $options?: "i" | "g" | "m" | "u";
+};
 
-export interface InternalQuery<T extends SupportedTypes> extends Query<T> {
-}
+export interface InternalQuery<T extends SupportedType> extends Query<T> {}
 
-export type ExternalQuery<T extends SupportedTypes> = ElemMatch<T[0]>;
+export type ExternalQuery<T extends SupportedType> = ElemMatch<T>;
 
-export type WhereFn<T extends SupportedTypes> = (this: T[0], value: T[0], index: number, array: T) => boolean;
+export type WhereFn<T extends SupportedType> = (
+  this: T,
+  value: T,
+  index: number,
+  array: T
+) => boolean;
 
-export type FilterFn = <T>(value: T, index?: number, array?: T[]) => boolean;
+export type FilterFn<T> = (value: T, index?: number, array?: T[]) => boolean;
 
-export type SiftQuery<T extends SupportedTypes> = ExternalQuery<T> & InternalQuery<T>;
+export type SiftQuery<T extends SupportedType> =
+  | ExternalQuery<T>
+  | InternalQuery<T>;
 
 export type PluginDefinition<T> = {
-    [index: string]: (a: T, b: T) => boolean | number;
-}
+  [index: string]: (a: T, b: T) => boolean | number;
+};
 
 export type PluginFunction<T> = (sift: Sift) => PluginDefinition<T>;
 
-export type Exec = <T extends SupportedTypes>(array: T) => T;
+export type Exec = <T extends SupportedType>(array: T) => T;
+
+type Options<T> = {
+  expressions?: {
+    [identifier: string]: (
+      item: T,
+      query: SiftQuery<T>,
+      options: Options<T>
+    ) => boolean;
+  };
+};
 
 export interface Sift {
-    <T extends SupportedTypes>(query: RegExp, target: T, rawSelector?: any): T;
-    <T>(query: SiftQuery<any>, rawSelector: (item: T) => boolean): Exec;
-    <T extends SupportedTypes[]>(query: SiftQuery<T>): FilterFn;
-    <T extends SupportedTypes>(query: SiftQuery<T>, target: T, rawSelector?: any): T;
-    indexOf<T extends SupportedTypes>(query: SiftQuery<T>, target: T, rawSelector?: any): number;
-    compare<T, K>(a: T, b: K): 0 | -1 | 1;
+  <T extends SupportedType>(
+    query: SiftQuery<T>,
+    options?: Options<T>
+  ): FilterFn<T>;
+  compare<T, K>(a: T, b: K): 0 | -1 | 1;
 }
 
-
-declare const Sift: Sift
-export default Sift
+declare const Sift: Sift;
+export default Sift;

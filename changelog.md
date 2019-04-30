@@ -1,3 +1,7 @@
+## 8.3.2
+
+- Query _properties_ now excpect exact object shape (based on https://github.com/crcn/sift.js/issues/152). E.g: `[{a: { b: 1}}, {a: { b: 1, c: 2}}]].filter(sift({ a: { b: 1} })) === [{a: {b: 1}]`, and `[{a: 1, b: 1}, {a: 1}]].filter(sift({ a: 1 })) === [{a: 1, b: 1}, {a: 1}]`.
+
 ## 8.0.0
 
 - DEPRECATED `indexOf` in favor of `array.findIndex(sift(query))`

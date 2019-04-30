@@ -426,3 +426,23 @@ var filter = sift(
 
 [1, 2, 3, 4, 5].filter(filter); // 1, 3, 5
 ```
+
+## MongoDB behavior differences
+
+There are some cases where Sift behaves a bit differently than Mongodb.
+
+#### Date comparison
+
+Mongodb allows you to do date comparisons like so:
+
+```javascript
+db.collection.find({ createdAt: { $gte: "2018-03-22T06:00:00Z" } });
+```
+
+In Sift, you'll need to specify a Date object:
+
+```javascript
+collection.find(
+  sift({ createdAt: { $gte: new Date("2018-03-22T06:00:00Z") } })
+);
+```

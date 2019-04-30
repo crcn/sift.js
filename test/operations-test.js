@@ -6,6 +6,11 @@ describe(__filename + "#", function() {
   [
     // $eq
     [{ $eq: 5 }, [5, "5", 6], [5]],
+    [
+      { a: { $eq: { b: 1 } } },
+      [{ a: { b: 1 } }, { a: { b: 1, c: 2 } }],
+      [{ a: { b: 1 } }]
+    ],
     ["5", [5, "5", 6], ["5"]],
     [false, [false, "false", true], [false]],
     [true, [1, true], [true]],

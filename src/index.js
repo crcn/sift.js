@@ -484,7 +484,9 @@ function parse(options) {
         (options && options.expressions && options.expressions[key]);
 
       if (expression) {
-        if (prepare[key]) a = prepare[key](a, query, options);
+        if (prepare[key]) {
+          a = prepare[key](a, query, options);
+        }
         validators.push(createValidator(comparable(a), expression));
       } else {
         if (key.charCodeAt(0) === 36) {
@@ -584,7 +586,7 @@ export default function sift(query, options) {
  */
 
 export function compare(a, b) {
-  if (a === b) return 0;
+  if (isEqual(a, b)) return 0;
   if (typeof a === typeof b) {
     if (a > b) {
       return 1;

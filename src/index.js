@@ -296,7 +296,6 @@ var prepare = {
         return b == null;
       };
     }
-
     return function(b) {
       return compare(comparable(b), comparable(a)) === 0;
     };
@@ -456,19 +455,18 @@ function createNestedValidator(keypath, a, q) {
  */
 
 function isVanillaObject(value) {
-  return value && value.constructor === Object;
+  return value && (value.constructor === Object || value.constructor === Array);
 }
 
 function parse(options) {
-  var parseSub = function(query) {
+  var parseSub = function(query, useExact = false) {
     query = comparable(query);
 
     if (!query || !isVanillaObject(query)) {
-      // cross browser support
       query = { $eq: query };
     }
 
-    if (isExactObject(query)) {
+    if (isExactObject(query) && useExact !== false) {
       return createValidator(query, isEqual);
     }
 
@@ -494,7 +492,8 @@ function parse(options) {
         }
 
         var keyParts = key.split(".");
-        validators.push(createNestedValidator(keyParts, parseSub(a, key), a));
+
+        validators.push(createNestedValidator(keyParts, parseSub(a, true), a));
       }
     }
 

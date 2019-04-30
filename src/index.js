@@ -215,8 +215,11 @@ var expressions = {
    */
 
   $or: function(a, b, k, o) {
-    for (var i = 0, n = a.length; i < n; i++)
-      if (validate(get(a, i), b, k, o)) return true;
+    for (var i = 0, n = a.length; i < n; i++) {
+      if (validate(get(a, i), b, k, o)) {
+        return true;
+      }
+    }
     return false;
   },
 
@@ -459,16 +462,15 @@ function isVanillaObject(value) {
 }
 
 function parse(options) {
-  var parseSub = function(query, useExact = false) {
-    query = comparable(query);
-
+  var wrapQuery = function(query) {
     if (!query || !isVanillaObject(query)) {
       query = { $eq: query };
     }
+    return query;
+  };
 
-    if (isExactObject(query) && useExact !== false) {
-      return createValidator(query, isEqual);
-    }
+  var parseQuery = function(query) {
+    query = comparable(query);
 
     var validators = [];
 
@@ -495,7 +497,7 @@ function parse(options) {
 
         var keyParts = key.split(".");
 
-        validators.push(createNestedValidator(keyParts, parseSub(a, true), a));
+        validators.push(createNestedValidator(keyParts, parseNested(a), a));
       }
     }
 
@@ -504,7 +506,19 @@ function parse(options) {
       : createValidator(validators, expressions.$and);
   };
 
-  return parseSub;
+  var parseNested = function(query) {
+    query = wrapQuery(query);
+    if (isExactObject(query)) {
+      return createValidator(query, isEqual);
+    }
+    return parseQuery(query);
+  };
+
+  var parseRoot = function(query) {
+    return parseQuery(wrapQuery(query));
+  };
+
+  return parseRoot;
 }
 
 function isEqual(a, b) {

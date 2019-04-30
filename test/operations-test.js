@@ -73,6 +73,40 @@ describe(__filename + "#", function() {
       [{ a: [{ b: 1 }, { b: 2 }] }, { a: [{ b: 1 }] }, { a: [{ b: 1 }], b: 2 }],
       [{ a: [{ b: 1 }, { b: 2 }] }]
     ],
+    [
+      {
+        educations: {
+          $elemMatch: {
+            $or: [
+              {
+                value: "refa",
+                $or: [{ unfinished: true }]
+              },
+              {
+                value: "reno",
+                $or: [{ unfinished: true }]
+              }
+            ]
+          }
+        }
+      },
+      [
+        {
+          educations: [
+            { value: "refa", unfinished: true },
+            { value: "reno", unfinished: true }
+          ]
+        }
+      ],
+      [
+        {
+          educations: [
+            { value: "refa", unfinished: true },
+            { value: "reno", unfinished: true }
+          ]
+        }
+      ]
+    ],
     // $ne
     [{ $ne: 5 }, [5, "5", 6], ["5", 6]],
     [{ $ne: "5" }, ["5", 6], [6]],
@@ -137,6 +171,7 @@ describe(__filename + "#", function() {
       [{ a: { b: "exists" } }, { a: { c: "does not exist" } }],
       [{ a: { b: "exists" } }]
     ],
+
     [
       { field: { $exists: false } },
       [
@@ -239,15 +274,19 @@ describe(__filename + "#", function() {
     // $or
     [{ $or: [1, 2, 3] }, [1, 2, 3, 4], [1, 2, 3]],
     [{ $or: [{ $ne: 1 }, 2] }, [1, 2, 3, 4, 5, 6], [2, 3, 4, 5, 6]],
-    [{ $or: [{ a: 1 }, { b: 1 }] }, [{ a: 1, b: 2 }, { a: 1 }], [{ a: 1 }]],
+    [
+      { $or: [{ a: 1 }, { b: 1 }] },
+      [{ a: 1, b: 2 }, { a: 1 }],
+      [{ a: 1, b: 2 }, { a: 1 }]
+    ],
 
     // $nor
     [{ $nor: [1, 2, 3] }, [1, 2, 3, 4], [4]],
     [{ $nor: [{ $ne: 1 }, 2] }, [1, 2, 3, 4, 5, 6], [1]],
     [
       { $nor: [{ a: 1 }, { b: 1 }] },
-      [{ a: 1, b: 2 }, { a: 1 }],
-      [{ a: 1, b: 2 }]
+      [{ a: 1, b: 2 }, { a: 1 }, { c: 1 }],
+      [{ c: 1 }]
     ],
 
     // $and

@@ -53,8 +53,8 @@ var result = [
 ].filter(testFilter); // filtered: [{ name: 'craig' }]
 
 //you can test *single values* against your custom sifter
-testQuery({ name: "sarah" }); //true
-testQuery({ name: "tim" }); //false\
+testFilter({ name: "sarah" }); //true
+testFilter({ name: "tim" }); //false
 ```
 
 ## Browser Examples

@@ -458,7 +458,7 @@ function createNestedValidator(keypath, a, q) {
  */
 
 function isVanillaObject(value) {
-  return value && (value.constructor === Object || value.constructor === Array);
+  return value && (isObject(value) || isArray(value)); // (value.constructor === Object || value.constructor === Array);
 }
 
 function parse(options) {

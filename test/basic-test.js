@@ -1,4 +1,5 @@
 import * as assert from "assert";
+import { default as _eval } from "eval";
 import sift, { indexOf as siftIndexOf } from "..";
 
 describe(__filename + "#", function() {
@@ -210,7 +211,7 @@ describe(__filename + "#", function() {
     assert.equal(results.length, 2);
   });
 
-  it("works with eval", () => {
+  it("works with new Function()", () => {
     const fn = new Function(
       "sift",
       `
@@ -221,6 +222,20 @@ describe(__filename + "#", function() {
     );
 
     const results = fn(sift);
+    assert.equal(results.length, 1);
+  });
+
+  it("works with eval (node sandbox)", () => {
+    const code = `
+      const sifter = sift({ a: 'a1' });
+      const arr = [{ a: 'a1', b: 'b1' }, { a: 'a2', b: 'b2' }];
+      module.exports = arr.filter(sifter);
+    `;
+
+    const results = _eval(code, "filename", {
+      sift,
+      console: { log: console.log.bind(console) }
+    });
     assert.equal(results.length, 1);
   });
 });

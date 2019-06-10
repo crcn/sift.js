@@ -209,4 +209,18 @@ describe(__filename + "#", function() {
 
     assert.equal(results.length, 2);
   });
+
+  it("works with eval", () => {
+    const fn = new Function(
+      "sift",
+      `
+      const sifter = sift({ a: 'a1' });
+      const arr = [{ a: 'a1', b: 'b1' }, { a: 'a2', b: 'b2' }];
+      return arr.filter(sifter);
+    `
+    );
+
+    const results = fn(sift);
+    assert.equal(results.length, 1);
+  });
 });

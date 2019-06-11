@@ -85,116 +85,70 @@ var expressions = {
    */
 
   $ne: and(function(a, b) {
-    return !a(b);
+    return a(b);
   }),
 
   /**
    */
 
   $gt: or(function(a, b) {
-    return compare(comparable(b), a) > 0;
+    return a(b);
   }),
 
   /**
    */
 
   $gte: or(function(a, b) {
-    return compare(comparable(b), a) >= 0;
+    return a(b);
   }),
 
   /**
    */
 
   $lt: or(function(a, b) {
-    return compare(comparable(b), a) < 0;
+    return a(b);
   }),
 
   /**
    */
 
   $lte: or(function(a, b) {
-    return compare(comparable(b), a) <= 0;
+    return a(b);
   }),
 
   /**
    */
 
   $mod: or(function(a, b) {
-    return b % a[0] == a[1];
+    return a(b);
   }),
 
   /**
    */
 
   $in: function(a, b) {
-    if (b instanceof Array) {
-      for (var i = b.length; i--; ) {
-        if (~a.indexOf(comparable(get(b, i)))) {
-          return true;
-        }
-      }
-    } else {
-      var comparableB = comparable(b);
-      if (comparableB === b && typeof b === "object") {
-        for (var i = a.length; i--; ) {
-          if (String(a[i]) === String(b) && String(b) !== "[object Object]") {
-            return true;
-          }
-        }
-      }
-
-      /*
-        Handles documents that are undefined, whilst also
-        having a 'null' element in the parameters to $in.
-      */
-      if (typeof comparableB == "undefined") {
-        for (var i = a.length; i--; ) {
-          if (a[i] == null) {
-            return true;
-          }
-        }
-      }
-
-      /*
-        Handles the case of {'field': {$in: [/regexp1/, /regexp2/, ...]}}
-      */
-      for (var i = a.length; i--; ) {
-        var validator = createRootValidator(get(a, i), undefined);
-        var result = validate(validator, b, i, a);
-        if (
-          result &&
-          String(result) !== "[object Object]" &&
-          String(b) !== "[object Object]"
-        ) {
-          return true;
-        }
-      }
-
-      return !!~a.indexOf(comparableB);
-    }
-
-    return false;
+    return a(b);
   },
 
   /**
    */
 
-  $nin: function(a, b, k, o) {
-    return !expressions.$in(a, b, k, o);
+  $nin: function(a, b) {
+    return a(b);
   },
 
   /**
    */
 
   $not: function(a, b, k, o) {
-    return !validate(a, b, k, o);
+    return a(b, k, o);
   },
 
   /**
    */
 
   $type: function(a, b) {
-    return b != void 0 ? b instanceof a || b.constructor == a : false;
+    return a(b);
   },
 
   /**
@@ -281,34 +235,125 @@ var prepare = {
   /**
    */
 
-  $eq: function(a) {
+  $eq: function(a, query, options) {
     if (a instanceof RegExp) {
-      return function(b) {
+      return or(function(b) {
         return typeof b === "string" && a.test(b);
-      };
+      });
     } else if (a instanceof Function) {
-      return a;
+      return or(a);
     } else if (isArray(a) && !a.length) {
       // Special case of a == []
-      return function(b) {
+      return or(function(b) {
         return isArray(b) && !b.length;
-      };
+      });
     } else if (a === null) {
-      return function(b) {
+      return or(function(b) {
         //will match both null and undefined
         return b == null;
-      };
+      });
     }
+    return or(function(b) {
+      return options.compare(comparable(b), comparable(a)) === 0;
+    });
+  },
+
+  $gt: function(a, query, options) {
     return function(b) {
-      return compare(comparable(b), comparable(a)) === 0;
+      return options.compare(comparable(b), comparable(a)) > 0;
+    };
+  },
+
+  $gte: function(a, query, options) {
+    return function(b) {
+      return options.compare(comparable(b), comparable(a)) >= 0;
+    };
+  },
+
+  $lt: function(a, query, options) {
+    return function(b) {
+      return options.compare(comparable(b), comparable(a)) < 0;
+    };
+  },
+  $lte: function(a, query, options) {
+    return function(b) {
+      return options.compare(comparable(b), comparable(a)) <= 0;
+    };
+  },
+
+  $in: function(a, query, options) {
+    return function(b) {
+      if (b instanceof Array) {
+        for (var i = b.length; i--; ) {
+          if (~a.indexOf(comparable(get(b, i)))) {
+            return true;
+          }
+        }
+      } else {
+        var comparableB = comparable(b);
+        if (comparableB === b && typeof b === "object") {
+          for (var i = a.length; i--; ) {
+            if (String(a[i]) === String(b) && String(b) !== "[object Object]") {
+              return true;
+            }
+          }
+        }
+
+        /*
+          Handles documents that are undefined, whilst also
+          having a 'null' element in the parameters to $in.
+        */
+        if (typeof comparableB == "undefined") {
+          for (var i = a.length; i--; ) {
+            if (a[i] == null) {
+              return true;
+            }
+          }
+        }
+
+        /*
+          Handles the case of {'field': {$in: [/regexp1/, /regexp2/, ...]}}
+        */
+        for (var i = a.length; i--; ) {
+          var validator = createRootValidator(get(a, i), options);
+          var result = validate(validator, b, i, a);
+          if (
+            result &&
+            String(result) !== "[object Object]" &&
+            String(b) !== "[object Object]"
+          ) {
+            return true;
+          }
+        }
+
+        return !!~a.indexOf(comparableB);
+      }
+
+      return false;
+    };
+  },
+
+  $nin: function(a, query, options) {
+    const eq = prepare.$in(a, query, options);
+    return function(a, b, k, o) {
+      return !eq(a, b, k, o);
+    };
+  },
+
+  $mod: function(a) {
+    return function(b) {
+      return b % a[0] == a[1];
     };
   },
 
   /**
    */
 
-  $ne: function(a) {
-    return prepare.$eq(a);
+  $ne: function(a, query, options) {
+    const eq = prepare.$eq(a, query, options);
+    return and(function(a, b, k, o) {
+      return !eq(a, b, k, o);
+    });
   },
 
   /**
@@ -321,8 +366,8 @@ var prepare = {
   /**
    */
 
-  $all: function(a) {
-    return prepare.$and(a);
+  $all: function(a, query, options) {
+    return prepare.$and(a, query, options);
   },
 
   /**
@@ -343,7 +388,16 @@ var prepare = {
    */
 
   $not: function(a, query, options) {
-    return parse(options)(a);
+    const v = parse(options)(a);
+    return function(b, k, o) {
+      return !validate(v, b, k, o);
+    };
+  },
+
+  $type: function(a) {
+    return function(b, k, o) {
+      return b != void 0 ? b instanceof a || b.constructor == a : false;
+    };
   },
 
   /**
@@ -585,7 +639,7 @@ function createRootValidator(query, options) {
     validator = {
       a: validator,
       v: function(a, b, k, o) {
-        return validate(a, options.select(b), k, o);
+        return validate(a, b && options.select(b), k, o);
       }
     };
   }
@@ -596,6 +650,7 @@ function createRootValidator(query, options) {
  */
 
 export default function sift(query, options) {
+  options = Object.assign({ compare: compare }, options);
   var validator = createRootValidator(query, options);
   return function(b, k, o) {
     return validate(validator, b, k, o);

@@ -238,4 +238,28 @@ describe(__filename + "#", function() {
     });
     assert.equal(results.length, 1);
   });
+
+  it("Can use a custom compare", () => {
+    let calledCompareCount = 0;
+    class Item {
+      constructor(value) {
+        this.value = value;
+      }
+      compare(other) {
+        calledCompareCount++;
+        return other && this.value === other.value ? 0 : -1;
+      }
+    }
+
+    const filter = sift(new Item("a"), {
+      compare(a, b) {
+        return a.compare(b);
+      }
+    });
+
+    const items = [new Item("a"), new Item("b"), new Item("a")];
+    const results = items.filter(filter);
+    assert.equal(results.length, 2);
+    assert.equal(calledCompareCount, 3);
+  });
 });

@@ -80,7 +80,10 @@ testFilter({ name: "tim" }); //false
 ### .sift(query: MongoQuery, options?: SiftOptions): Function
 
 - `query` - the filter to use against the target array
-- `options` - `select` - value selector - `expressions` - custom expressions
+- `options`
+  - `select` - value selector
+  - `expressions` - custom expressions
+  - `compare` - custom compare function
 
 With an array:
 

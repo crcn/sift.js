@@ -458,7 +458,13 @@ function createNestedValidator(keypath, a, q) {
  */
 
 function isVanillaObject(value) {
-  return value && (isObject(value) || isArray(value)); // (value.constructor === Object || value.constructor === Array);
+  return (
+    value &&
+    (value.constructor === Object ||
+      value.constructor === Array ||
+      value.constructor.toString() === "function Object() { [native code] }" ||
+      value.constructor.toString() === "function Array() { [native code] }")
+  );
 }
 
 function parse(options) {

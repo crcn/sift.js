@@ -83,7 +83,8 @@ testFilter({ name: "tim" }); //false
 - `options`
   - `select` - value selector
   - `expressions` - custom expressions
-  - `compare` - custom compare function
+  - `compare` - compares difference between two values
+  - `comparable`
 
 With an array:
 
@@ -411,7 +412,17 @@ Not expression:
 ["craig", "tim", "jake"].filter(sift({ $not: { $size: 5 } })); //['tim','jake']
 ```
 
-## Custom expressions
+## MongoDB behavior differences
+
+There are some cases where Sift behaves a bit differently than Mongodb.
+
+## Adding custom behavior
+
+Sift works like MongoDB out of the box, but you're also able to modify the behavior to suite your needs.
+
+#### Expressions
+
+Sift comes with expressions like `$not`, `$eq`, and others, but you can also add your own.
 
 ```javascript
 var filter = sift(
@@ -430,9 +441,14 @@ var filter = sift(
 [1, 2, 3, 4, 5].filter(filter); // 1, 3, 5
 ```
 
-## MongoDB behavior differences
+<!--#### Custom compare
 
-There are some cases where Sift behaves a bit differently than Mongodb.
+```javascript
+const filter = sift()
+```
+
+
+#### Custom comparable-->
 
 #### Date comparison
 

@@ -1,3 +1,7 @@
+## 8.5.0
+
+- Added `comparable` option (fix https://github.com/crcn/sift.js/issues/156)
+
 ## 8.4.0
 
 - Added `compare` option (fix https://github.com/crcn/sift.js/issues/155)

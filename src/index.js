@@ -20,21 +20,6 @@ var isArray = typeChecker("Array");
 var isObject = typeChecker("Object");
 var isFunction = typeChecker("Function");
 
-/**
- */
-
-function comparable(value) {
-  if (value instanceof Date) {
-    return value.getTime();
-  } else if (isArray(value)) {
-    return value.map(comparable);
-  } else if (value && typeof value.toJSON === "function") {
-    return value.toJSON();
-  } else {
-    return value;
-  }
-}
-
 function get(obj, key) {
   return isFunction(obj.get) ? obj.get(key) : obj[key];
 }
@@ -73,7 +58,7 @@ function validate(validator, b, k, o) {
   return validator.v(validator.a, b, k, o);
 }
 
-var expressions = {
+var defaultExpressions = {
   /**
    */
 
@@ -155,7 +140,7 @@ var expressions = {
    */
 
   $all: function(a, b, k, o) {
-    return expressions.$and(a, b, k, o);
+    return defaultExpressions.$and(a, b, k, o);
   },
 
   /**
@@ -181,7 +166,7 @@ var expressions = {
    */
 
   $nor: function(a, b, k, o) {
-    return !expressions.$or(a, b, k, o);
+    return !defaultExpressions.$or(a, b, k, o);
   },
 
   /**
@@ -235,7 +220,7 @@ var prepare = {
   /**
    */
 
-  $eq: function(a, query, options) {
+  $eq: function(a, query, { comparable, compare }) {
     if (a instanceof RegExp) {
       return or(function(b) {
         return typeof b === "string" && a.test(b);
@@ -254,34 +239,35 @@ var prepare = {
       });
     }
     return or(function(b) {
-      return options.compare(comparable(b), comparable(a)) === 0;
+      return compare(comparable(b), comparable(a)) === 0;
     });
   },
 
-  $gt: function(a, query, options) {
+  $gt: function(a, query, { comparable, compare }) {
     return function(b) {
-      return options.compare(comparable(b), comparable(a)) > 0;
+      return compare(comparable(b), comparable(a)) > 0;
     };
   },
 
-  $gte: function(a, query, options) {
+  $gte: function(a, query, { comparable, compare }) {
     return function(b) {
-      return options.compare(comparable(b), comparable(a)) >= 0;
+      return compare(comparable(b), comparable(a)) >= 0;
     };
   },
 
-  $lt: function(a, query, options) {
+  $lt: function(a, query, { comparable, compare }) {
     return function(b) {
-      return options.compare(comparable(b), comparable(a)) < 0;
+      return compare(comparable(b), comparable(a)) < 0;
     };
   },
-  $lte: function(a, query, options) {
+  $lte: function(a, query, { comparable, compare }) {
     return function(b) {
-      return options.compare(comparable(b), comparable(a)) <= 0;
+      return compare(comparable(b), comparable(a)) <= 0;
     };
   },
 
   $in: function(a, query, options) {
+    const { comparable } = options;
     return function(b) {
       if (b instanceof Array) {
         for (var i = b.length; i--; ) {
@@ -522,6 +508,7 @@ function isVanillaObject(value) {
 }
 
 function parse(options) {
+  const { comparable, expressions } = options;
   var wrapQuery = function(query) {
     if (!query || !isVanillaObject(query)) {
       query = { $eq: query };
@@ -542,8 +529,7 @@ function parse(options) {
       }
 
       var expression =
-        expressions[key] ||
-        (options && options.expressions && options.expressions[key]);
+        defaultExpressions[key] || (options && expressions && expressions[key]);
 
       if (expression) {
         if (prepare[key]) {
@@ -563,7 +549,7 @@ function parse(options) {
 
     return validators.length === 1
       ? validators[0]
-      : createValidator(validators, expressions.$and);
+      : createValidator(validators, defaultExpressions.$and);
   };
 
   var parseNested = function(query) {
@@ -650,7 +636,7 @@ function createRootValidator(query, options) {
  */
 
 export default function sift(query, options) {
-  options = Object.assign({ compare: compare }, options);
+  options = Object.assign({ compare, comparable }, options);
   var validator = createRootValidator(query, options);
   return function(b, k, o) {
     return validate(validator, b, k, o);
@@ -669,5 +655,20 @@ export function compare(a, b) {
     if (a < b) {
       return -1;
     }
+  }
+}
+
+/**
+ */
+
+export function comparable(value) {
+  if (value instanceof Date) {
+    return value.getTime();
+  } else if (isArray(value)) {
+    return value.map(comparable);
+  } else if (value && typeof value.toJSON === "function") {
+    return value.toJSON();
+  } else {
+    return value;
   }
 }

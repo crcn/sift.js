@@ -24,6 +24,22 @@ function get(obj, key) {
   return isFunction(obj.get) ? obj.get(key) : obj[key];
 }
 
+function identity(value) {
+  return value;
+}
+
+function promiseAll(promises) {
+  return Promise.all(promises).then(results => {
+    return !results.some(result => !result);
+  });
+}
+
+function promiseSome(promises) {
+  return Promise.all(promises).then(results => {
+    return results.some(identity);
+  });
+}
+
 /**
  */
 
@@ -154,11 +170,26 @@ var defaultExpressions = {
    */
 
   $or: function(a, b, k, o) {
+    let thenableResults;
     for (var i = 0, n = a.length; i < n; i++) {
-      if (validate(get(a, i), b, k, o)) {
-        return true;
+      const result = validate(get(a, i), b, k, o);
+      if (result && result.then && !thenableResults) {
+        thenableResults = [];
+      }
+
+      if (thenableResults) {
+        thenableResults.push(result);
+      } else {
+        if (result) {
+          return true;
+        }
       }
     }
+
+    if (thenableResults) {
+      return promiseSome(thenableResults);
+    }
+
     return false;
   },
 
@@ -173,11 +204,27 @@ var defaultExpressions = {
    */
 
   $and: function(a, b, k, o) {
+    let thenableResults;
+
     for (var i = 0, n = a.length; i < n; i++) {
-      if (!validate(get(a, i), b, k, o)) {
-        return false;
+      const result = validate(get(a, i), b, k, o);
+      if (result && result.then && !thenableResults) {
+        thenableResults = [];
+      }
+
+      if (thenableResults) {
+        thenableResults.push(result);
+      } else {
+        if (!result) {
+          return false;
+        }
       }
     }
+
+    if (thenableResults) {
+      return promiseAll(thenableResults);
+    }
+
     return true;
   },
 
@@ -200,7 +247,7 @@ var defaultExpressions = {
 
   $elemMatch: function(a, b, k, o) {
     if (isArray(b)) {
-      return !!~search(b, a);
+      return search(b, a) !== -1;
     }
     return validate(a, b, k, o);
   },
@@ -269,7 +316,9 @@ var prepare = {
   $in: function(a, query, options) {
     const { comparable } = options;
     return function(b) {
-      if (b instanceof Array) {
+      let thenableResults;
+
+      if (isArray(b)) {
         for (var i = b.length; i--; ) {
           if (~a.indexOf(comparable(get(b, i)))) {
             return true;
@@ -302,8 +351,15 @@ var prepare = {
         */
         for (var i = a.length; i--; ) {
           var validator = createRootValidator(get(a, i), options);
-          var result = validate(validator, b, i, a);
-          if (
+          var result = validate(validator, comparableB, i, a);
+
+          if (result && result.then && !thenableResults) {
+            thenableResults = [];
+          }
+
+          if (thenableResults) {
+            thenableResults.push(result);
+          } else if (
             result &&
             String(result) !== "[object Object]" &&
             String(b) !== "[object Object]"
@@ -312,7 +368,10 @@ var prepare = {
           }
         }
 
-        return !!~a.indexOf(comparableB);
+        if (thenableResults) {
+          console.log(thenableResults);
+          return promiseSome(thenableResults);
+        }
       }
 
       return false;
@@ -411,7 +470,7 @@ var prepare = {
    */
 
   $exists: function(a) {
-    return !!a;
+    return Boolean(a);
   }
 };
 

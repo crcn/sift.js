@@ -7,9 +7,7 @@ describe(__filename + "#", () => {
       "can use a simple async $eq filter",
       {
         $eq: function(value) {
-          return new Promise(function(resolve) {
-            resolve(value);
-          });
+          return value > 2;
         }
       },
       [1, 2, 3, 4, 5],
@@ -20,15 +18,11 @@ describe(__filename + "#", () => {
       "can use a simple async $in or filter",
       {
         $in: [
-          function(value) {
-            return new Promise(function(resolve) {
-              resolve(5);
-            });
+          function() {
+            return 5;
           },
-          function(value) {
-            return new Promise(function(resolve) {
-              resolve(2);
-            });
+          function() {
+            return Promise.resolve(2);
           }
         ]
       },

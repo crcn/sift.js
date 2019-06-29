@@ -320,12 +320,13 @@ var prepare = {
 
       if (isArray(b)) {
         for (var i = b.length; i--; ) {
-          if (~a.indexOf(comparable(get(b, i)))) {
+          if (a.indexOf(comparable(get(b, i))) !== -1) {
             return true;
           }
         }
       } else {
         var comparableB = comparable(b);
+
         if (comparableB === b && typeof b === "object") {
           for (var i = a.length; i--; ) {
             if (String(a[i]) === String(b) && String(b) !== "[object Object]") {
@@ -369,7 +370,6 @@ var prepare = {
         }
 
         if (thenableResults) {
-          console.log(thenableResults);
           return promiseSome(thenableResults);
         }
       }

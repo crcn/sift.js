@@ -260,6 +260,29 @@ var defaultExpressions = {
   }
 };
 
+function castTesterAsFn(a, comparable, compare) {
+  if (a instanceof RegExp) {
+    return function(b) {
+      return typeof b === "string" && a.test(b);
+    };
+  } else if (a instanceof Function) {
+    return a;
+  } else if (isArray(a) && !a.length) {
+    // Special case of a == []
+    return function(b) {
+      return isArray(b) && !b.length;
+    };
+  } else if (a === null) {
+    return function(b) {
+      //will match both null and undefined
+      return b == null;
+    };
+  }
+  return function(b) {
+    return compare(comparable(b), comparable(a)) === 0;
+  };
+}
+
 /**
  */
 
@@ -268,26 +291,7 @@ var prepare = {
    */
 
   $eq: function(a, query, { comparable, compare }) {
-    if (a instanceof RegExp) {
-      return or(function(b) {
-        return typeof b === "string" && a.test(b);
-      });
-    } else if (a instanceof Function) {
-      return or(a);
-    } else if (isArray(a) && !a.length) {
-      // Special case of a == []
-      return or(function(b) {
-        return isArray(b) && !b.length;
-      });
-    } else if (a === null) {
-      return or(function(b) {
-        //will match both null and undefined
-        return b == null;
-      });
-    }
-    return or(function(b) {
-      return compare(comparable(b), comparable(a)) === 0;
-    });
+    return or(castTesterAsFn(a, comparable, compare));
   },
 
   $gt: function(a, query, { comparable, compare }) {
@@ -314,7 +318,7 @@ var prepare = {
   },
 
   $in: function(a, query, options) {
-    const { comparable } = options;
+    const { comparable, compare } = options;
     return function(b) {
       let thenableResults;
 
@@ -351,6 +355,8 @@ var prepare = {
           Handles the case of {'field': {$in: [/regexp1/, /regexp2/, ...]}}
         */
         for (var i = a.length; i--; ) {
+          var tester = castTesterAsFn(get(a, i), comparable, compare);
+
           var validator = createRootValidator(get(a, i), options);
           var result = validate(validator, comparableB, i, a);
 
@@ -358,7 +364,7 @@ var prepare = {
             thenableResults = [];
           }
 
-          if (thenableResults) {
+          if (thenableResults != null) {
             thenableResults.push(result);
           } else if (
             result &&

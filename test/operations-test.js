@@ -475,5 +475,27 @@ describe(__filename + "#", function() {
         JSON.stringify(matchArray)
       );
     });
+
+    it("async " + i + ": " + JSON.stringify(filter), function() {
+      const asyncFilter = makeQueryAync(filter);
+      Promise.all(array.filter(sift(asyncFilter))).then(results => {
+        assert.equal(results, JSON.stringify(matchArray));
+      });
+    });
   });
 });
+
+const makeQueryAync = query => {
+  if (Array.isArray(query)) {
+    return query.map(makeQueryAync);
+  } else if (query && query.constructor === Object) {
+    const newQuery = {};
+    for (const key in query) {
+      newQuery[key] = Promise.resolve(query[key]);
+    }
+  } else if (typeof query === "function") {
+    return query;
+  }
+
+  return Promise.resolve(query);
+};

@@ -24,6 +24,22 @@ function get(obj, key) {
   return isFunction(obj.get) ? obj.get(key) : obj[key];
 }
 
+function identity(value) {
+  return value;
+}
+
+function promiseAll(promises) {
+  return Promise.all(promises).then(results => {
+    return !results.some(result => !result);
+  });
+}
+
+function promiseSome(promises) {
+  return Promise.all(promises).then(results => {
+    return results.some(identity);
+  });
+}
+
 /**
  */
 
@@ -154,11 +170,26 @@ var defaultExpressions = {
    */
 
   $or: function(a, b, k, o) {
+    let thenableResults;
     for (var i = 0, n = a.length; i < n; i++) {
-      if (validate(get(a, i), b, k, o)) {
-        return true;
+      const result = validate(get(a, i), b, k, o);
+      if (result && result.then && !thenableResults) {
+        thenableResults = [];
+      }
+
+      if (thenableResults) {
+        thenableResults.push(result);
+      } else {
+        if (result) {
+          return true;
+        }
       }
     }
+
+    if (thenableResults) {
+      return promiseSome(thenableResults);
+    }
+
     return false;
   },
 
@@ -173,11 +204,27 @@ var defaultExpressions = {
    */
 
   $and: function(a, b, k, o) {
+    let thenableResults;
+
     for (var i = 0, n = a.length; i < n; i++) {
-      if (!validate(get(a, i), b, k, o)) {
-        return false;
+      const result = validate(get(a, i), b, k, o);
+      if (result && result.then && !thenableResults) {
+        thenableResults = [];
+      }
+
+      if (thenableResults) {
+        thenableResults.push(result);
+      } else {
+        if (!result) {
+          return false;
+        }
       }
     }
+
+    if (thenableResults) {
+      return promiseAll(thenableResults);
+    }
+
     return true;
   },
 
@@ -200,7 +247,7 @@ var defaultExpressions = {
 
   $elemMatch: function(a, b, k, o) {
     if (isArray(b)) {
-      return !!~search(b, a);
+      return search(b, a) !== -1;
     }
     return validate(a, b, k, o);
   },
@@ -213,6 +260,29 @@ var defaultExpressions = {
   }
 };
 
+function castTesterAsFn(a, comparable, compare) {
+  if (a instanceof RegExp) {
+    return function(b) {
+      return typeof b === "string" && a.test(b);
+    };
+  } else if (a instanceof Function) {
+    return a;
+  } else if (isArray(a) && !a.length) {
+    // Special case of a == []
+    return function(b) {
+      return isArray(b) && !b.length;
+    };
+  } else if (a === null) {
+    return function(b) {
+      //will match both null and undefined
+      return b == null;
+    };
+  }
+  return function(b) {
+    return compare(comparable(b), comparable(a)) === 0;
+  };
+}
+
 /**
  */
 
@@ -221,26 +291,7 @@ var prepare = {
    */
 
   $eq: function(a, query, { comparable, compare }) {
-    if (a instanceof RegExp) {
-      return or(function(b) {
-        return typeof b === "string" && a.test(b);
-      });
-    } else if (a instanceof Function) {
-      return or(a);
-    } else if (isArray(a) && !a.length) {
-      // Special case of a == []
-      return or(function(b) {
-        return isArray(b) && !b.length;
-      });
-    } else if (a === null) {
-      return or(function(b) {
-        //will match both null and undefined
-        return b == null;
-      });
-    }
-    return or(function(b) {
-      return compare(comparable(b), comparable(a)) === 0;
-    });
+    return or(castTesterAsFn(a, comparable, compare));
   },
 
   $gt: function(a, query, { comparable, compare }) {
@@ -267,16 +318,19 @@ var prepare = {
   },
 
   $in: function(a, query, options) {
-    const { comparable } = options;
+    const { comparable, compare } = options;
     return function(b) {
-      if (b instanceof Array) {
+      let thenableResults;
+
+      if (isArray(b)) {
         for (var i = b.length; i--; ) {
-          if (~a.indexOf(comparable(get(b, i)))) {
+          if (a.indexOf(comparable(get(b, i))) !== -1) {
             return true;
           }
         }
       } else {
         var comparableB = comparable(b);
+
         if (comparableB === b && typeof b === "object") {
           for (var i = a.length; i--; ) {
             if (String(a[i]) === String(b) && String(b) !== "[object Object]") {
@@ -301,9 +355,18 @@ var prepare = {
           Handles the case of {'field': {$in: [/regexp1/, /regexp2/, ...]}}
         */
         for (var i = a.length; i--; ) {
+          var tester = castTesterAsFn(get(a, i), comparable, compare);
+
           var validator = createRootValidator(get(a, i), options);
-          var result = validate(validator, b, i, a);
-          if (
+          var result = validate(validator, comparableB, i, a);
+
+          if (result && result.then && !thenableResults) {
+            thenableResults = [];
+          }
+
+          if (thenableResults != null) {
+            thenableResults.push(result);
+          } else if (
             result &&
             String(result) !== "[object Object]" &&
             String(b) !== "[object Object]"
@@ -312,7 +375,9 @@ var prepare = {
           }
         }
 
-        return !!~a.indexOf(comparableB);
+        if (thenableResults) {
+          return promiseSome(thenableResults);
+        }
       }
 
       return false;
@@ -411,7 +476,7 @@ var prepare = {
    */
 
   $exists: function(a) {
-    return !!a;
+    return Boolean(a);
   }
 };
 

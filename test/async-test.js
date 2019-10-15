@@ -7,31 +7,68 @@ describe(__filename + "#", () => {
       "can use a simple async $eq filter",
       {
         $eq: function(value) {
-          return new Promise(function(resolve) {
-            resolve(value > 2);
-          });
+          return value > 2;
         }
       },
       [1, 2, 3, 4, 5],
       [3, 4, 5]
-    ]
+    ],
 
-    // [
-    //   "can use a simple async $or filter",
-    //   {
-    //     $and: [
-    //       function(value) {
-    //         new Promise(function(resolve) {
-    //           resolve(value > 2);
-    //         })
-    //       },
-    //       function(value) {
-    //         new Promise(function(resolve) {
-    //           resolve(value < 5);
-    //         })
-    //       }
-    //     ]
-    // }, [1, 2, 3, 4, 5], [3, 4]]
+    [
+      "can use a simple async $in or filter",
+      {
+        $in: [
+          function() {
+            return 5;
+          },
+          function() {
+            return Promise.resolve(2);
+          }
+        ]
+      },
+      [1, 2, 3, 4, 5],
+      [2, 5]
+    ],
+
+    [
+      "can use a simple async $and filter",
+      {
+        $and: [
+          function(value) {
+            return new Promise(function(resolve) {
+              resolve(value > 2);
+            });
+          },
+          function(value) {
+            return new Promise(function(resolve) {
+              resolve(value < 5);
+            });
+          }
+        ]
+      },
+      [1, 2, 3, 4, 5],
+      [3, 4]
+    ],
+
+    [
+      "can use a simple async $or filter",
+      {
+        $or: [
+          function(value) {
+            return new Promise(function(resolve) {
+              resolve(value !== 1);
+            });
+          },
+          function(value) {
+            return new Promise(function(resolve) {
+              resolve(value < 5 && value !== 1);
+            });
+          }
+        ]
+      },
+      [1, 2, 3, 4, 5],
+      [2, 3, 4, 5]
+    ]
   ].forEach(function([description, query, values, result]) {
     it(description, function() {
       return new Promise(function(resolve, reject) {

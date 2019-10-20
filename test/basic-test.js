@@ -290,7 +290,23 @@ describe(__filename + "#", function() {
     });
 
     const result = test1(ObjectId("1")); // expects to be true
-    console.log("RES", result);
     assert.equal(result, true);
+  });
+
+  // https://github.com/crcn/sift.js/issues/159
+  it("can sift with a regexp string", () => {
+    let where = {
+      $not: {
+        value: {
+          $regex: "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,4}$"
+        }
+      }
+    };
+    const whereProps = {
+      value: "funky@example.com"
+    };
+
+    const filtered = [whereProps].filter(sift(where));
+    assert.equal(filtered.length, 0);
   });
 });

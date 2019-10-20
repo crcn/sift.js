@@ -1,3 +1,8 @@
+## 8.5.1
+
+- Fix dependency vulnerability
+- Fix #158
+
 ## 8.5.0
 
 - Added `comparable` option (fix https://github.com/crcn/sift.js/issues/156)

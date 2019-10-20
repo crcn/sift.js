@@ -2,7 +2,6 @@ import * as assert from "assert";
 import * as Immutable from "immutable";
 
 import sift from "..";
-const ObjectID = require("bson").ObjectID;
 
 describe(__filename + "#", function() {
   var topic = Immutable.List([1, 2, 3, 4, 5, 6, 6, 4, 3]);

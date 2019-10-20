@@ -1,6 +1,7 @@
 import * as assert from "assert";
 import { default as _eval } from "eval";
 import sift, { indexOf as siftIndexOf } from "..";
+import { ObjectID } from "bson";
 
 describe(__filename + "#", function() {
   it("doesn't sort arrays", function() {
@@ -261,5 +262,18 @@ describe(__filename + "#", function() {
     const results = items.filter(filter);
     assert.equal(results.length, 2);
     assert.equal(calledCompareCount, 3);
+  });
+
+  it("Works with Object ids", () => {
+    const test1 = sift({
+      $in: [
+        ObjectID("54dd5546b1d296a54d152e84"),
+        ObjectID("54dd5546b1d296a54d152e85")
+      ]
+    });
+
+    assert.equal(test1(ObjectID("54dd5546b1d296a54d152e84")), true);
+    assert.equal(test1(ObjectID("54dd5546b1d296a54d152e85")), true);
+    assert.equal(test1(ObjectID("54dd5546b1d296a54d152e86")), false);
   });
 });

@@ -276,4 +276,21 @@ describe(__filename + "#", function() {
     assert.equal(test1(ObjectID("54dd5546b1d296a54d152e85")), true);
     assert.equal(test1(ObjectID("54dd5546b1d296a54d152e86")), false);
   });
+
+  it("works woth toJSON", () => {
+    function ObjectId(value) {
+      // primitive implementation
+      return {
+        toJSON: () => value
+      };
+    }
+
+    const test1 = sift({
+      $in: [ObjectId("1"), ObjectId("2")]
+    });
+
+    const result = test1(ObjectId("1")); // expects to be true
+    console.log("RES", result);
+    assert.equal(result, true);
+  });
 });

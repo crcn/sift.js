@@ -38,6 +38,7 @@
   "es2015": "./src/index.js",
   "scripts": {
     "build": "mkdir -p lib; babel src/index.js > lib/index.js; webpack",
+    "build:watch": "mkdir -p lib; babel --watch  src/index.js --out-file=lib/index.js",
     "test": "mocha ./test -R spec --compilers js:babel-core/register"
   }
 }

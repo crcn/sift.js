@@ -168,7 +168,7 @@ Checks if whether a value exists:
 
 ```javascript
 //filtered: ['Craig','Tim']
-sift({ $exists: true }, ["Craig", null, "Tim"]);
+sift({ $exists: true })(["Craig", null, "Tim"]);
 ```
 
 You can also filter out values that don't exist

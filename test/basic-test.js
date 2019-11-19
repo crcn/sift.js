@@ -277,7 +277,7 @@ describe(__filename + "#", function() {
     assert.equal(test1(ObjectID("54dd5546b1d296a54d152e86")), false);
   });
 
-  it("works woth toJSON", () => {
+  it("works with toJSON", () => {
     function ObjectId(value) {
       // primitive implementation
       return {
@@ -291,6 +291,21 @@ describe(__filename + "#", function() {
 
     const result = test1(ObjectId("1")); // expects to be true
     assert.equal(result, true);
+  });
+
+  it("Works if prop has toJSON", () => {
+    function Creator(value) {
+      // primitive implementation
+      return {
+        toJSON: () => value
+      };
+    }
+
+    const test1 = sift({
+      creator: Creator("1")
+    });
+
+    assert.equal(test1({ creator: Creator("1") }), true);
   });
 
   // https://github.com/crcn/sift.js/issues/159

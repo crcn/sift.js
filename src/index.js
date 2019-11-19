@@ -238,6 +238,7 @@ var prepare = {
         return value == null;
       });
     }
+
     return or(function(value) {
       return compare(comparable(value), comparable(query)) === 0;
     });
@@ -510,7 +511,8 @@ function isVanillaObject(value) {
     (value.constructor === Object ||
       value.constructor === Array ||
       value.constructor.toString() === "function Object() { [native code] }" ||
-      value.constructor.toString() === "function Array() { [native code] }")
+      value.constructor.toString() === "function Array() { [native code] }") &&
+    !value.toJSON
   );
 }
 

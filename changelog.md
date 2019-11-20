@@ -1,3 +1,7 @@
+## 9.0.0
+
+- (behavior change) toJSON works for vanilla objects.
+
 ## 8.5.1
 
 - Fix dependency vulnerability

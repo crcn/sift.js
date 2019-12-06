@@ -1,8 +1,7 @@
-const { resolve } = require("path");
-const fs = require("fs");
+const { DefinePlugin } = require("webpack");
 
 module.exports = {
-  devtool: "none",
+  devtool: "source-map",
   mode: "production",
   entry: {
     index: [__dirname + "/src/index.js"]
@@ -11,12 +10,19 @@ module.exports = {
     path: __dirname,
     library: "sift",
     libraryTarget: "umd",
-    filename: "sift.min.js"
+    filename: `sift.${process.env.CSP_ENABLED ? "csp." : ""}min.js`
   },
   resolve: {
     extensions: [".js"]
   },
   module: {
     rules: []
-  }
+  },
+  plugins: [
+    new DefinePlugin({
+      "process.env.CSP_ENABLED": JSON.stringify(
+        process.env.CSP_ENABLED || false
+      )
+    })
+  ]
 };

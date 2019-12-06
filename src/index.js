@@ -402,10 +402,18 @@ var prepare = {
   /**
    */
 
-  $where: function(query) {
-    return typeof query === "string"
-      ? new Function("obj", "return " + query)
-      : query;
+  $where(query) {
+    if (typeof query === "function") {
+      return query;
+    }
+
+    if (!process.env.CSP_ENABLED) {
+      return new Function("obj", "return " + query);
+    }
+
+    throw new Error(
+      'In CSP mode, sift does not support strings in "$where" condition'
+    );
   },
 
   /**

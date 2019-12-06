@@ -37,7 +37,10 @@
   "module": "./src/index.js",
   "es2015": "./src/index.js",
   "scripts": {
-    "build": "mkdir -p lib; babel src/index.js > lib/index.js; webpack",
+    "build": "mkdir -p lib; babel src/index.js > lib/index.js",
+    "build.min": "webpack",
+    "build.csp": "CSP_ENABLED=1 webpack",
+    "postbuild": "npm run build.min && npm run build.csp",
     "build:watch": "mkdir -p lib; babel --watch  src/index.js --out-file=lib/index.js",
     "test": "mocha ./test -R spec --compilers js:babel-core/register"
   }

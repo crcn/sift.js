@@ -1,7 +1,7 @@
 {
   "name": "sift",
   "description": "mongodb query style array filtering",
-  "version": "9.0.3",
+  "version": "9.0.4",
   "repository": "crcn/sift.js",
   "author": {
     "name": "Craig Condon",
@@ -10,10 +10,7 @@
   },
   "license": "MIT",
   "engines": {},
-  "dependencies": {
-    "@babel/cli": "^7.7.5",
-    "@babel/core": "^7.7.5"
-  },
+  "dependencies": {},
   "typings": "./index.d.ts",
   "husky": {
     "hooks": {
@@ -21,6 +18,8 @@
     }
   },
   "devDependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5",
     "@babel/preset-env": "^7.7.6",
     "@babel/register": "^7.7.4",
     "bson": "^3.0.2",

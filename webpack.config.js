@@ -10,6 +10,7 @@ module.exports = {
     path: __dirname,
     library: "sift",
     libraryTarget: "umd",
+    globalObject: "this",
     filename: `sift.${process.env.CSP_ENABLED ? "csp." : ""}min.js`
   },
   resolve: {

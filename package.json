@@ -1,7 +1,7 @@
 {
   "name": "sift",
   "description": "mongodb query style array filtering",
-  "version": "9.0.2",
+  "version": "9.0.3",
   "repository": "crcn/sift.js",
   "author": {
     "name": "Craig Condon",
@@ -10,7 +10,10 @@
   },
   "license": "MIT",
   "engines": {},
-  "dependencies": {},
+  "dependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5"
+  },
   "typings": "./index.d.ts",
   "husky": {
     "hooks": {
@@ -18,10 +21,8 @@
     }
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-es2015-loose": "^8.0.0",
+    "@babel/preset-env": "^7.7.6",
+    "@babel/register": "^7.7.4",
     "bson": "^3.0.2",
     "eval": "^0.1.3",
     "husky": "^1.2.1",
@@ -42,6 +43,6 @@
     "build.csp": "CSP_ENABLED=1 webpack",
     "postbuild": "npm run build.min && npm run build.csp",
     "build:watch": "mkdir -p lib; babel --watch  src/index.js --out-file=lib/index.js",
-    "test": "mocha ./test -R spec --compilers js:babel-core/register"
+    "test": "mocha ./test -R spec --compilers js:@babel/register"
   }
 }

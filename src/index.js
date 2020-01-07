@@ -111,7 +111,7 @@ var defaultExpressions = {
   /**
    */
 
-  $in(test, value) {
+  $in: function(test, value) {
     return test(value);
   },
 

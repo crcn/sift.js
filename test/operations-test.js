@@ -4,6 +4,41 @@ var ObjectID = require("bson").ObjectID;
 
 describe(__filename + "#", function() {
   [
+    [
+      {
+        educations: {
+          $elemMatch: {
+            $or: [
+              {
+                value: "refa",
+                $or: [{ unfinished: true }]
+              },
+              {
+                value: "reno",
+                $or: [{ unfinished: true }]
+              }
+            ]
+          }
+        }
+      },
+      [
+        {
+          educations: [
+            { value: "refa", unfinished: true },
+            { value: "reno", unfinished: true }
+          ]
+        }
+      ],
+      [
+        {
+          educations: [
+            { value: "refa", unfinished: true },
+            { value: "reno", unfinished: true }
+          ]
+        }
+      ]
+    ],
+
     // $eq
     [{ $eq: 5 }, [5, "5", 6], [5]],
     [

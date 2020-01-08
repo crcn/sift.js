@@ -1,3 +1,7 @@
+## 10.0.0
+
+- new custom operations syntax (see API readme)
+
 ## 9.0.0
 
 - (behavior change) toJSON works for vanilla objects.

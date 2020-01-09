@@ -56,7 +56,7 @@ describe(__filename + "#", function() {
     }
   ];
 
-  it("has sifted through photography in brazil count of 1", function() {
+  xit("has sifted through photography in brazil count of 1", function() {
     var sifted = topic.filter(
       sift({
         hobbies: {
@@ -69,7 +69,7 @@ describe(__filename + "#", function() {
     );
     assert.equal(sifted.length, 1);
   });
-  it("has sifted through photography in brazil, haiti, and costa rica count of 1", function() {
+  xit("has sifted through photography in brazil, haiti, and costa rica count of 1", function() {
     var sifted = topic.filter(
       sift({
         hobbies: {
@@ -83,7 +83,7 @@ describe(__filename + "#", function() {
     assert.equal(sifted.length, 1);
     assert.equal(sifted[0], topic[0]);
   });
-  it("has a sifted hobbies of photography, cooking, or biking count of 2", function() {
+  xit("has a sifted hobbies of photography, cooking, or biking count of 2", function() {
     var sifted = topic.filter(
       sift({
         hobbies: {
@@ -95,7 +95,7 @@ describe(__filename + "#", function() {
     );
     assert.equal(sifted.length, 2);
   });
-  it("has sifted to complex count of 2", function() {
+  xit("has sifted to complex count of 2", function() {
     var sifted = topic.filter(
       sift({
         hobbies: {
@@ -115,7 +115,7 @@ describe(__filename + "#", function() {
 
     assert.equal(sifted.length, 2);
   });
-  it("has sifted to complex count of 0", function() {
+  xit("has sifted to complex count of 0", function() {
     var sifted = topic.filter(
       sift({
         hobbies: {
@@ -128,7 +128,7 @@ describe(__filename + "#", function() {
     );
     assert.equal(sifted.length, 0);
   });
-  it("has sifted subobject hobbies count of 3", function() {
+  xit("has sifted subobject hobbies count of 3", function() {
     var sifted = topic.filter(
       sift({
         "hobbies.name": "photography"
@@ -161,7 +161,7 @@ describe(__filename + "#", function() {
     );
     assert.equal(sifted.length, 2);
   });
-  it("has sifted with selector function count of 2", function() {
+  xit("has sifted with selector function count of 2", function() {
     var sifted = topic.filter(
       sift(
         {
@@ -272,6 +272,7 @@ describe(__filename + "#", function() {
         }
       };
       var sifted = objects.filter(sift(q));
+      console.log("SIFT", sifted);
       assert.deepEqual(sifted, []);
       let q2 = {
         "things.id": {

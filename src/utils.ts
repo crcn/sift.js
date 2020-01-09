@@ -12,10 +12,13 @@ const comparable = (value: any) => {
     return value.map(comparable);
   } else if (value && typeof value.toJSON === "function") {
     return value.toJSON();
-  } else {
-    return value;
   }
+
+  return value;
 };
+
+const get = (object, key) =>
+  isFunction(object.get) ? object.get(key) : object[key];
 
 const isArray = typeChecker<Array<any>>("Array");
 const isObject = typeChecker<Object>("Object");
@@ -32,12 +35,17 @@ const isVanillaObject = value => {
 };
 
 const equals = (a, b) => {
+  if (a == null && a == b) {
+    return true;
+  }
   if (a === b) {
     return true;
   }
-  if (typeof a !== typeof b) {
+
+  if (Object.prototype.toString.call(a) !== Object.prototype.toString.call(b)) {
     return false;
   }
+
   if (isArray(a)) {
     if (a.length !== b.length) {
       return false;
@@ -58,23 +66,29 @@ const equals = (a, b) => {
   return false;
 };
 
-const getValue = (root: any, propertyPath: string[]) => {
-  let current = root;
-  if (propertyPath.length === 1) {
-    return root[propertyPath[0]];
+const hasNestedProperty = (object, key) => {
+  const parts = String(key).split(".");
+  let current = object;
+  if (parts.length === 1) {
+    return current.hasOwnProperty(key);
   }
-  for (const pathPart of propertyPath) {
-    current = propertyPath[pathPart];
+  for (let i = 0, n = parts.length - 1; i < n; i++) {
+    current = current[parts[i]];
+    if (!current) return false;
   }
-  return current;
+  return current.hasOwnProperty(parts[parts.length - 1]);
 };
 
+const nope = () => false;
+
 export {
-  isFunction,
+  get,
+  nope,
+  equals,
   isArray,
   isObject,
-  equals,
-  isVanillaObject,
   comparable,
-  getValue
+  isFunction,
+  isVanillaObject,
+  hasNestedProperty
 };

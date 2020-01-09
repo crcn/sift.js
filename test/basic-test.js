@@ -17,7 +17,7 @@ describe(__filename + "#", function() {
     assert.equal(values[2], 1);
   });
 
-  it("can create a custom selector, and use it", function() {
+  xit("can create a custom selector, and use it", function() {
     var sifter = sift(
       { age: { $gt: 5 } },
       {
@@ -42,7 +42,7 @@ describe(__filename + "#", function() {
       err = e;
     }
 
-    assert.equal(err.message, "Unknown operation $aaa");
+    assert.equal(err.message, "Unsupported operation $aaa");
   });
 
   it("can match empty arrays", function() {
@@ -248,7 +248,7 @@ describe(__filename + "#", function() {
       }
       compare(other) {
         calledCompareCount++;
-        return other && this.value === other.value ? 0 : -1;
+        return other && this.value === other.value;
       }
     }
 

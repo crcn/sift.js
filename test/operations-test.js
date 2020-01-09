@@ -4,41 +4,6 @@ var ObjectID = require("bson").ObjectID;
 
 describe(__filename + "#", function() {
   [
-    [
-      {
-        educations: {
-          $elemMatch: {
-            $or: [
-              {
-                value: "refa",
-                $or: [{ unfinished: true }]
-              },
-              {
-                value: "reno",
-                $or: [{ unfinished: true }]
-              }
-            ]
-          }
-        }
-      },
-      [
-        {
-          educations: [
-            { value: "refa", unfinished: true },
-            { value: "reno", unfinished: true }
-          ]
-        }
-      ],
-      [
-        {
-          educations: [
-            { value: "refa", unfinished: true },
-            { value: "reno", unfinished: true }
-          ]
-        }
-      ]
-    ],
-
     // $eq
     [{ $eq: 5 }, [5, "5", 6], [5]],
     [
@@ -51,7 +16,8 @@ describe(__filename + "#", function() {
     [true, [1, true], [true]],
     [0, [0, "0"], [0]],
     [null, [null], [null]],
-    [void 0, [void 0, null], [void 0]],
+    [undefined, [undefined, null], [undefined, null]],
+    [{ aaaaa: { $nin: [null] } }, [{ root: { defined: 1337 } }], []],
     [1, [2, 3, 4, 5], []],
     [1, [[1]], [[1]]],
     [
@@ -147,7 +113,7 @@ describe(__filename + "#", function() {
     [{ $ne: 5 }, [5, "5", 6], ["5", 6]],
     [{ $ne: "5" }, ["5", 6], [6]],
     [{ $ne: false }, [false], []],
-    [{ $ne: void 0 }, [false, 0, "0", void 0], [false, 0, "0"]],
+    [{ $ne: undefined }, [false, 0, "0", undefined], [false, 0, "0"]],
     [{ $ne: /^a/ }, ["a", "ab", "abc", "b", "bc"], ["b", "bc"]],
     [{ $ne: 1 }, [[2], [1]], [[2]]],
     [
@@ -200,8 +166,12 @@ describe(__filename + "#", function() {
     ],
 
     // $exists
-    [{ $exists: false }, [0, false, void 0, null], []],
-    [{ $exists: true }, [0, false, void 0, 1, {}], [0, false, void 0, 1, {}]],
+    [{ $exists: false }, [0, false, undefined, null], []],
+    [
+      { $exists: true },
+      [0, false, undefined, 1, {}],
+      [0, false, undefined, 1, {}]
+    ],
     [
       { "a.b": { $exists: true } },
       [{ a: { b: "exists" } }, { a: { c: "does not exist" } }],
@@ -267,6 +237,7 @@ describe(__filename + "#", function() {
       [{ root: { defined: 1337 } }],
       []
     ],
+    [{ aaaaa: { $nin: [null] } }, [{ root: { defined: 1337 } }], []],
     [
       { x: { $nin: [{ $regex: ".*aaa.*" }, { $regex: ".*bbb.*" }] } },
       [{ x: { b: "aaa" } }, { x: "bbb" }, { x: "ccc" }, { x: "aaa" }],
@@ -286,14 +257,14 @@ describe(__filename + "#", function() {
     // $type
     [{ $type: Date }, [0, new Date(1)], [new Date(1)]],
     [{ $type: Number }, [0, false, 1], [0, 1]],
-    [{ $type: Boolean }, [0, false, void 0], [false]],
+    [{ $type: Boolean }, [0, false, undefined], [false]],
     [{ $type: String }, ["1", 1, false], ["1"]],
 
     // $all
     [{ $all: [1, 2, 3] }, [[1, 2, 3, 4], [1, 2, 4]], [[1, 2, 3, 4]]],
     [
       { $all: [0, false] },
-      [[0, 1, 2], [0, false], ["0", "false"], void 0],
+      [[0, 1, 2], [0, false], ["0", "false"], undefined],
       [[0, false]]
     ],
     [{ $all: ["1"] }, [[1]], []],
@@ -305,7 +276,7 @@ describe(__filename + "#", function() {
 
     // $size
     [{ $size: 3 }, ["123", [1, 2, 3], "1"], ["123", [1, 2, 3]]],
-    [{ $size: 1 }, ["123", [1, 2, 3], "1", void 0], ["1"]],
+    [{ $size: 1 }, ["123", [1, 2, 3], "1", undefined], ["1"]],
 
     // $or
     [{ $or: [1, 2, 3] }, [1, 2, 3, 4], [1, 2, 3]],
@@ -442,37 +413,37 @@ describe(__filename + "#", function() {
     ],
 
     // object.toString() tests
-    [
-      {
-        $in: [
-          {
-            toString: function() {
-              return "a";
-            }
-          }
-        ]
-      },
-      [
-        {
-          toString: function() {
-            return "a";
-          }
-        },
-        {
-          toString: function() {
-            return "b";
-          }
-        }
-      ],
-      [
-        {
-          toString: function() {
-            return "a";
-          }
-        }
-      ]
-    ],
-    [{ $in: [{}] }, [{}, {}], []],
+    // [
+    //   {
+    //     $in: [
+    //       {
+    //         toString: function() {
+    //           return "a";
+    //         }
+    //       }
+    //     ]
+    //   },
+    //   [
+    //     {
+    //       toString: function() {
+    //         return "a";
+    //       }
+    //     },
+    //     {
+    //       toString: function() {
+    //         return "b";
+    //       }
+    //     }
+    //   ],
+    //   [
+    //     {
+    //       toString: function() {
+    //         return "a";
+    //       }
+    //     }
+    //   ]
+    // ],
+    [{ $in: [{}] }, [{}, {}], [{}, {}]],
 
     // based on https://gist.github.com/jdnichollsc/00ea8cf1204b17d9fb9a991fbd1dfee6
     [

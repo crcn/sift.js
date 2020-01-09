@@ -1,6 +1,9 @@
 ## 10.0.0
 
 - new custom operations syntax (see API readme)
+- null & undefined are not treated equally (change has been added to keep spec as functionality as possible to MongoDB)
+- `select` option is not supported anymore
+- `compare` option now expects `boolean` return value
 
 ## 9.0.0
 

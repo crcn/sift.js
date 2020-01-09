@@ -33,7 +33,7 @@ describe(__filename + "#", () => {
     //     ]
     // }, [1, 2, 3, 4, 5], [3, 4]]
   ].forEach(function([description, query, values, result]) {
-    it(description, function() {
+    xit(description, function() {
       return new Promise(function(resolve, reject) {
         var filter = asyncFilter(sift(query));
         filter(values).then(function(filteredValues) {

@@ -27,6 +27,7 @@ type Query<TItem> = {
 };
 type FilterCreator = (
   params: any,
+  scopePath: string[],
   options: Options,
   parentQuery: Query<any>
 ) => (item: any) => boolean;
@@ -68,7 +69,7 @@ const numericalOperation = createFilter => params => {
 const createRegexpTester = tester => item =>
   typeof item === "string" && tester.test(item);
 
-const createTester = (params, { compare = equals }) => {
+const createTester = (params, scopePath: string[], { compare = equals }) => {
   if (isFunction(params)) {
     return params;
   }
@@ -77,26 +78,37 @@ const createTester = (params, { compare = equals }) => {
   }
   const comparableParams = comparable(params);
   return (item, key: Key, parent: any) => {
-    return compare(comparableParams, comparable(item));
+    console.log(
+      item,
+      scopePath,
+      getScopeValues(item, scopePath),
+      comparableParams
+    );
+    return getScopeValues(item, scopePath).some(value =>
+      compare(comparableParams, comparable(value))
+    );
   };
 };
-const createNestedFilter = <TItem>(
+
+const createPropertyFilter = <TItem>(
   property: string,
   query: Query<TItem>,
   options: Options
 ): Filter => {
-  const filter = containsOperation(query)
-    ? createAndFilter(createQueryFilters(query, options))
-    : createTester(query, options);
-
   const pathParts = property.split(".");
 
-  // If the query contains $ne, need to test all elements ANDed together
-  const inclusive = query && query.$ne != null;
+  const filter = containsOperation(query)
+    ? createAndFilter(createQueryFilters(query, pathParts, options))
+    : createTester(query, pathParts, options);
 
-  return (item: TItem, key: Key, parent: any) => {
-    return filterNested(filter, inclusive, item, pathParts, parent, 0);
-  };
+  // If the query contains $ne, need to test all elements ANDed together
+  // const inclusive = query && (query.$ne != null || query.$all != null);
+
+  return filter;
+
+  // return (item: TItem, key: Key, parent: any) => {
+  //   return filterNested(filter, inclusive, item, pathParts, parent, 0);
+  // };
 };
 
 const filterNested = (
@@ -142,7 +154,32 @@ const filterNested = (
   return filterNested(filter, inclusive, child, keyPath, item, depth + 1);
 };
 
-const createQueryFilters = <TItem>(query: Query<TItem>, options: Options) => {
+const getScopeValues = (
+  item,
+  scopePath: string[],
+  depth: number = 0,
+  values: any[] = []
+) => {
+  const currentKey = scopePath[depth];
+  if (isArray(item) && isNaN(Number(currentKey))) {
+    for (let i = 0, { length } = item; i < length; i++) {
+      getScopeValues(get(item, i), scopePath, depth, values);
+    }
+    return values;
+  }
+  if (depth === scopePath.length || item == null) {
+    values.push(item);
+    return values;
+  }
+
+  return getScopeValues(get(item, currentKey), scopePath, depth + 1, values);
+};
+
+const createQueryFilters = <TItem>(
+  query: Query<TItem>,
+  scopePath: string[],
+  options: Options
+) => {
   const filters = [];
   if (!isVanillaObject(query)) {
     query = { $eq: query };
@@ -153,9 +190,13 @@ const createQueryFilters = <TItem>(query: Query<TItem>, options: Options) => {
 
     // operation
     if (property.charAt(0) === "$") {
-      filters.push(createOperationFilter(property, params, query, options));
+      filters.push(
+        createOperationFilter(property, scopePath, params, query, options)
+      );
     } else {
-      filters.push(createNestedFilter(property, params as Query<any>, options));
+      filters.push(
+        createPropertyFilter(property, params as Query<any>, options)
+      );
     }
   }
 
@@ -164,6 +205,7 @@ const createQueryFilters = <TItem>(query: Query<TItem>, options: Options) => {
 
 const createOperationFilter = (
   operation: string,
+  scopePath: string[],
   params: any,
   parentQuery: Query<any>,
   options: Options
@@ -174,7 +216,7 @@ const createOperationFilter = (
     throw new Error(`Unsupported operation ${operation}`);
   }
 
-  return createFilter(params, options, parentQuery);
+  return createFilter(params, scopePath, options, parentQuery);
 };
 
 const createAndFilter = <TItem>(filters: Filter[]) => {
@@ -200,9 +242,10 @@ export {
   Filter,
   Query,
   FilterCreator,
+  getScopeValues,
   spreadValueArray,
   createQueryFilters,
-  createNestedFilter,
+  createPropertyFilter,
   createTester,
   numericalOperation,
   createOrFilter,

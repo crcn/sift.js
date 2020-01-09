@@ -1,3 +1,5 @@
+**Installation**: `npm install sift`, or `yarn add sift`
+
 ## validate objects & filter arrays with mongodb queries
 
 [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)

@@ -5,9 +5,63 @@ var ObjectID = require("bson").ObjectID;
 describe(__filename + "#", function() {
   [
     [
-      { "foo.0": "baz" },
-      [{ foo: ["bar", "baz"] }, { foo: ["baz", "bar"] }],
-      [{ foo: ["baz", "bar"] }]
+      { "order.items.product": { $all: ["poster", "frame"] } },
+      [
+        {
+          order: {
+            id: "or_0001",
+            amount: 6000,
+            items: [
+              {
+                product: "poster",
+                sku: "P18x24",
+                quantity: 1,
+                amount: 3000
+              },
+              {
+                product: "frame",
+                sku: "P18x24",
+                quantity: 1,
+                amount: 3000
+              },
+              {
+                product: "shipping",
+                sku: "shipping",
+                quantity: 1,
+                amount: 5000
+              }
+            ]
+          }
+        }
+      ],
+      [
+        {
+          order: {
+            id: "or_0001",
+            amount: 6000,
+            items: [
+              {
+                product: "poster",
+                sku: "P18x24",
+                quantity: 1,
+                amount: 3000
+              },
+              {
+                product: "frame",
+                sku: "P18x24",
+                quantity: 1,
+                amount: 3000
+              },
+              {
+                product: "shipping",
+                sku: "shipping",
+                quantity: 1,
+                amount: 5000
+              }
+            ]
+          }
+        }
+      ]
     ],
 
     // $eq
@@ -278,6 +332,67 @@ describe(__filename + "#", function() {
       { $all: [new Date(1), new Date(2)] },
       [[new Date(1), new Date(2)], [new Date(1)]],
       [[new Date(1), new Date(2)]]
+    ],
+
+    // https://github.com/crcn/sift.js/issues/160
+    [
+      { "order.items.product": { $all: ["poster", "frame"] } },
+      [
+        {
+          order: {
+            id: "or_0001",
+            amount: 6000,
+            items: [
+              {
+                product: "poster",
+                sku: "P18x24",
+                quantity: 1,
+                amount: 3000
+              },
+              {
+                product: "frame",
+                sku: "P18x24",
+                quantity: 1,
+                amount: 3000
+              },
+              {
+                product: "shipping",
+                sku: "shipping",
+                quantity: 1,
+                amount: 5000
+              }
+            ]
+          }
+        }
+      ],
+      [
+        {
+          order: {
+            id: "or_0001",
+            amount: 6000,
+            items: [
+              {
+                product: "poster",
+                sku: "P18x24",
+                quantity: 1,
+                amount: 3000
+              },
+              {
+                product: "frame",
+                sku: "P18x24",
+                quantity: 1,
+                amount: 3000
+              },
+              {
+                product: "shipping",
+                sku: "shipping",
+                quantity: 1,
+                amount: 5000
+              }
+            ]
+          }
+        }
+      ]
     ],
 
     // $size

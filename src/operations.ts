@@ -1,4 +1,4 @@
-import { comparable, isFunction } from "./utils";
+import { comparable, isFunction, isArray } from "./utils";
 import {
   spreadValueArray,
   createQueryFilters,
@@ -8,13 +8,14 @@ import {
   createRegexpTester,
   createTester,
   numericalOperation,
-  createNestedFilter
+  Filter,
+  getScopeValues
 } from "./core";
 
-const $eq = (params, options) =>
-  spreadValueArray(createTester(params, options));
-const $ne = (params, options) => {
-  const filter = $eq(params, options);
+const $eq = (params, scopePath, options) =>
+  createTester(params, scopePath, options);
+const $ne = (params, scopePath, options) => {
+  const filter = $eq(params, scopePath, options);
   return (item, key, parent) => {
     return !filter(item, key, parent);
   };
@@ -29,61 +30,86 @@ const $mod = numericalOperation(([mod, equalsValue]) => item =>
 );
 
 const $exists = params =>
-  spreadValueArray((item, key, parent) => {
+  spreadValueArray((_item, key, parent) => {
     return parent.hasOwnProperty(key) === params;
   });
 
-const $in = (params, options) => {
-  const filter = $or(params, options);
+const $in = (params, scopePath, options) => {
+  const filter = $or(params, scopePath, options);
   return (item, key, parent) => {
     return filter(item, key, parent);
   };
 };
 
-const $nin = (params, options) => {
-  const filter = $in(params, options);
+const $nin = (params, scopePath, options) => {
+  const filter = $in(params, scopePath, options);
   return (item, key, value) => {
     return !filter(item, key, value);
   };
 };
 
-const $and = (params, options) => {
-  const filter = createAndFilter(
-    params.map(query => createOrFilter(createQueryFilters(query, options)))
+const $and = (queries, scopePath: string[], options) => {
+  const filters = queries.map(query =>
+    createOrFilter(createQueryFilters(query, [], options))
   );
-  return filter;
+  return item => {
+    const values = getScopeValues(item, scopePath);
+
+    return filters.every(filter => values.some(filter));
+  };
 };
 
-const $options = params => item => true;
+const $options = () => () => true;
 
-const $not = (query, options) => {
-  const filter = createAndFilter(createQueryFilters(query, options));
+const $not = (query, scopePath: string[], options) => {
+  const filter = createAndFilter(createQueryFilters(query, scopePath, options));
   return (item, key, parent) => !filter(item, key, parent);
 };
 const $size = size => item => item && item.length === size;
-const $all = (query, options) => $and(query, options);
+const $all = (queries, scopePath, options) => {
+  const filter = $and(queries, scopePath, options);
+  return (item, key, parent) => {
+    return filter(item);
+  };
+};
+
+const traverseScope = (item, scopePath: string[], depth: number = 0) => {
+  if (depth === scopePath.length) {
+    return item;
+  }
+
+  const currentKey = scopePath[depth];
+
+  if (isArray(item) && isNaN(Number(currentKey))) {
+    for (let i = 0, { length } = item; i < length; i++) {
+      traverseScope(item[i], scopePath, depth);
+    }
+  }
+};
 const $type = clazz =>
   spreadValueArray(item => {
     return item == undefined
       ? false
       : item instanceof clazz || item.constructor === clazz;
   });
-const $regex = (pattern, options, { $options }) => {
+const $regex = (pattern, _scopePath, _options, { $options }) => {
   const tester =
     pattern instanceof RegExp ? pattern : new RegExp(pattern, $options);
   return spreadValueArray(createRegexpTester(tester));
 };
-const $elemMatch = (query, options: Options) => {
-  const filter = createAndFilter(createQueryFilters(query, options));
+const $elemMatch = (query, scopePath: string[], options: Options) => {
+  const filter = createAndFilter(createQueryFilters(query, scopePath, options));
   return filter;
 };
-const $or = (params, options: Options) => {
+const $or = (queries, scopePath: string[], options: Options) => {
   return createOrFilter(
-    params.map(query => createAndFilter(createQueryFilters(query, options)))
+    queries.map(query =>
+      createAndFilter(createQueryFilters(query, scopePath, options))
+    )
   );
 };
-const $nor = (params, options: Options) => {
-  const filter = $or(params, options);
+const $nor = (params, scopePath, options: Options) => {
+  const filter = $or(params, scopePath, options);
   return (item, key, parent) => !filter(item, key, parent);
 };
 const $where = query => {

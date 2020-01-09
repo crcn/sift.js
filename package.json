@@ -1,7 +1,7 @@
 {
   "name": "sift",
   "description": "mongodb query style array filtering",
-  "version": "9.0.8",
+  "version": "10.0.0",
   "repository": "crcn/sift.js",
   "author": {
     "name": "Craig Condon",

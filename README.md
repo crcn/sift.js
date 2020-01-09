@@ -68,7 +68,7 @@ testFilter({ name: "tim" }); //false
     ></script>
     <script type="text/javascript">
       //regexp filter
-      var sifted = sift(/^j/, ["craig", "john", "jake"]); //['john','jake']
+      var sifted = ["craig", "john", "jake"].filter(sift(/^j/)); //['john','jake']
     </script>
   </head>
   <body></body>
@@ -81,10 +81,8 @@ testFilter({ name: "tim" }); //false
 
 - `query` - the filter to use against the target array
 - `options`
-  - `select` - value selector
   - `expressions` - custom expressions
   - `compare` - compares difference between two values
-  - `comparable`
 
 With an array:
 
@@ -431,7 +429,7 @@ var filter = sift(
   },
   {
     expressions: {
-      $customMod: function(query, value) {
+      $customMod: query => value => {
         return query % value;
       }
     }

@@ -4,7 +4,7 @@ module.exports = {
   devtool: "source-map",
   mode: "production",
   entry: {
-    index: [__dirname + "/src/index.js"]
+    index: [__dirname + "/src/index.ts"]
   },
   output: {
     path: __dirname,
@@ -14,15 +14,15 @@ module.exports = {
     filename: `sift.${process.env.CSP_ENABLED ? "csp." : ""}min.js`
   },
   resolve: {
-    extensions: [".js"]
+    extensions: [".js", ".ts"]
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.ts$/,
         exclude: /(node_modules|bower_components)/,
         use: {
-          loader: "babel-loader"
+          loader: "ts-loader"
         }
       }
     ]

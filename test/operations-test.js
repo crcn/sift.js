@@ -4,6 +4,12 @@ var ObjectID = require("bson").ObjectID;
 
 describe(__filename + "#", function() {
   [
+    [
+      { "foo.0": "baz" },
+      [{ foo: ["bar", "baz"] }, { foo: ["baz", "bar"] }],
+      [{ foo: ["baz", "bar"] }]
+    ],
+
     // $eq
     [{ $eq: 5 }, [5, "5", 6], [5]],
     [

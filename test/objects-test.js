@@ -253,6 +253,7 @@ describe(__filename + "#", function() {
         ]
       }
     ];
+
     it("$eq for array of objects, matches if at least one exists", function() {
       let q = {
         "things.id": 123
@@ -272,7 +273,6 @@ describe(__filename + "#", function() {
         }
       };
       var sifted = objects.filter(sift(q));
-      console.log("SIFT", sifted);
       assert.deepEqual(sifted, []);
       let q2 = {
         "things.id": {
@@ -317,18 +317,6 @@ describe(__filename + "#", function() {
         ]
       }
     ];
-
-    it("can filter people", function() {
-      var results = couples.filter(
-        sift({ person: { $elemMatch: { gender: "female", age: { $lt: 30 } } } })
-      );
-      assert.equal(results[0].name, "SMITH");
-
-      var results = [couples[0]].filter(
-        sift({ person: { $elemMatch: { gender: "male", age: { $lt: 30 } } } })
-      );
-      assert.equal(results.length, 0);
-    });
   });
 
   describe("keypath", function() {

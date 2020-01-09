@@ -170,6 +170,49 @@ const createTester = (params, { compare = equals }) => {
   };
 };
 
+const filterNested = (
+  filter: Filter,
+  inclusive: boolean,
+  item: any,
+  keyPath: Key[],
+  parent: any,
+  depth: number
+): boolean => {
+  const currentKey = keyPath[depth];
+
+  if (isArray(item) && isNaN(Number(currentKey))) {
+    let allValid;
+    for (let i = 0, { length } = item; i < length; i++) {
+      const include = filterNested(
+        filter,
+        inclusive,
+        get(item, i),
+        keyPath,
+        parent,
+        depth
+      );
+      if (inclusive && allValid != null) {
+        allValid = allValid && include;
+      } else {
+        allValid = allValid || include;
+      }
+    }
+    return allValid;
+  }
+
+  const child = get(item, currentKey);
+
+  if (item && child == null) {
+    return filter(undefined, currentKey, item);
+  }
+
+  if (depth === keyPath.length - 1) {
+    return filter(child, currentKey, item);
+  }
+
+  return filterNested(filter, inclusive, child, keyPath, item, depth + 1);
+};
+
 const createNestedFilter = <TItem>(
   property: string,
   query: Query<TItem>,
@@ -181,37 +224,11 @@ const createNestedFilter = <TItem>(
 
   const pathParts = property.split(".");
 
-  const filterNested = (
-    item: any,
-    keyPath: Key[],
-    parent: any,
-    depth: number
-  ): boolean => {
-    const currentKey = keyPath[depth];
-
-    if (isArray(item)) {
-      for (let i = 0, { length } = item; i < length; i++) {
-        if (filterNested(get(item, i), keyPath, parent, depth)) {
-          return true;
-        }
-      }
-    }
-
-    const child = get(item, currentKey);
-
-    if (item && child == null) {
-      return filter(undefined, currentKey, item);
-    }
-
-    if (depth === keyPath.length - 1) {
-      return filter(child, currentKey, item);
-    }
-
-    return filterNested(child, keyPath, item, depth + 1);
-  };
+  // If the query contains $ne, need to test all elements ANDed together
+  const inclusive = query && query.$ne != null;
 
   return (item: TItem, key: Key, parent: any) => {
-    return filterNested(item, pathParts, parent, 0);
+    return filterNested(filter, inclusive, item, pathParts, parent, 0);
   };
 };
 

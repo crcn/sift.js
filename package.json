@@ -36,10 +36,10 @@
   "es2015": "./lib/index.js",
   "scripts": {
     "build": "npm run build:lib && npm run build:min && npm run build:csp",
-    "build:lib": "mkdir -p lib; babel src/index.js > lib/index.js",
+    "build:lib": "tsc",
     "build:min": "webpack",
     "build:csp": "CSP_ENABLED=1 webpack",
-    "build:watch": "mkdir -p lib; babel --watch  src/index.js --out-file=lib/index.js",
+    "build:watch": "tsc --watch",
     "test": "mocha ./test -R spec --compilers js:@babel/register"
   }
 }

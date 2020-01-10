@@ -4,64 +4,12 @@ var ObjectID = require("bson").ObjectID;
 
 describe(__filename + "#", function() {
   [
+    [/^a/, ["a", "ab", "abc", "b", "bc"], ["a", "ab", "abc"]],
+
     [
-      { "order.items.product": { $all: ["poster", "frame"] } },
-      [
-        {
-          order: {
-            id: "or_0001",
-            amount: 6000,
-            items: [
-              {
-                product: "poster",
-                sku: "P18x24",
-                quantity: 1,
-                amount: 3000
-              },
-              {
-                product: "frame",
-                sku: "P18x24",
-                quantity: 1,
-                amount: 3000
-              },
-              {
-                product: "shipping",
-                sku: "shipping",
-                quantity: 1,
-                amount: 5000
-              }
-            ]
-          }
-        }
-      ],
-      [
-        {
-          order: {
-            id: "or_0001",
-            amount: 6000,
-            items: [
-              {
-                product: "poster",
-                sku: "P18x24",
-                quantity: 1,
-                amount: 3000
-              },
-              {
-                product: "frame",
-                sku: "P18x24",
-                quantity: 1,
-                amount: 3000
-              },
-              {
-                product: "shipping",
-                sku: "shipping",
-                quantity: 1,
-                amount: 5000
-              }
-            ]
-          }
-        }
-      ]
+      { groups: { $ne: 111 } },
+      [{ groups: [111, 222, 333, 444] }, { groups: [222, 333, 444] }],
+      [{ groups: [222, 333, 444] }]
     ],
 
     // $eq

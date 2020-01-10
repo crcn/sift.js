@@ -1,115 +1,117 @@
-import { comparable, isFunction, isArray } from "./utils";
+import { comparable, isFunction, isArray, getClassName } from "./utils";
 import {
   spreadValueArray,
-  createQueryFilters,
+  createQueryFilters2,
   Options,
   createOrFilter,
   createAndFilter,
-  createRegexpTester,
-  createTester,
-  numericalOperation,
-  Filter,
-  getScopeValues
+  createRegexpFilter,
+  createFilter,
+  numericalTester,
+  createQueryTester,
+  createTester
 } from "./core";
+import { Query } from "./query";
+import { createSomeFilter, createEveryFilter } from "./filters";
 
-const $eq = (params, scopePath, options) =>
-  createTester(params, scopePath, options);
-const $ne = (params, scopePath, options) => {
-  const filter = $eq(params, scopePath, options);
-  return (item, key, parent) => {
-    return !filter(item, key, parent);
-  };
-};
+const $eq = (params, options) =>
+  createEveryFilter(createTester(params, options));
+const $ne = (params, options) => {
+  const test = createTester(params, {
+    ...options,
+    compare(a, b) {
+      if (isArray(b) && !isArray(a)) {
+        return true;
+      }
 
-const $gt = numericalOperation(params => item => comparable(item) > params);
-const $gte = numericalOperation(params => item => comparable(item) >= params);
-const $lt = numericalOperation(params => item => comparable(item) < params);
-const $lte = numericalOperation(params => item => comparable(item) <= params);
-const $mod = numericalOperation(([mod, equalsValue]) => item =>
-  comparable(item) % mod === equalsValue
-);
-
-const $exists = params =>
-  spreadValueArray((_item, key, parent) => {
-    return parent.hasOwnProperty(key) === params;
+      return options.compare(a, b);
+    }
   });
 
-const $in = (params, scopePath, options) => {
-  const filter = $or(params, scopePath, options);
+  return createEveryFilter(item => !test(item));
+};
+
+const $gt = numericalTester(params =>
+  createSomeFilter(item => comparable(item) > params)
+);
+const $gte = numericalTester(params =>
+  createSomeFilter(item => comparable(item) >= params)
+);
+const $lt = numericalTester(params =>
+  createSomeFilter(item => {
+    return comparable(item) < params;
+  })
+);
+const $lte = numericalTester(params =>
+  createSomeFilter(item => comparable(item) <= params)
+);
+const $mod = numericalTester(([mod, equalsValue]) =>
+  createSomeFilter(item => comparable(item) % mod === equalsValue)
+);
+
+const $exists = params => {
+  return (values: any[]) => values.length > 0 === params;
+};
+
+const $in = (params, options) => {
+  const filter = $or(params, options);
   return (item, key, parent) => {
     return filter(item, key, parent);
   };
 };
 
-const $nin = (params, scopePath, options) => {
-  const filter = $in(params, scopePath, options);
+const $nin = (params, options) => {
+  const filter = $in(params, options);
   return (item, key, value) => {
     return !filter(item, key, value);
   };
 };
 
-const $and = (queries, scopePath: string[], options) => {
-  const filters = queries.map(query =>
-    createOrFilter(createQueryFilters(query, [], options))
-  );
-  return item => {
-    const values = getScopeValues(item, scopePath);
+const $and = (queries, options) => {
+  const testers = queries.map(query => createQueryTester(query, options));
 
-    return filters.every(filter => values.some(filter));
+  return values => {
+    return testers.every(test => values.some(test));
   };
 };
 
 const $options = () => () => true;
 
-const $not = (query, scopePath: string[], options) => {
-  const filter = createAndFilter(createQueryFilters(query, scopePath, options));
+const $not = (query, options) => {
+  const filter = createAndFilter(createQueryFilters2(query, options));
   return (item, key, parent) => !filter(item, key, parent);
 };
 const $size = size => item => item && item.length === size;
-const $all = (queries, scopePath, options) => {
-  const filter = $and(queries, scopePath, options);
+const $all = (queries, options) => {
+  const filter = $and(queries, options);
   return (item, key, parent) => {
     return filter(item);
   };
 };
 
-const traverseScope = (item, scopePath: string[], depth: number = 0) => {
-  if (depth === scopePath.length) {
-    return item;
-  }
-
-  const currentKey = scopePath[depth];
-
-  if (isArray(item) && isNaN(Number(currentKey))) {
-    for (let i = 0, { length } = item; i < length; i++) {
-      traverseScope(item[i], scopePath, depth);
-    }
-  }
-};
 const $type = clazz =>
   spreadValueArray(item => {
     return item == undefined
       ? false
       : item instanceof clazz || item.constructor === clazz;
   });
-const $regex = (pattern, _scopePath, _options, { $options }) => {
+const $regex = (pattern, __options, { $options }) => {
   const tester =
     pattern instanceof RegExp ? pattern : new RegExp(pattern, $options);
-  return spreadValueArray(createRegexpTester(tester));
+  return spreadValueArray(createRegexpFilter(tester));
 };
-const $elemMatch = (query, scopePath: string[], options: Options) => {
-  const filter = createAndFilter(createQueryFilters(query, scopePath, options));
-  return filter;
+const $elemMatch = (query, options: Options) => {
+  const test = createQueryTester(query, options);
+  return (values: any[]) => values.every(test);
 };
-const $or = (queries, scopePath: string[], options: Options) => {
-  return createOrFilter(
-    queries.map(query =>
-      createAndFilter(createQueryFilters(query, scopePath, options))
-    )
-  );
+const $or = (queries: Query<any>[], options: Options) => {
+  const testers = queries.map(query => createQueryTester(query, options));
+
+  return (values: any[]) =>
+    values.some(value => testers.some(test => test(value)));
 };
-const $nor = (params, scopePath, options: Options) => {
-  const filter = $or(params, scopePath, options);
+const $nor = (params, options: Options) => {
+  const filter = $or(params, options);
   return (item, key, parent) => !filter(item, key, parent);
 };
 const $where = query => {

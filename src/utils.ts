@@ -1,9 +1,11 @@
 const typeChecker = <TType>(type) => {
   const typeString = "[object " + type + "]";
   return function(value): value is TType {
-    return Object.prototype.toString.call(value) === typeString;
+    return getClassName(value) === typeString;
   };
 };
+
+const getClassName = value => Object.prototype.toString.call(value);
 
 const comparable = (value: any) => {
   if (value instanceof Date) {
@@ -89,6 +91,7 @@ export {
   isObject,
   comparable,
   isFunction,
+  getClassName,
   isVanillaObject,
   hasNestedProperty
 };

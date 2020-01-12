@@ -1,331 +1,263 @@
-import {
-  equals,
-  isArray,
-  isVanillaObject,
-  get,
-  isFunction,
-  comparable,
-  nope
-} from "./utils";
-import { createNestedFilter } from "./filters";
+import { isArray, Key, Comparator, isVanillaObject } from "./utils";
 
-type Key = string | number;
-type Filter = (values: any[], key: Key, parent: any) => boolean;
-type Tester = (item: any) => boolean;
+export interface Operation {
+  readonly success: boolean;
+  readonly done: boolean;
+  reset();
+  next(item: any, key: Key, owner: any);
+}
 
-type $And = any;
+export type Tester = (item: any, key?: Key, owner?: any) => boolean;
 
-type $Or = any;
+export type OperationCreator = (params: any, optiosn: Options) => Operation;
 
-type FieldQuery = any;
+/**
+ * Walks through each value given the context - used for nested operations. E.g:
+ * { "person.address": { $eq: "blarg" }}
+ */
 
-type $Eq = any;
+const walkKeyPathValues = (
+  item: any,
+  keyPath: Key[],
+  next: Tester,
+  depth: number,
+  key: Key,
+  owner: any
+) => {
+  const currentKey = keyPath[depth];
 
-type Query<TItem> = {
-  $and?: $And;
-  $or?: $Or;
-  $eq?: $Eq;
-  [identifier: string]: FieldQuery;
+  if (isArray(item) && isNaN(Number(currentKey))) {
+    for (let i = 0, { length } = item; i < length; i++) {
+      // if FALSE is returned, then terminate walker. For operations, this simply
+      // means that the search critera was met.
+      if (!walkKeyPathValues(item[i], keyPath, next, depth, i, item)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  if (depth === keyPath.length || item == null) {
+    return next(item, key, owner);
+  }
+
+  return walkKeyPathValues(
+    item[currentKey],
+    keyPath,
+    next,
+    depth + 1,
+    currentKey,
+    item
+  );
 };
-type FilterCreator = (
-  params: any,
-  options: Options,
-  parentQuery: Query<any>
-) => (item: any) => boolean;
 
-type CustomOperations = {
-  [identifier: string]: FilterCreator;
+export abstract class BaseOperation<TParams> implements Operation {
+  success: boolean;
+  done: boolean;
+  constructor(readonly params: TParams, readonly options: Options) {
+    this.init();
+  }
+  protected init() {}
+  reset() {
+    this.done = false;
+    this.success = false;
+  }
+  abstract next(item: any, key: Key, parent: any);
+}
+
+export abstract class GroupOperation extends BaseOperation<any> {
+  success: boolean;
+  done: boolean;
+
+  constructor(
+    params: any,
+    options: Options,
+    private readonly _children: Operation[]
+  ) {
+    super(params, options);
+  }
+
+  /**
+   */
+
+  reset() {
+    this.success = false;
+    this.done = false;
+    for (let i = 0, { length } = this._children; i < length; i++) {
+      this._children[i].reset();
+    }
+  }
+
+  abstract next(item: any, key: Key, parent: any);
+
+  /**
+   */
+
+  protected childrenNext(item: any, key: Key, parent: any) {
+    let done = true;
+    let success = true;
+    for (let i = 0, { length } = this._children; i < length; i++) {
+      const childOperation = this._children[i];
+      childOperation.next(item, key, parent);
+      if (!childOperation.success) {
+        success = false;
+      }
+      if (childOperation.done) {
+        if (!childOperation.success) {
+          break;
+        }
+      } else {
+        done = false;
+      }
+    }
+    this.done = done;
+    this.success = success;
+  }
+}
+
+export class QueryOperation extends GroupOperation {
+  /**
+   */
+
+  next(item: any, key: Key, parent: any) {
+    this.childrenNext(item, key, parent);
+  }
+}
+
+export class NestedOperation extends GroupOperation {
+  constructor(
+    readonly keyPath: Key[],
+    params: any,
+    options: Options,
+    children: Operation[]
+  ) {
+    super(params, options, children);
+  }
+  /**
+   */
+
+  next(item: any, key: Key, parent: any) {
+    walkKeyPathValues(
+      item,
+      this.keyPath,
+      this._nextNestedValue,
+      0,
+      key,
+      parent
+    );
+  }
+
+  /**
+   */
+
+  private _nextNestedValue = (value: any, key: Key, owner: any) => {
+    this.childrenNext(value, key, owner);
+    return !this.done;
+  };
+}
+
+export const createTester = (a, compare: Comparator) => {
+  if (a instanceof Function) {
+    return a;
+  }
+  if (a instanceof RegExp) {
+    return b => a.test(b);
+  }
+  const comparableA = comparable(a);
+  return b => compare(comparableA, comparable(b));
 };
 
-type Options = {
-  expressions: CustomOperations;
+export const comparable = a => {
+  if (a instanceof Date) {
+    return a.getTime();
+  }
+  if (isArray(a)) {
+    return a.map(comparable);
+  }
+  return a;
+};
+
+export class EqualsOperation extends BaseOperation<any> {
+  private _test: Tester;
+  init() {
+    this._test = createTester(this.params, this.options.compare);
+  }
+  next(item, key: Key, parent: any) {
+    if (this._test(item, key, parent)) {
+      this.done = true;
+      this.success = true;
+    }
+  }
+}
+
+export type Options = {
+  operations: {
+    [identifier: string]: OperationCreator;
+  };
   compare: (a, b) => boolean;
 };
 
-const containsOperation = query => {
+const createOperation = (name: string, params: any, options: Options) => {
+  const operationCreator = options.operations[name];
+  if (!operationCreator) {
+    throw new Error(`Unsupported operation: ${name}`);
+  }
+  return operationCreator(params, options);
+};
+
+const containsOperation = (query: any) => {
   for (const key in query) {
     if (key.charAt(0) === "$") return true;
   }
   return false;
 };
-
-const spreadValueArray = (params, filter) => (item, key, parent) => {
-  if (!isArray(item) || !item.length) {
-    return filter(item, key, parent);
-  }
-  for (let i = 0, { length } = item; i < length; i++) {
-    if (filter(get(item, i), key, parent)) {
-      return true;
-    }
-  }
-  return false;
-};
-
-const numericalTester = createFilter => params => {
-  const comparableParams = comparable(params);
-  if (comparableParams == null) return nope;
-  return createFilter(comparableParams);
-};
-
-const createRegexpFilter = tester => item =>
-  typeof item === "string" && tester.test(item);
-
-const createTester = (params, { compare = equals }) => {
-  let tester;
-  if (isFunction(params)) {
-    return params;
-  } else if (params instanceof RegExp) {
-    return item => params.test(item);
-  } else {
-    const comparableParams = comparable(params);
-    return item => compare(comparableParams, comparable(item));
-  }
-};
-
-const createFilter = (params, options) => {
-  const test = createTester(params, options);
-  return values => {
-    return values.every(test);
-  };
-};
-
-const createPropertyFilter = <TItem>(
-  property: string,
-  query: Query<TItem>,
-  options: Options
-): Filter => {
-  const pathParts = property.split(".");
-
-  const filter = containsOperation(query)
-    ? createAndFilter(createQueryFilters(query, pathParts, options))
-    : createFilter(query, options);
-
-  // If the query contains $ne, need to test all elements ANDed together
-  // const inclusive = query && (query.$ne != null || query.$all != null);
-
-  return filter;
-
-  // return (item: TItem, key: Key, parent: any) => {
-  //   return filterNested(filter, inclusive, item, pathParts, parent, 0);
-  // };
-};
-
-const filterNested = (
-  filter: Filter,
-  inclusive: boolean,
-  item: any,
+const createNestedOperation = (
   keyPath: Key[],
-  parent: any,
-  depth: number
-): boolean => {
-  const currentKey = keyPath[depth];
-
-  if (isArray(item) && isNaN(Number(currentKey))) {
-    let allValid;
-    for (let i = 0, { length } = item; i < length; i++) {
-      const include = filterNested(
-        filter,
-        inclusive,
-        get(item, i),
-        keyPath,
-        parent,
-        depth
-      );
-      if (inclusive && allValid != null) {
-        allValid = allValid && include;
-      } else {
-        allValid = allValid || include;
-      }
-    }
-    return allValid;
-  }
-
-  const child = get(item, currentKey);
-
-  if (item && child == null) {
-    return filter(undefined, currentKey, item);
-  }
-
-  if (depth === keyPath.length - 1) {
-    return filter(child, currentKey, item);
-  }
-
-  return filterNested(filter, inclusive, child, keyPath, item, depth + 1);
-};
-
-const getScopeValues = (
-  item,
-  scopePath: string[],
-  depth: number = 0,
-  values: any[] = []
-) => {
-  const currentKey = scopePath[depth];
-
-  if (depth === scopePath.length || item == null) {
-    values.push(item);
-    return values;
-  }
-
-  if (isArray(item) && isNaN(Number(currentKey))) {
-    for (let i = 0, { length } = item; i < length; i++) {
-      getScopeValues(get(item, i), scopePath, depth, values);
-    }
-    return values;
-  }
-
-  return getScopeValues(get(item, currentKey), scopePath, depth + 1, values);
-};
-
-const createQueryFilters = <TItem>(
-  query: Query<TItem>,
-  scopePath: string[],
+  nestedQuery: any,
   options: Options
 ) => {
-  const filters = [];
+  if (containsOperation(nestedQuery)) {
+    const [selfOperations, nestedOperations] = createQueryOperations(
+      nestedQuery,
+      options
+    );
+    if (nestedOperations.length) {
+      throw new Error(
+        `Property queries must contain only operations, or exact objects.`
+      );
+    }
+    return new NestedOperation(keyPath, nestedQuery, options, selfOperations);
+  }
+  return new NestedOperation(keyPath, nestedQuery, options, [
+    new EqualsOperation(nestedQuery, options)
+  ]);
+};
+
+export const createQueryOperation = (query: any, options: Options) => {
+  const [selfOperations, nestedOperations] = createQueryOperations(
+    query,
+    options
+  );
+  return new QueryOperation(query, options, [
+    ...selfOperations,
+    ...nestedOperations
+  ]);
+};
+
+const createQueryOperations = (query: any, options: Options) => {
+  const selfOperations = [];
+  const nestedOperations = [];
   if (!isVanillaObject(query)) {
     query = { $eq: query };
   }
-
-  for (const property in query) {
-    const params = query[property];
-
-    // operation
-    if (property.charAt(0) === "$") {
-      filters.push(createOperationFilter(property, params, query, options));
+  for (const key in query) {
+    if (key.charAt(0) === "$") {
+      selfOperations.push(createOperation(key, query[key], options));
     } else {
-      filters.push(
-        createPropertyFilter(property, params as Query<any>, options)
+      nestedOperations.push(
+        createNestedOperation(key.split("."), query[key], options)
       );
     }
   }
-
-  return filters;
-};
-
-const createOperationFilter = (
-  operation: string,
-  params: any,
-  parentQuery: Query<any>,
-  options: Options
-): Filter => {
-  const createFilter = options.expressions[operation];
-
-  if (!createFilter) {
-    throw new Error(`Unsupported operation ${operation}`);
-  }
-
-  return createFilter(params, options, parentQuery);
-};
-
-const createAndFilter = <TItem>(filters: Filter[]) => {
-  return (values: TItem[], key: Key, parent: any) => {
-    for (let i = filters.length; i--; ) {
-      if (!filters[i](values, key, parent)) return false;
-    }
-    return true;
-  };
-};
-
-const createOrFilter = <TItem>(filters: Filter[]) => {
-  return (values: TItem[], key: Key, parent: any) => {
-    for (let i = filters.length; i--; ) {
-      if (filters[i](values, key, parent)) return true;
-    }
-    return false;
-  };
-};
-
-const createPropertyTester = (
-  propertyPath: string[],
-  query: Query<any>,
-  options: Options
-) => {
-  const { compare } = options;
-
-  if (!containsOperation(query)) {
-    const comparableQuery = comparable(query);
-    return item => {
-      const values = getScopeValues(item, propertyPath);
-      return values.some(value => compare(comparable(value), comparableQuery));
-    };
-  }
-  const filters = createQueryFilters2(query, options);
-
-  return item => {
-    const values = getScopeValues(item, propertyPath);
-    return filters.every(filter => filter(values));
-  };
-};
-
-const createSelfTester = (filters: Filter[]) => {
-  let wrapper = [null];
-  return (item: any) => {
-    wrapper[0] = item;
-    return filters.every(filter => filter(wrapper, null, null));
-  };
-};
-
-const createQueryTester = (query: Query<any>, options: Options) => {
-  const [selfFilters, propTesters] = createQueryParts(query, options);
-  const selfTester = createSelfTester(selfFilters);
-  return item => {
-    return selfTester(item) && propTesters.every(tester => tester(item));
-  };
-};
-
-const createQueryParts = (query: Query<any>, options: Options) => {
-  const selfFilters = [];
-  const propTesters = [];
-
-  if (!isVanillaObject(query)) {
-    query = { $eq: query };
-  }
-
-  for (const property in query) {
-    const params = query[property];
-
-    // operation
-    if (property.charAt(0) === "$") {
-      selfFilters.push(
-        createNestedFilter(
-          createOperationFilter(property, params, query, options)
-        )
-      );
-    } else {
-      propTesters.push(
-        createPropertyTester(property.split("."), params as Query<any>, options)
-      );
-    }
-  }
-
-  return [selfFilters, propTesters];
-};
-
-const createQueryFilters2 = (query: Query<any>, options: Options) => {
-  const [selfFilters, propTesters] = createQueryParts(query, options);
-  if (propTesters.length) {
-    throw new Error(`Nested properties are unsupported`);
-  }
-  return selfFilters;
-};
-
-export {
-  Key,
-  Filter,
-  Query,
-  Tester,
-  createTester,
-  FilterCreator,
-  getScopeValues,
-  spreadValueArray,
-  createQueryTester,
-  createQueryFilters2,
-  createPropertyFilter,
-  createFilter,
-  numericalTester,
-  createOrFilter,
-  CustomOperations,
-  Options,
-  createAndFilter,
-  createRegexpFilter
+  return [selfOperations, nestedOperations];
 };

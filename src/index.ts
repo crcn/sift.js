@@ -1,17 +1,20 @@
-import { Query } from "./query";
-import { equals } from "./utils";
+import { Query, creators } from "./operations";
+import { Options, createQueryOperation } from "./core";
+import { equals, Key } from "./utils";
 
-import * as defaultOperations from "./operations";
-import { createQueryTester, Options } from "./core";
-
-const createFilter = <TItem>(
-  query: Query<TItem>,
-  { compare, expressions }: Partial<Options> = {}
+const createRootTester = (
+  query: Query,
+  { compare, operations }: Partial<Options> = {}
 ) => {
-  return createQueryTester(query, {
+  const operation = createQueryOperation(query, {
     compare: compare || equals,
-    expressions: Object.assign({}, defaultOperations, expressions)
+    operations: Object.assign({}, creators, operations || {})
   });
+  return (item, key?: Key, owner?: any) => {
+    operation.reset();
+    operation.next(item, key, owner);
+    return operation.success;
+  };
 };
 
-export default createFilter;
+export default createRootTester;

@@ -1,3 +1,5 @@
+type Key = string | number;
+type Comparator = (a, b) => boolean;
 const typeChecker = <TType>(type) => {
   const typeString = "[object " + type + "]";
   return function(value): value is TType {
@@ -86,8 +88,10 @@ const nope = () => false;
 export {
   get,
   nope,
+  Key,
   equals,
   isArray,
+  Comparator,
   isObject,
   comparable,
   isFunction,

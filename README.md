@@ -102,23 +102,6 @@ existsFilter(null); //false
 ["craig", null].filter(existsFilter); //['craig']
 ```
 
-With a selector:
-
-```javascript
-var omitNameFilter = sift({ $exists: true }, function(user) {
-  return !!user.name;
-});
-
-[
-  {
-    name: "Craig"
-  },
-  {
-    name: null
-  }
-].filter(omitNameFilter);
-```
-
 With your sifter, you can also **test** values:
 
 ```javascript
@@ -412,11 +395,7 @@ Not expression:
 ["craig", "tim", "jake"].filter(sift({ $not: { $size: 5 } })); //['tim','jake']
 ```
 
-## MongoDB behavior differences
-
-There are some cases where Sift behaves a bit differently than Mongodb.
-
-## Adding custom behavior
+## Custom behavior
 
 Sift works like MongoDB out of the box, but you're also able to modify the behavior to suite your needs.
 

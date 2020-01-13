@@ -10,9 +10,7 @@
   },
   "license": "MIT",
   "engines": {},
-  "dependencies": {
-    "@babel/register": "^7.7.7"
-  },
+  "dependencies": {},
   "typings": "./index.d.ts",
   "husky": {
     "hooks": {
@@ -20,6 +18,7 @@
     }
   },
   "devDependencies": {
+    "@babel/register": "^7.7.4",
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
     "@types/node": "^13.1.5",

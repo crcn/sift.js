@@ -82,6 +82,8 @@ export abstract class GroupOperation extends BaseOperation<any> {
   success: boolean;
   done: boolean;
 
+  private _currentChildIndex: number = 0;
+
   constructor(
     params: any,
     owneryQuery: any,
@@ -110,35 +112,58 @@ export abstract class GroupOperation extends BaseOperation<any> {
   protected childrenNext(item: any, key: Key, owner: any) {
     let done = true;
     let success = true;
-    let promises: Promise<any>[] = null;
+    const result = this._childrenNext(item, key, owner);
 
-    for (let i = 0, { length } = this._children; i < length; i++) {
-      const childOperation = this._children[i];
-      const result = childOperation.next(item, key, owner);
-
-      if (result) {
-        if (!promises) promises = [];
-        promises.push(opSuccess => {
-          if (!opSuccess) {
-            success = false;
-          }
-        });
-      }
-
-      if (!childOperation.success) {
-        success = false;
-      }
-      if (childOperation.done) {
-        if (!childOperation.success) {
-          break;
-        }
-      } else {
-        done = false;
-      }
-    }
     this.done = done;
     this.success = success;
   }
+
+  private _childrenNext = (item: any, key: Key, owner: any) => {
+    let done = true;
+    let success = true;
+
+    if (this._currentChildIndex < this._children.length) {
+      const currentChild = this._children[this._currentChildIndex];
+      const result = currentChild.next(item, key, owner);
+
+      if (result) {
+        return result.then(this._onChildDone);
+      } else {
+        this._onChildDone();
+      }
+    }
+
+    // for (let i = 0, { length } = this._children; i < length; i++) {
+    //   const childOperation = this._children[i];
+    //   const result = childOperation.next(item, key, owner);
+
+    //   if (!childOperation.success) {
+    //     success = false;
+    //   }
+    //   if (childOperation.done) {
+    //     if (!childOperation.success) {
+    //       break;
+    //     }
+    //   } else {
+    //     done = false;
+    //   }
+    // }
+    this.done = done;
+    this.success = success;
+  };
+
+  private _onChildDone = () => {
+    const currentChild = this._children[this._currentChildIndex];
+    if (!currentChild.success) {
+      this.success = false;
+    }
+
+    if (currentChild.done) {
+      if (!currentChild.success) {
+      }
+    } else {
+    }
+  };
 }
 
 export class QueryOperation extends GroupOperation {

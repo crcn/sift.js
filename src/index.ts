@@ -6,7 +6,7 @@ const createRootTester = (
   query: Query,
   { compare, operations }: Partial<Options> = {}
 ) => {
-  const operation = createQueryOperation(query, {
+  const operation = createQueryOperation(query, null, {
     compare: compare || equals,
     operations: Object.assign({}, creators, operations || {})
   });

@@ -42,7 +42,7 @@ describe(__filename + "#", function() {
       err = e;
     }
 
-    assert.equal(err.message, "Unsupported operation $aaa");
+    assert.equal(err.message, "Unsupported operation: $aaa");
   });
 
   it("can match empty arrays", function() {

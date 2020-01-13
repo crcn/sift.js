@@ -9,7 +9,11 @@ export interface Operation {
 
 export type Tester = (item: any, key?: Key, owner?: any) => boolean;
 
-export type OperationCreator = (params: any, optiosn: Options) => Operation;
+export type OperationCreator = (
+  params: any,
+  parentQuery: any,
+  options: Options
+) => Operation;
 
 /**
  * Walks through each value given the context - used for nested operations. E.g:
@@ -26,6 +30,8 @@ const walkKeyPathValues = (
 ) => {
   const currentKey = keyPath[depth];
 
+  // if array, then try matching. Might fall through for cases like:
+  // { $eq: [1, 2, 3] }, [ 1, 2, 3 ].
   if (isArray(item) && isNaN(Number(currentKey))) {
     for (let i = 0, { length } = item; i < length; i++) {
       // if FALSE is returned, then terminate walker. For operations, this simply
@@ -34,7 +40,6 @@ const walkKeyPathValues = (
         return false;
       }
     }
-    return true;
   }
 
   if (depth === keyPath.length || item == null) {
@@ -54,7 +59,11 @@ const walkKeyPathValues = (
 export abstract class BaseOperation<TParams> implements Operation {
   success: boolean;
   done: boolean;
-  constructor(readonly params: TParams, readonly options: Options) {
+  constructor(
+    readonly params: TParams,
+    readonly owneryQuery: any,
+    readonly options: Options
+  ) {
     this.init();
   }
   protected init() {}
@@ -71,10 +80,11 @@ export abstract class GroupOperation extends BaseOperation<any> {
 
   constructor(
     params: any,
+    owneryQuery: any,
     options: Options,
     private readonly _children: Operation[]
   ) {
-    super(params, options);
+    super(params, owneryQuery, options);
   }
 
   /**
@@ -88,17 +98,17 @@ export abstract class GroupOperation extends BaseOperation<any> {
     }
   }
 
-  abstract next(item: any, key: Key, parent: any);
+  abstract next(item: any, key: Key, owner: any);
 
   /**
    */
 
-  protected childrenNext(item: any, key: Key, parent: any) {
+  protected childrenNext(item: any, key: Key, owner: any) {
     let done = true;
     let success = true;
     for (let i = 0, { length } = this._children; i < length; i++) {
       const childOperation = this._children[i];
-      childOperation.next(item, key, parent);
+      childOperation.next(item, key, owner);
       if (!childOperation.success) {
         success = false;
       }
@@ -128,10 +138,11 @@ export class NestedOperation extends GroupOperation {
   constructor(
     readonly keyPath: Key[],
     params: any,
+    owneryQuery: any,
     options: Options,
     children: Operation[]
   ) {
-    super(params, options, children);
+    super(params, owneryQuery, options, children);
   }
   /**
    */
@@ -161,7 +172,7 @@ export const createTester = (a, compare: Comparator) => {
     return a;
   }
   if (a instanceof RegExp) {
-    return b => a.test(b);
+    return b => typeof b === "string" && a.test(b);
   }
   const comparableA = comparable(a);
   return b => compare(comparableA, comparable(b));
@@ -174,10 +185,13 @@ export const comparable = a => {
   if (isArray(a)) {
     return a.map(comparable);
   }
+  if (a && typeof a.toJSON === "function") {
+    return a.toJSON();
+  }
   return a;
 };
 
-export class EqualsOperation extends BaseOperation<any> {
+export class EqualsOperation<TParam> extends BaseOperation<TParam> {
   private _test: Tester;
   init() {
     this._test = createTester(this.params, this.options.compare);
@@ -190,6 +204,20 @@ export class EqualsOperation extends BaseOperation<any> {
   }
 }
 
+export class NopeOperation<TParam> extends BaseOperation<TParam> {
+  next() {
+    this.done = true;
+    this.success = false;
+  }
+}
+
+export const numericalOperationCreator = (
+  createNumericalOperation: OperationCreator
+) => (params: number, owneryQuery: any, options: Options) =>
+  params == null
+    ? new NopeOperation(params, owneryQuery, options)
+    : createNumericalOperation(params, owneryQuery, options);
+
 export type Options = {
   operations: {
     [identifier: string]: OperationCreator;
@@ -197,12 +225,17 @@ export type Options = {
   compare: (a, b) => boolean;
 };
 
-const createOperation = (name: string, params: any, options: Options) => {
+const createOperation = (
+  name: string,
+  params: any,
+  parentQuery: any,
+  options: Options
+) => {
   const operationCreator = options.operations[name];
   if (!operationCreator) {
     throw new Error(`Unsupported operation: ${name}`);
   }
-  return operationCreator(params, options);
+  return operationCreator(params, parentQuery, options);
 };
 
 const containsOperation = (query: any) => {
@@ -214,6 +247,7 @@ const containsOperation = (query: any) => {
 const createNestedOperation = (
   keyPath: Key[],
   nestedQuery: any,
+  owneryQuery: any,
   options: Options
 ) => {
   if (containsOperation(nestedQuery)) {
@@ -226,22 +260,39 @@ const createNestedOperation = (
         `Property queries must contain only operations, or exact objects.`
       );
     }
-    return new NestedOperation(keyPath, nestedQuery, options, selfOperations);
+    return new NestedOperation(
+      keyPath,
+      nestedQuery,
+      owneryQuery,
+      options,
+      selfOperations
+    );
   }
-  return new NestedOperation(keyPath, nestedQuery, options, [
-    new EqualsOperation(nestedQuery, options)
+  return new NestedOperation(keyPath, nestedQuery, owneryQuery, options, [
+    new EqualsOperation(nestedQuery, owneryQuery, options)
   ]);
 };
 
-export const createQueryOperation = (query: any, options: Options) => {
+export const createQueryOperation = (
+  query: any,
+  owneryQuery: any,
+  options: Options
+) => {
   const [selfOperations, nestedOperations] = createQueryOperations(
     query,
     options
   );
-  return new QueryOperation(query, options, [
-    ...selfOperations,
+
+  const ops = [
+    new NestedOperation([], query, owneryQuery, options, selfOperations),
     ...nestedOperations
-  ]);
+  ];
+
+  if (ops.length === 1) {
+    return ops[0];
+  }
+
+  return new QueryOperation(query, owneryQuery, options, ops);
 };
 
 const createQueryOperations = (query: any, options: Options) => {
@@ -252,12 +303,18 @@ const createQueryOperations = (query: any, options: Options) => {
   }
   for (const key in query) {
     if (key.charAt(0) === "$") {
-      selfOperations.push(createOperation(key, query[key], options));
+      const op = createOperation(key, query[key], query, options);
+
+      // probably just a flag for another operation (like $options)
+      if (op != null) {
+        selfOperations.push(op);
+      }
     } else {
       nestedOperations.push(
-        createNestedOperation(key.split("."), query[key], options)
+        createNestedOperation(key.split("."), query[key], query, options)
       );
     }
   }
+
   return [selfOperations, nestedOperations];
 };

@@ -1,15 +1,15 @@
-type Key = string | number;
-type Comparator = (a, b) => boolean;
-const typeChecker = <TType>(type) => {
+export type Key = string | number;
+export type Comparator = (a, b) => boolean;
+export const typeChecker = <TType>(type) => {
   const typeString = "[object " + type + "]";
   return function(value): value is TType {
     return getClassName(value) === typeString;
   };
 };
 
-const getClassName = value => Object.prototype.toString.call(value);
+export const getClassName = value => Object.prototype.toString.call(value);
 
-const comparable = (value: any) => {
+export const comparable = (value: any) => {
   if (value instanceof Date) {
     return value.getTime();
   } else if (isArray(value)) {
@@ -21,13 +21,10 @@ const comparable = (value: any) => {
   return value;
 };
 
-const get = (object, key) =>
-  isFunction(object.get) ? object.get(key) : object[key];
-
-const isArray = typeChecker<Array<any>>("Array");
-const isObject = typeChecker<Object>("Object");
-const isFunction = typeChecker<Function>("Function");
-const isVanillaObject = value => {
+export const isArray = typeChecker<Array<any>>("Array");
+export const isObject = typeChecker<Object>("Object");
+export const isFunction = typeChecker<Function>("Function");
+export const isVanillaObject = value => {
   return (
     value &&
     (value.constructor === Object ||
@@ -38,7 +35,7 @@ const isVanillaObject = value => {
   );
 };
 
-const equals = (a, b) => {
+export const equals = (a, b) => {
   if (a == null && a == b) {
     return true;
   }
@@ -70,7 +67,7 @@ const equals = (a, b) => {
   return false;
 };
 
-const hasNestedProperty = (object, key) => {
+export const hasNestedProperty = (object, key) => {
   const parts = String(key).split(".");
   let current = object;
   if (parts.length === 1) {
@@ -83,19 +80,4 @@ const hasNestedProperty = (object, key) => {
   return current.hasOwnProperty(parts[parts.length - 1]);
 };
 
-const nope = () => false;
-
-export {
-  get,
-  nope,
-  Key,
-  equals,
-  isArray,
-  Comparator,
-  isObject,
-  comparable,
-  isFunction,
-  getClassName,
-  isVanillaObject,
-  hasNestedProperty
-};
+export const nope = () => false;

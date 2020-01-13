@@ -4,13 +4,17 @@ var ObjectID = require("bson").ObjectID;
 
 describe(__filename + "#", function() {
   [
-    [/^a/, ["a", "ab", "abc", "b", "bc"], ["a", "ab", "abc"]],
-
     [
-      { groups: { $ne: 111 } },
-      [{ groups: [111, 222, 333, 444] }, { groups: [222, 333, 444] }],
-      [{ groups: [222, 333, 444] }]
+      {
+        $where: function() {
+          return this.v === 1;
+        }
+      },
+      [{ v: 1 }, { v: 2 }],
+      [{ v: 1 }]
     ],
+    [{ $where: "this.v === 1" }, [{ v: 1 }, { v: 2 }], [{ v: 1 }]],
+    [{ $where: "obj.v === 1" }, [{ v: 1 }, { v: 2 }], [{ v: 1 }]],
 
     // $eq
     [{ $eq: 5 }, [5, "5", 6], [5]],

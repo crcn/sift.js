@@ -1,4 +1,4 @@
-import { $and } from "./operations";
+import * as defaultOperations from "./operations";
 import { Query, Options, createQueryTester, EqualsOperation } from "./core";
 
 const createDefaultQueryTester = (
@@ -7,9 +7,11 @@ const createDefaultQueryTester = (
 ) => {
   return createQueryTester(query, {
     compare: compare,
-    operations: Object.assign({}, { $and }, operations || {})
+    operations: Object.assign({}, defaultOperations, operations || {})
   });
 };
+
+module.exports = createDefaultQueryTester;
 
 export { Query, EqualsOperation };
 

@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "outDir": "es5m",
+    "target": "es5",
+    "moduleResolution": "node",
+    "module": "es2015",
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": ["node_modules", "*-test", "lib", "index.d.ts", "test"],
+  "filesGlob": ["./src/**/*.ts"]
+}

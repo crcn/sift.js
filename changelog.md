@@ -8,6 +8,7 @@
 - `expressions` option is now `operations`
 - `operations` parameter now expects new operations API
 - ImmutableJS support removed for now
+- Remove bower support
 
 ## 9.0.0
 

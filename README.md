@@ -401,10 +401,10 @@ Sift works like MongoDB out of the box, but you're also able to modify the behav
 
 #### Custom operations
 
-Sift comes with expressions like `$not`, `$eq`, and others, but you can also add your own.
+You can register your own custom operations. Here's an example:
 
 ```javascript
-import { EqualsOperation } from "sift";
+import sift, { EqualsOperation } from "sift";
 
 var filter = sift(
   {
@@ -426,14 +426,20 @@ var filter = sift(
 [1, 2, 3, 4, 5].filter(filter); // 1, 3, 5
 ```
 
-<!--#### Custom compare
+If you're looking to create a filter _without_ the standard operations, you can also do that:
 
 ```javascript
-const filter = sift()
+import { createQueryTester } from "sift/lib/core";
+import * as operations from "sift/lib/operations";
+const test = createQueryTester(
+  {
+    $eq: 10
+  },
+  { operations }
+);
+
+[1, 2, 3, 4, 10].filter(test);
 ```
-
-
-#### Custom comparable-->
 
 #### Date comparison
 

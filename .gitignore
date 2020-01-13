@@ -3,5 +3,6 @@ coverage
 .DS_Store
 .idea
 sift.csp.*
+sift.min.*
 lib/
 esm/

@@ -1,7 +1,7 @@
 {
   "name": "sift",
   "description": "mongodb query style array filtering",
-  "version": "11.0.7",
+  "version": "11.0.8",
   "repository": "crcn/sift.js",
   "sideEffects": false,
   "author": {

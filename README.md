@@ -439,9 +439,9 @@ var filter = sift(
 [1, 2, 3, 4, 5].filter(filter); // 1, 3, 5
 ```
 
-#### Omitting builtin operations
+#### Omitting built-in operations
 
-You can create a filter function that omits the builtin operations like so:
+You can create a filter function that omits the built-in operations like so:
 
 ```javascript
 import { createQueryTester } from "sift";
@@ -456,4 +456,4 @@ const test = createQueryTester(
 [1, 2, 3, 4, 10].filter(test);
 ```
 
-For bundlers like Webpack and Rollup, operations that aren't used are omitted from application bundles via tree-shaking.
+For bundlers like `Webpack` and `Rollup`, operations that aren't used are omitted from application bundles via tree-shaking.

@@ -216,6 +216,12 @@ export class EqualsOperation<TParam> extends BaseOperation<TParam> {
   }
 }
 
+export const createEqualsOperation = (
+  params: any,
+  owneryQuery: any,
+  options: Options
+) => new EqualsOperation(params, owneryQuery, options);
+
 export class NopeOperation<TParam> extends BaseOperation<TParam> {
   next() {
     this.done = true;

@@ -1,5 +1,11 @@
 import * as defaultOperations from "./operations";
-import { Query, Options, createQueryTester, EqualsOperation } from "./core";
+import {
+  Query,
+  Options,
+  createQueryTester,
+  EqualsOperation,
+  createEqualsOperation
+} from "./core";
 
 const createDefaultQueryTester = (
   query: Query,
@@ -11,6 +17,6 @@ const createDefaultQueryTester = (
   });
 };
 
-export { Query, EqualsOperation, createQueryTester };
+export { Query, EqualsOperation, createQueryTester, createEqualsOperation };
 
 export default createDefaultQueryTester;

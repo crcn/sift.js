@@ -1,6 +1,7 @@
 import * as assert from "assert";
 import sift from "..";
 
+// TODO: $and, $all, $ne, $nor
 describe(__filename + "#", () => {
   [
     [
@@ -33,7 +34,7 @@ describe(__filename + "#", () => {
     //     ]
     // }, [1, 2, 3, 4, 5], [3, 4]]
   ].forEach(function([description, query, values, result]) {
-    xit(description, function() {
+    it(description, function() {
       return new Promise(function(resolve, reject) {
         var filter = asyncFilter(sift(query));
         filter(values).then(function(filteredValues) {

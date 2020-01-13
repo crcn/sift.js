@@ -4,10 +4,14 @@ export interface Operation {
   readonly success: boolean;
   readonly done: boolean;
   reset();
-  next(item: any, key: Key, owner: any);
+  next: (item: any, key: Key, owner: any) => Promise<any>;
 }
 
-export type Tester = (item: any, key?: Key, owner?: any) => boolean;
+export type Tester = (
+  item: any,
+  key?: Key,
+  owner?: any
+) => boolean | Promise<boolean>;
 
 export type OperationCreator = (
   params: any,
@@ -106,9 +110,21 @@ export abstract class GroupOperation extends BaseOperation<any> {
   protected childrenNext(item: any, key: Key, owner: any) {
     let done = true;
     let success = true;
+    let promises: Promise<any>[] = null;
+
     for (let i = 0, { length } = this._children; i < length; i++) {
       const childOperation = this._children[i];
-      childOperation.next(item, key, owner);
+      const result = childOperation.next(item, key, owner);
+
+      if (result) {
+        if (!promises) promises = [];
+        promises.push(opSuccess => {
+          if (!opSuccess) {
+            success = false;
+          }
+        });
+      }
+
       if (!childOperation.success) {
         success = false;
       }
@@ -184,7 +200,14 @@ export class EqualsOperation<TParam> extends BaseOperation<TParam> {
     this._test = createTester(this.params, this.options.compare);
   }
   next(item, key: Key, parent: any) {
-    if (this._test(item, key, parent)) {
+    const result = this._test(item, key, parent);
+    if (result) {
+      if (typeof result === "object" && result.then) {
+        return result.then(success => {
+          this.done = true;
+          this.success = success;
+        });
+      }
       this.done = true;
       this.success = true;
     }

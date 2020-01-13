@@ -22,6 +22,6 @@ const createRootTester = (
   };
 };
 
-export { Query, EqualsOperation };
+export { Query, EqualsOperation, BaseOperation };
 
 export default createRootTester;

@@ -86,7 +86,7 @@ console.log(test(4)); // false
 Creates a filter function **without** built-in MongoDB query operations. This is useful
 if you're looking to omit certain operations from application bundles. See [Omitting built-in operations](#omitting-built-in-operations) for more info.
 
-#### createEqualsOperation(params: any, ownerQuery: Query, options: Options): Operation
+### createEqualsOperation(params: any, ownerQuery: Query, options: Options): Operation
 
 Used for [custom operations](#custom-operations).
 

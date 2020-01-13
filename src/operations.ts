@@ -8,6 +8,7 @@ import {
   QueryOperation,
   numericalOperationCreator,
   Operation,
+  Query,
   GroupOperation
 } from "./core";
 import { Key, comparable, isFunction } from "./utils";
@@ -117,55 +118,37 @@ class $And extends GroupOperation {
   }
 }
 
-export type Query = {
-  [identifier: string]: Query | Object;
-  $eq?: any;
-  $ne?: any;
-  $elemMatch?: Query;
-  $lt?: number;
-  $gt?: number;
-  $lte?: number;
-  $gte?: number;
-  $mod?: [number, number];
-  $exists?: boolean;
-  $regex?: string;
-  $options?: "i" | "g" | "m" | "u";
-  $type: Function;
-  $or?: Query[];
-  $nor?: Query[];
-};
-
-const $eq = (params: any, owneryQuery: Query, options: Options) =>
+export const $eq = (params: any, owneryQuery: Query, options: Options) =>
   new EqualsOperation(params, owneryQuery, options);
-const $ne = (params: any, owneryQuery: Query, options: Options) =>
+export const $ne = (params: any, owneryQuery: Query, options: Options) =>
   new $Ne(params, owneryQuery, options);
-const $or = (params: Query[], owneryQuery: Query, options: Options) =>
+export const $or = (params: Query[], owneryQuery: Query, options: Options) =>
   new $Or(params, owneryQuery, options);
-const $nor = (params: Query[], owneryQuery: Query, options: Options) =>
+export const $nor = (params: Query[], owneryQuery: Query, options: Options) =>
   new $Nor(params, owneryQuery, options);
-const $elemMatch = (params: any, owneryQuery: Query, options: Options) =>
+export const $elemMatch = (params: any, owneryQuery: Query, options: Options) =>
   new $ElemMatch(params, owneryQuery, options);
-const $nin = (params: any, owneryQuery: Query, options: Options) =>
+export const $nin = (params: any, owneryQuery: Query, options: Options) =>
   new $Nor(params, owneryQuery, options);
-const $in = (params: any, owneryQuery: Query, options: Options) =>
+export const $in = (params: any, owneryQuery: Query, options: Options) =>
   new $Or(params, owneryQuery, options);
-const $lt = numericalOperationCreator(
+export const $lt = numericalOperationCreator(
   (params: any, owneryQuery: Query, options: Options) =>
     new EqualsOperation(b => b < params, owneryQuery, options)
 );
-const $lte = numericalOperationCreator(
+export const $lte = numericalOperationCreator(
   (params: any, owneryQuery: Query, options: Options) =>
     new EqualsOperation(b => b <= params, owneryQuery, options)
 );
-const $gt = numericalOperationCreator(
+export const $gt = numericalOperationCreator(
   (params: any, owneryQuery: Query, options: Options) =>
     new EqualsOperation(b => b > params, owneryQuery, options)
 );
-const $gte = numericalOperationCreator(
+export const $gte = numericalOperationCreator(
   (params: any, owneryQuery: Query, options: Options) =>
     new EqualsOperation(b => b >= params, owneryQuery, options)
 );
-const $mod = (
+export const $mod = (
   [mod, equalsValue]: number[],
   owneryQuery: Query,
   options: Options
@@ -175,29 +158,32 @@ const $mod = (
     owneryQuery,
     options
   );
-const $exists = (params: boolean, owneryQuery: Query, options: Options) =>
-  new $Exists(params, owneryQuery, options);
-const $regex = (pattern: string, owneryQuery: Query, options: Options) =>
+export const $exists = (
+  params: boolean,
+  owneryQuery: Query,
+  options: Options
+) => new $Exists(params, owneryQuery, options);
+export const $regex = (pattern: string, owneryQuery: Query, options: Options) =>
   new EqualsOperation(
     new RegExp(pattern, owneryQuery.$options),
     owneryQuery,
     options
   );
-const $not = (params: any, owneryQuery: Query, options: Options) =>
+export const $not = (params: any, owneryQuery: Query, options: Options) =>
   new $Not(params, owneryQuery, options);
-const $type = (clazz: Function, owneryQuery: Query, options: Options) =>
+export const $type = (clazz: Function, owneryQuery: Query, options: Options) =>
   new EqualsOperation(
     b => (b != null ? b instanceof clazz || b.constructor === clazz : false),
     owneryQuery,
     options
   );
-const $and = (params: Query[], ownerQuery: Query, options: Options) =>
+export const $and = (params: Query[], ownerQuery: Query, options: Options) =>
   new $And(params, ownerQuery, options);
-const $all = $and;
-const $size = (params: number, ownerQuery: Query, options: Options) =>
+export const $all = $and;
+export const $size = (params: number, ownerQuery: Query, options: Options) =>
   new EqualsOperation(b => b && b.length === params, ownerQuery, options);
-const $options = () => null;
-const $where = (
+export const $options = () => null;
+export const $where = (
   params: string | Function,
   ownerQuery: Query,
   options: Options
@@ -215,28 +201,4 @@ const $where = (
   }
 
   return new EqualsOperation(b => test.bind(b)(b), ownerQuery, options);
-};
-
-export const creators = {
-  $lt,
-  $lte,
-  $mod,
-  $gt,
-  $gte,
-  $eq,
-  $or,
-  $nor,
-  $and,
-  $options,
-  $regex,
-  $ne,
-  $nin,
-  $all,
-  $size,
-  $in,
-  $type,
-  $elemMatch,
-  $exists,
-  $not,
-  $where
 };

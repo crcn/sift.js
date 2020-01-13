@@ -1,4 +1,11 @@
-import { isArray, Key, Comparator, isVanillaObject, comparable } from "./utils";
+import {
+  isArray,
+  Key,
+  Comparator,
+  isVanillaObject,
+  comparable,
+  equals
+} from "./utils";
 
 export interface Operation {
   readonly success: boolean;
@@ -14,6 +21,24 @@ export type OperationCreator = (
   parentQuery: any,
   options: Options
 ) => Operation;
+
+export type Query = {
+  [identifier: string]: Query | Object;
+  $eq?: any;
+  $ne?: any;
+  $elemMatch?: Query;
+  $lt?: number;
+  $gt?: number;
+  $lte?: number;
+  $gte?: number;
+  $mod?: [number, number];
+  $exists?: boolean;
+  $regex?: string;
+  $options?: "i" | "g" | "m" | "u";
+  $type: Function;
+  $or?: Query[];
+  $nor?: Query[];
+};
 
 /**
  * Walks through each value given the context - used for nested operations. E.g:
@@ -304,4 +329,19 @@ const createQueryOperations = (query: any, options: Options) => {
   }
 
   return [selfOperations, nestedOperations];
+};
+
+export const createQueryTester = (
+  query: Query,
+  { compare, operations }: Partial<Options> = {}
+) => {
+  const operation = createQueryOperation(query, null, {
+    compare: compare || equals,
+    operations: Object.assign({}, operations || {})
+  });
+  return (item, key?: Key, owner?: any) => {
+    operation.reset();
+    operation.next(item, key, owner);
+    return operation.success;
+  };
 };

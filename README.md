@@ -86,9 +86,36 @@ console.log(test(4)); // false
 Creates a filter function **without** built-in MongoDB query operations. This is useful
 if you're looking to omit certain operations from application bundles. See [Omitting built-in operations](#omitting-built-in-operations) for more info.
 
+```javascript
+import { createQueryTester } from "sift";
+import { $eq, $in } from "sift/operations";
+const filter = createQueryTester({ $eq: 5 }, { operations: { $eq, $in } });
+```
+
 ### createEqualsOperation(params: any, ownerQuery: Query, options: Options): Operation
 
 Used for [custom operations](#custom-operations).
+
+```javascript
+import { createQueryTester, createEqualsOperation } from "sift";
+import { $eq, $in } from "sift/operations";
+const filter = createQueryTester(
+  { $mod: 5 },
+  {
+    operations: {
+      $something(mod, ownerQuery, options) {
+        return createEqualsOperation(
+          value => value % mod === 0,
+          ownerQuery,
+          options
+        );
+      }
+    }
+  }
+);
+filter(10); // true
+filter(11); // false
+```
 
 ## Supported Operators
 

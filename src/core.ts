@@ -317,7 +317,8 @@ const createQueryOperations = (query: any, options: Options) => {
   const selfOperations = [];
   const nestedOperations = [];
   if (!isVanillaObject(query)) {
-    query = { $eq: query };
+    selfOperations.push(new EqualsOperation(query, query, options));
+    return [selfOperations, nestedOperations];
   }
   for (const key in query) {
     if (key.charAt(0) === "$") {

@@ -7,6 +7,7 @@
 - nested queries are no-longer supported
 - `expressions` option is now `operations`
 - `operations` parameter now expects new operations API
+- ImmutableJS support removed for now
 
 ## 9.0.0
 

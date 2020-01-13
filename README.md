@@ -19,7 +19,7 @@
 - Custom Operations
 - Tree-shaking
 
-## Node.js Examples
+## Examples
 
 ```javascript
 import sift from "sift";
@@ -57,57 +57,40 @@ testFilter({ name: "sarah" }); //true
 testFilter({ name: "tim" }); //false
 ```
 
-## Browser Examples
-
-```html
-<html>
-  <head>
-    <script
-      src="https://raw.github.com/crcn/sift.js/master/sift.min.js"
-      type="text/javascript"
-    ></script>
-    <script type="text/javascript">
-      //regexp filter
-      var sifted = ["craig", "john", "jake"].filter(sift(/^j/)); //['john','jake']
-    </script>
-  </head>
-  <body></body>
-</html>
-```
-
 ## API
 
-### .sift(query: MongoQuery, options?: SiftOptions): Function
+### sift(query: MongoQuery, options?: Options): Function
+
+Creates a filter with all of the built-in MongoDB query operations.
 
 - `query` - the filter to use against the target array
 - `options`
-  - `expressions` - custom expressions
+  - `operations` - [custom operations](#custom-operations)
   - `compare` - compares difference between two values
 
-With an array:
+Example:
 
 ```javascript
-["craig", null].filter(sift({ $exists: true })); //['craig']
+import sift from "sift";
+
+const test = sift({ $gt: 5 }));
+
+console.log(test(6)); // true
+console.log(test(4)); // false
+
+[3, 4, 5, 6, 7].filter(sift({ $exists: true })); // [6, 7]
 ```
 
-Without an array, a sifter is returned:
+### createQueryTester(query: Query, options?: Options): Function
 
-```javascript
-var existsFilter = sift({ $exists: true });
+Creates a filter function **without** built-in MongoDB query operations. This is useful
+if you're looking to omit certain operations from application bundles. See [Omitting built-in operations](#omitting-built-in-operations) for more info.
 
-existsFilter("craig"); //true
-existsFilter(null); //false
-["craig", null].filter(existsFilter); //['craig']
-```
+#### createEqualsOperation(params: any, ownerQuery: Query, options: Options): Operation
 
-With your sifter, you can also **test** values:
+Used for [custom operations](#custom-operations).
 
-```javascript
-siftExists(null); //false
-siftExists("craig"); //true
-```
-
-## Supported Operators:
+## Supported Operators
 
 See MongoDB's [advanced queries](http://www.mongodb.org/display/DOCS/Advanced+Queries) for more info.
 
@@ -418,7 +401,7 @@ Sift works like MongoDB out of the box, but you're also able to modify the behav
 You can register your own custom operations. Here's an example:
 
 ```javascript
-import sift, { EqualsOperation } from "sift";
+import sift, { createEqualsOperation } from "sift";
 
 var filter = sift(
   {
@@ -427,7 +410,7 @@ var filter = sift(
   {
     operations: {
       $customMod(params, ownerQuery, options) {
-        return new EqualsOperation(
+        return createEqualsOperation(
           value => value % params !== 0,
           ownerQuery,
           options

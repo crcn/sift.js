@@ -337,7 +337,7 @@ const createQueryOperations = (query: any, options: Options) => {
   return [selfOperations, nestedOperations];
 };
 
-export const createQueryTester = (
+export const createQueryTester = <TItem>(
   query: Query,
   { compare, operations }: Partial<Options> = {}
 ) => {
@@ -345,7 +345,7 @@ export const createQueryTester = (
     compare: compare || equals,
     operations: Object.assign({}, operations || {})
   });
-  return (item, key?: Key, owner?: any) => {
+  return (item: TItem, key?: Key, owner?: any) => {
     operation.reset();
     operation.next(item, key, owner);
     return operation.success;

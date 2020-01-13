@@ -129,7 +129,7 @@ export type Query = {
   $mod?: [number, number];
   $exists?: boolean;
   $regex?: string;
-  $options?: string;
+  $options?: "i" | "g" | "m" | "u";
   $type: Function;
   $or?: Query[];
   $nor?: Query[];

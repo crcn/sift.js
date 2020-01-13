@@ -420,19 +420,25 @@ There are some cases where Sift behaves a bit differently than Mongodb.
 
 Sift works like MongoDB out of the box, but you're also able to modify the behavior to suite your needs.
 
-#### Expressions
+#### Custom operations
 
 Sift comes with expressions like `$not`, `$eq`, and others, but you can also add your own.
 
 ```javascript
+import { EqualsOperation } from "sift";
+
 var filter = sift(
   {
     $customMod: 2
   },
   {
-    expressions: {
-      $customMod: query => value => {
-        return query % value;
+    operations: {
+      $customMod(params, ownerQuery, options) {
+        return new EqualsOperation(
+          value => value % params !== 0,
+          ownerQuery,
+          options
+        );
       }
     }
   }

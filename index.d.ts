@@ -29,7 +29,6 @@ export type Query<T extends SupportedType> = {
   $elemMatch?: ExternalQuery<T>;
   $exists?: boolean;
   $where?: string | WhereFn<T>;
-  $options?: "i" | "g" | "m" | "u";
 };
 
 export interface InternalQuery<T extends SupportedType> extends Query<T> {}

@@ -1,5 +1,10 @@
 import { Query, creators } from "./operations";
-import { Options, createQueryOperation } from "./core";
+import {
+  Options,
+  createQueryOperation,
+  EqualsOperation,
+  BaseOperation
+} from "./core";
 import { equals, Key } from "./utils";
 
 const createRootTester = (
@@ -16,5 +21,7 @@ const createRootTester = (
     return operation.success;
   };
 };
+
+export { Query, EqualsOperation };
 
 export default createRootTester;

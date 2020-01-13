@@ -7,7 +7,7 @@ export const typeChecker = <TType>(type) => {
   };
 };
 
-export const getClassName = value => Object.prototype.toString.call(value);
+const getClassName = value => Object.prototype.toString.call(value);
 
 export const comparable = (value: any) => {
   if (value instanceof Date) {
@@ -66,18 +66,3 @@ export const equals = (a, b) => {
   }
   return false;
 };
-
-export const hasNestedProperty = (object, key) => {
-  const parts = String(key).split(".");
-  let current = object;
-  if (parts.length === 1) {
-    return current.hasOwnProperty(key);
-  }
-  for (let i = 0, n = parts.length - 1; i < n; i++) {
-    current = current[parts[i]];
-    if (!current) return false;
-  }
-  return current.hasOwnProperty(parts[parts.length - 1]);
-};
-
-export const nope = () => false;

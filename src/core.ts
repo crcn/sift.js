@@ -1,4 +1,4 @@
-import { isArray, Key, Comparator, isVanillaObject } from "./utils";
+import { isArray, Key, Comparator, isVanillaObject, comparable } from "./utils";
 
 export interface Operation {
   readonly success: boolean;
@@ -176,19 +176,6 @@ export const createTester = (a, compare: Comparator) => {
   }
   const comparableA = comparable(a);
   return b => compare(comparableA, comparable(b));
-};
-
-export const comparable = a => {
-  if (a instanceof Date) {
-    return a.getTime();
-  }
-  if (isArray(a)) {
-    return a.map(comparable);
-  }
-  if (a && typeof a.toJSON === "function") {
-    return a.toJSON();
-  }
-  return a;
 };
 
 export class EqualsOperation<TParam> extends BaseOperation<TParam> {

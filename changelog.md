@@ -1,10 +1,12 @@
-## 10.0.0
+## 11.0.0
 
 - new custom operations syntax (see API readme)
 - null & undefined are not treated equally (change has been added to keep spec as functionality as possible to MongoDB)
-- `select` option is not supported anymore
-- `compare` option now expects `boolean` return value
+- `select` option has been removed
+- `compare` option now expects `boolean` return value instead of an integer
 - nested queries are no-longer supported
+- `expressions` option is now `operations`
+- `operations` parameter now expects new operations API
 
 ## 9.0.0
 

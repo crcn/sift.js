@@ -346,7 +346,21 @@ describe(__filename + "#", function() {
         }
       ]
     ],
-
+    [
+      {
+        "array.value": 1
+      },
+      [
+        {
+          array: [{ value: 1 }, { value: 2 }]
+        }
+      ],
+      [
+        {
+          array: [{ value: 1 }, { value: 2 }]
+        }
+      ]
+    ],
     // $size
     [{ $size: 3 }, ["123", [1, 2, 3], "1"], ["123", [1, 2, 3]]],
     [{ $size: 1 }, ["123", [1, 2, 3], "1", undefined], ["1"]],

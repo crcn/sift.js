@@ -1,6 +1,6 @@
 **Installation**: `npm install sift`, or `yarn add sift`
 
-## validate objects & filter arrays with mongodb queries
+## Sift is a tiny library for using MongoDB queries in Javascript
 
 [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)
 
@@ -14,9 +14,10 @@
 - Supported operators: [\$in](#in), [\$nin](#nin), [\$exists](#exists), [\$gte](#gte), [\$gt](#gt), [\$lte](#lte), [\$lt](#lt), [\$eq](#eq), [\$ne](#ne), [\$mod](#mod), [\$all](#all), [\$and](#and), [\$or](#or), [\$nor](#nor), [\$not](#not), [\$size](#size), [\$type](#type), [\$regex](#regex), [\$where](#where), [\$elemMatch](#elemmatch)
 - Regexp searches
 - Function filtering
-- dot notation searching
+- Dot notation searching
 - Supports node.js, and web
 - Custom Operations
+- Tree-shaking
 
 ## Node.js Examples
 

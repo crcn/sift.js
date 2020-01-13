@@ -4,7 +4,7 @@ module.exports = {
   devtool: "source-map",
   mode: "production",
   entry: {
-    index: [__dirname + "/src/index.ts"]
+    index: [__dirname + "/test.js"]
   },
   output: {
     path: __dirname,

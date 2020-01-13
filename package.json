@@ -1,13 +1,12 @@
 {
   "name": "sift",
   "description": "mongodb query style array filtering",
-  "version": "11.0.2",
+  "version": "11.0.7",
   "repository": "crcn/sift.js",
   "sideEffects": false,
   "author": {
     "name": "Craig Condon",
-    "email": "craig.j.condon@gmail.com",
-    "url": "http://crcn.io"
+    "email": "craig.j.condon@gmail.com"
   },
   "license": "MIT",
   "engines": {},
@@ -35,13 +34,13 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.1.2"
   },
-  "main": "./lib/index.js",
-  "module": "./lib/index.js",
-  "es2015": "./lib/index.js",
+  "main": "./index.js",
+  "module": "./es5m/index.js",
+  "es2015": "./es5m/index.js",
   "scripts": {
-    "build": "npm run build:lib && npm run build:esm && npm run build:min && npm run build:csp",
+    "build": "npm run build:lib && npm run build:es5m && npm run build:min && npm run build:csp",
     "build:lib": "tsc",
-    "build:esm": "tsc",
+    "build:es5m": "tsc --build tsconfig.es5m.json",
     "build:min": "webpack",
     "build:csp": "CSP_ENABLED=1 webpack",
     "build:watch": "tsc --watch",

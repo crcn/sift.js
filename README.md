@@ -392,6 +392,22 @@ Not expression:
 ["craig", "tim", "jake"].filter(sift({ $not: { $size: 5 } })); //['tim','jake']
 ```
 
+### Date comparison
+
+Mongodb allows you to do date comparisons like so:
+
+```javascript
+db.collection.find({ createdAt: { $gte: "2018-03-22T06:00:00Z" } });
+```
+
+In Sift, you'll need to specify a Date object:
+
+```javascript
+collection.find(
+  sift({ createdAt: { $gte: new Date("2018-03-22T06:00:00Z") } })
+);
+```
+
 ## Custom behavior
 
 Sift works like MongoDB out of the box, but you're also able to modify the behavior to suite your needs.
@@ -423,33 +439,21 @@ var filter = sift(
 [1, 2, 3, 4, 5].filter(filter); // 1, 3, 5
 ```
 
-If you're looking to create a filter _without_ the standard operations, you can also do that:
+#### Omitting builtin operations
+
+You can create a filter function that omits the builtin operations like so:
 
 ```javascript
-import { createQueryTester } from "sift/lib/core";
-import * as operations from "sift/lib/operations";
+import { createQueryTester } from "sift";
+import { $in, $all, $nin, $lt } from "sift/operations";
 const test = createQueryTester(
   {
     $eq: 10
   },
-  { operations }
+  { $in, $all, $nin, $lt }
 );
 
 [1, 2, 3, 4, 10].filter(test);
 ```
 
-#### Date comparison
-
-Mongodb allows you to do date comparisons like so:
-
-```javascript
-db.collection.find({ createdAt: { $gte: "2018-03-22T06:00:00Z" } });
-```
-
-In Sift, you'll need to specify a Date object:
-
-```javascript
-collection.find(
-  sift({ createdAt: { $gte: new Date("2018-03-22T06:00:00Z") } })
-);
-```
+For bundlers like Webpack and Rollup, operations that aren't used are omitted from application bundles via tree-shaking.

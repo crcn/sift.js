@@ -11,8 +11,6 @@ const createDefaultQueryTester = (
   });
 };
 
-module.exports = createDefaultQueryTester;
-
-export { Query, EqualsOperation };
+export { Query, EqualsOperation, createQueryTester };
 
 export default createDefaultQueryTester;

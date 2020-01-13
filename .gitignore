@@ -5,4 +5,4 @@ coverage
 sift.csp.*
 sift.min.*
 lib/
-esm/
+es5m/

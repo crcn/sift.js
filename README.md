@@ -1,6 +1,6 @@
 **Installation**: `npm install sift`, or `yarn add sift`
 
-## Sift is a tiny library for using MongoDB queries in Javascript
+## Sift is a tiny library for using MongoDB queries to filter data in Javascript
 
 [![Build Status](https://secure.travis-ci.org/crcn/sift.js.png)](https://secure.travis-ci.org/crcn/sift.js)
 

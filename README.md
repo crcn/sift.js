@@ -23,22 +23,22 @@
 import sift from "sift";
 
 //intersecting arrays
-var result = ["hello", "sifted", "array!"].filter(
+const result1 = ["hello", "sifted", "array!"].filter(
   sift({ $in: ["hello", "world"] })
 ); //['hello']
 
 //regexp filter
-var result = ["craig", "john", "jake"].filter(sift(/^j/)); //['john','jake']
+const result2 = ["craig", "john", "jake"].filter(sift(/^j/)); //['john','jake']
 
 // function filter
-var testFilter = sift({
+const testFilter = sift({
   //you can also filter against functions
   name: function(value) {
     return value.length == 5;
   }
 });
 
-var result = [
+const result3 = [
   {
     name: "craig"
   },

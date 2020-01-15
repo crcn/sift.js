@@ -15,7 +15,7 @@
 - Regexp searches
 - Supports node.js, and web
 - Custom Operations
-- Tree-shaking
+- Tree-shaking (omitting functionality from web app bundles)
 
 ## Examples
 

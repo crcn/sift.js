@@ -9,7 +9,8 @@ import {
   numericalOperationCreator,
   Operation,
   Query,
-  GroupOperation
+  GroupOperation,
+  numericalOperation
 } from "./core";
 import { Key, comparable, isFunction } from "./utils";
 
@@ -132,22 +133,11 @@ export const $nin = (params: any, owneryQuery: Query, options: Options) =>
   new $Nor(params, owneryQuery, options);
 export const $in = (params: any, owneryQuery: Query, options: Options) =>
   new $Or(params, owneryQuery, options);
-export const $lt = numericalOperationCreator(
-  (params: any, owneryQuery: Query, options: Options) =>
-    new EqualsOperation(b => b < params, owneryQuery, options)
-);
-export const $lte = numericalOperationCreator(
-  (params: any, owneryQuery: Query, options: Options) =>
-    new EqualsOperation(b => b <= params, owneryQuery, options)
-);
-export const $gt = numericalOperationCreator(
-  (params: any, owneryQuery: Query, options: Options) =>
-    new EqualsOperation(b => b > params, owneryQuery, options)
-);
-export const $gte = numericalOperationCreator(
-  (params: any, owneryQuery: Query, options: Options) =>
-    new EqualsOperation(b => b >= params, owneryQuery, options)
-);
+
+export const $lt = numericalOperation(params => b => b < params);
+export const $lte = numericalOperation(params => b => b <= params);
+export const $gt = numericalOperation(params => b => b > params);
+export const $gte = numericalOperation(params => b => b >= params);
 export const $mod = (
   [mod, equalsValue]: number[],
   owneryQuery: Query,

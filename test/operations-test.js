@@ -4,17 +4,7 @@ var ObjectID = require("bson").ObjectID;
 
 describe(__filename + "#", function() {
   [
-    [
-      {
-        $where: function() {
-          return this.v === 1;
-        }
-      },
-      [{ v: 1 }, { v: 2 }],
-      [{ v: 1 }]
-    ],
-    [{ $where: "this.v === 1" }, [{ v: 1 }, { v: 2 }], [{ v: 1 }]],
-    [{ $where: "obj.v === 1" }, [{ v: 1 }, { v: 2 }], [{ v: 1 }]],
+    [{ $lt: new Date() }, [null], []],
 
     // $eq
     [{ $eq: 5 }, [5, "5", 6], [5]],
@@ -137,7 +127,10 @@ describe(__filename + "#", function() {
     // $lt
     [{ $lt: 5 }, [3, 4, 5, 6], [3, 4]],
     [{ $lt: "c" }, ["a", "b", "c"], ["a", "b"]],
+    [{ $lt: "5" }, [4, 3, 2, 1], []],
     [{ $lt: null }, [-3, -4], []],
+    [{ $lt: new Date() }, [null], []],
+    [{ $lt: new Date() }, [new Date("2010-01-01")], [new Date("2010-01-01")]],
     [
       { $lt: new Date(3) },
       [new Date(1), new Date(2), new Date(3)],
@@ -146,6 +139,8 @@ describe(__filename + "#", function() {
 
     // $lte
     [{ $lte: 5 }, [3, 4, 5, 6], [3, 4, 5]],
+    [{ $lte: "5" }, [4, 3, 2, 1], []],
+    [{ $lte: "5" }, ["4", "3", "2"], ["4", "3", "2"]],
     [
       { groups: { $lt: 5 } },
       [{ groups: [1, 2, 3, 4] }, { groups: [7, 8] }],
@@ -155,6 +150,8 @@ describe(__filename + "#", function() {
     // $gt
     [{ $gt: 5 }, [3, 4, 5, 6], [6]],
     [{ $gt: null }, [3, 4], []],
+    [{ $gt: "5" }, [6, 7, 8], []],
+    [{ $gt: "5" }, ["6", "7", "8"], ["6", "7", "8"]],
     [
       { groups: { $gt: 5 } },
       [{ groups: [1, 2, 3, 4] }, { groups: [7, 8] }],
@@ -163,6 +160,7 @@ describe(__filename + "#", function() {
 
     // $gte
     [{ $gte: 5 }, [3, 4, 5, 6], [5, 6]],
+    [{ $gte: "5" }, [4, 3, 2, 1], []],
     [
       { groups: { $gte: 5 } },
       [{ groups: [1, 2, 3, 4] }, { groups: [7, 8] }],

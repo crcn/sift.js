@@ -231,10 +231,28 @@ export class NopeOperation<TParam> extends BaseOperation<TParam> {
 
 export const numericalOperationCreator = (
   createNumericalOperation: OperationCreator
-) => (params: number, owneryQuery: any, options: Options) =>
-  params == null
-    ? new NopeOperation(params, owneryQuery, options)
-    : createNumericalOperation(params, owneryQuery, options);
+) => (params: any, owneryQuery: any, options: Options) => {
+  if (params == null) {
+    return new NopeOperation(params, owneryQuery, options);
+  }
+
+  return createNumericalOperation(params, owneryQuery, options);
+};
+
+export const numericalOperation = (createTester: (any) => Tester) =>
+  numericalOperationCreator(
+    (params: any, owneryQuery: Query, options: Options) => {
+      const typeofParams = typeof comparable(params);
+      const test = createTester(params);
+      return new EqualsOperation(
+        b => {
+          return typeof comparable(b) === typeofParams && test(b);
+        },
+        owneryQuery,
+        options
+      );
+    }
+  );
 
 export type Options = {
   operations: {

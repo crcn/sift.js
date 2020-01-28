@@ -64,8 +64,8 @@ describe(__filename + "#", function() {
   });
 
   it("can compare various $lt dates", () => {
-    // assert.equal(sift({ $lt: new Date() })(new Date('2010-01-01')), true);
-    // assert.equal(sift({ $lt: new Date() })(new Date('2030-01-01')), false);
+    assert.equal(sift({ $lt: new Date() })(new Date("2010-01-01")), true);
+    assert.equal(sift({ $lt: new Date() })(new Date("2030-01-01")), false);
     assert.equal(sift({ $lt: new Date() })(null), false);
   });
 

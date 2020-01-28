@@ -23,7 +23,7 @@ export type OperationCreator = (
 ) => Operation;
 
 export type Query = {
-  [identifier: string]: Query | Object;
+  [identifier: string]: Query | Object | undefined;
   $eq?: any;
   $ne?: any;
   $elemMatch?: Query;

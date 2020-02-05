@@ -77,4 +77,7 @@
 // declare const Sift: Sift;
 // export default Sift;
 
+import sift from "./lib";
+
+export default sift;
 export * from "./lib";

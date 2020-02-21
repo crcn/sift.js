@@ -85,8 +85,7 @@ Creates a filter function **without** built-in MongoDB query operations. This is
 if you're looking to omit certain operations from application bundles. See [Omitting built-in operations](#omitting-built-in-operations) for more info.
 
 ```javascript
-import { createQueryTester } from "sift";
-import { $eq, $in } from "sift/operations";
+import { createQueryTester, $eq, $in } from "sift";
 const filter = createQueryTester({ $eq: 5 }, { operations: { $eq, $in } });
 ```
 
@@ -95,8 +94,7 @@ const filter = createQueryTester({ $eq: 5 }, { operations: { $eq, $in } });
 Used for [custom operations](#custom-operations).
 
 ```javascript
-import { createQueryTester, createEqualsOperation } from "sift";
-import { $eq, $in } from "sift/operations";
+import { createQueryTester, createEqualsOperation, $eq, $in } from "sift";
 const filter = createQueryTester(
   { $mod: 5 },
   {
@@ -453,8 +451,7 @@ var filter = sift(
 You can create a filter function that omits the built-in operations like so:
 
 ```javascript
-import { createQueryTester } from "sift";
-import { $in, $all, $nin, $lt } from "sift/operations";
+import { createQueryTester, $in, $all, $nin, $lt } from "sift";
 const test = createQueryTester(
   {
     $eq: 10

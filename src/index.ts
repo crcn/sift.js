@@ -13,10 +13,11 @@ const createDefaultQueryTester = <TItem>(
 ) => {
   return createQueryTester<TItem>(query, {
     compare: compare,
-    operations: Object.assign({}, defaultOperations, operations || {})
+    operations: Object.assign({}, defaultOperations, operations)
   });
 };
 
 export { Query, EqualsOperation, createQueryTester, createEqualsOperation };
+export * from "./operations";
 
 export default createDefaultQueryTester;

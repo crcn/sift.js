@@ -273,14 +273,14 @@ describe(__filename + "#", function() {
   it("Works with Object ids", () => {
     const test1 = sift({
       $in: [
-        ObjectID("54dd5546b1d296a54d152e84"),
-        ObjectID("54dd5546b1d296a54d152e85")
+        new ObjectID("54dd5546b1d296a54d152e84"),
+        new ObjectID("54dd5546b1d296a54d152e85")
       ]
     });
 
-    assert.equal(test1(ObjectID("54dd5546b1d296a54d152e84")), true);
-    assert.equal(test1(ObjectID("54dd5546b1d296a54d152e85")), true);
-    assert.equal(test1(ObjectID("54dd5546b1d296a54d152e86")), false);
+    assert.equal(test1(new ObjectID("54dd5546b1d296a54d152e84")), true);
+    assert.equal(test1(new ObjectID("54dd5546b1d296a54d152e85")), true);
+    assert.equal(test1(new ObjectID("54dd5546b1d296a54d152e86")), false);
   });
 
   it("works with toJSON", () => {

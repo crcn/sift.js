@@ -38,9 +38,9 @@ describe(__filename + "#", function() {
     ],
 
     [
-      ObjectID("54dd5546b1d296a54d152e84"),
-      [ObjectID(), ObjectID("54dd5546b1d296a54d152e84")],
-      [ObjectID("54dd5546b1d296a54d152e84")]
+      new ObjectID("54dd5546b1d296a54d152e84"),
+      [new ObjectID(), new ObjectID("54dd5546b1d296a54d152e84")],
+      [new ObjectID("54dd5546b1d296a54d152e84")]
     ],
 
     // check for exactness

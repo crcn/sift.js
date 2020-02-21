@@ -22,7 +22,7 @@
     "@babel/preset-env": "^7.8.4",
     "@babel/register": "^7.8.3",
     "@types/node": "^13.7.0",
-    "bson": "^3.0.2",
+    "bson": "^4.0.3",
     "eval": "^0.1.4",
     "husky": "^1.2.1",
     "immutable": "^3.7.6",
@@ -44,7 +44,7 @@
     "build:min": "webpack",
     "build:csp": "CSP_ENABLED=1 webpack",
     "build:watch": "tsc --watch",
-    "test": "mocha ./test -R spec --compilers js:@babel/register",
+    "test": "mocha ./test -R spec --compilers \"js:@babel/register\"",
     "prepublishOnly": "npm run build && npm run test"
   }
 }

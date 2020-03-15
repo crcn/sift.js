@@ -1,3 +1,7 @@
+## 12.0.0
+
+- Fix bug where \$elemMatch tested objects: e.g: `sift({a: {$elemMatch: 1}})({ a: { b: 1}})`. \$elemMatch now expects arrays based on Mongodb syntax. E.g: `sift({a: {$elemMatch: 1}})({ a: { b: 1}})`
+
 ## 11.0.0
 
 - new custom operations syntax (see API readme)

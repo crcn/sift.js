@@ -13,6 +13,7 @@ import {
   numericalOperation
 } from "./core";
 import { Key, comparable, isFunction } from "./utils";
+import { isArray } from "util";
 
 class $Ne extends BaseOperation<any> {
   private _test: Tester;
@@ -31,7 +32,34 @@ class $Ne extends BaseOperation<any> {
   }
 }
 
+// https://docs.mongodb.com/manual/reference/operator/query/elemMatch/
 class $ElemMatch extends BaseOperation<Query> {
+  private _queryOperation: QueryOperation;
+  private _current: any;
+  init() {
+    this._queryOperation = createQueryOperation(
+      this.params,
+      this.owneryQuery,
+      this.options
+    );
+  }
+  reset() {
+    this._queryOperation.reset();
+  }
+  next(item: any, key: Key, owner: any[]) {
+    this._queryOperation.reset();
+    if (isArray(owner)) {
+      this._queryOperation.next(item, key, owner);
+      this.done = this._queryOperation.done || key === owner.length - 1;
+      this.success = this._queryOperation.success;
+    } else {
+      this.done = true;
+      this.success = false;
+    }
+  }
+}
+
+class $Not extends BaseOperation<Query> {
   private _queryOperation: QueryOperation;
   init() {
     this._queryOperation = createQueryOperation(
@@ -46,14 +74,7 @@ class $ElemMatch extends BaseOperation<Query> {
   next(item: any, key: Key, owner: any) {
     this._queryOperation.next(item, key, owner);
     this.done = this._queryOperation.done;
-    this.success = this._queryOperation.success;
-  }
-}
-
-class $Not extends $ElemMatch {
-  next(item: any, key: Key, owner: any) {
-    super.next(item, key, owner);
-    this.success = !this.success;
+    this.success = !this._queryOperation.success;
   }
 }
 

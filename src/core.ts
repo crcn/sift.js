@@ -107,7 +107,7 @@ export abstract class GroupOperation extends BaseOperation<any> {
     params: any,
     owneryQuery: any,
     options: Options,
-    private readonly _children: Operation[]
+    protected readonly _children: Operation[]
   ) {
     super(params, owneryQuery, options);
   }
@@ -145,6 +145,7 @@ export abstract class GroupOperation extends BaseOperation<any> {
         done = false;
       }
     }
+    // console.log("DONE", this.params, done, success);
     this.done = done;
     this.success = success;
   }
@@ -319,15 +320,19 @@ export const createQueryOperation = (
     options
   );
 
-  const ops = [
-    new NestedOperation([], query, owneryQuery, options, selfOperations),
-    ...nestedOperations
-  ];
+  const ops = [];
+
+  if (selfOperations.length) {
+    ops.push(
+      new NestedOperation([], query, owneryQuery, options, selfOperations)
+    );
+  }
+
+  ops.push(...nestedOperations);
 
   if (ops.length === 1) {
     return ops[0];
   }
-
   return new QueryOperation(query, owneryQuery, options, ops);
 };
 

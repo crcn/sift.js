@@ -1,5 +1,5 @@
-import assert from "assert";
-import sift from "..";
+const assert = require("assert");
+const sift = require("..");
 
 describe(__filename + "#", function() {
   var topic = [

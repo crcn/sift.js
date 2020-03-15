@@ -1,7 +1,7 @@
-import * as assert from "assert";
-import { default as _eval } from "eval";
-import sift, { indexOf as siftIndexOf } from "..";
-import { ObjectID } from "bson";
+const assert = require("assert");
+const _eval = require("eval");
+const { default: sift } = require("..");
+const { ObjectID } = require("bson");
 
 describe(__filename + "#", function() {
   it("doesn't sort arrays", function() {

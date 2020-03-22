@@ -161,7 +161,7 @@ sift({ $exists: true })(["Craig", null, "Tim"]);
 You can also filter out values that don't exist
 
 ```javascript
-//filtered: [{ name: 'Craig', city: 'Minneapolis' }]
+//filtered: [{ name: "Tim" }]
 [{ name: "Craig", city: "Minneapolis" }, { name: "Tim" }].filter(
   sift({ city: { $exists: false } })
 );

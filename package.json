@@ -1,7 +1,7 @@
 {
   "name": "sift",
   "description": "MongoDB query filtering in JavaScript",
-  "version": "12.0.1",
+  "version": "12.1.0",
   "repository": "crcn/sift.js",
   "sideEffects": false,
   "author": {

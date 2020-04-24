@@ -12,8 +12,7 @@ import {
   GroupOperation,
   numericalOperation
 } from "./core";
-import { Key, comparable, isFunction } from "./utils";
-import { isArray } from "util";
+import { Key, comparable, isFunction, isArray } from "./utils";
 
 class $Ne extends BaseOperation<any> {
   private _test: Tester;

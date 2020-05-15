@@ -38,7 +38,7 @@
   "main": "./index.js",
   "module": "./es5m/index.js",
   "scripts": {
-    "build": "npm run build:lib && npm run build:min",
+    "build": "npm run build:lib && npm run build:lib:es5 && npm run build:min",
     "build:lib": "tsc",
     "build:lib:es5": "tsc --build tsconfig.es5.json",
     "build:min": "rollup --config",

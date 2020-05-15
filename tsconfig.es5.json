@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "lib",
+    "outDir": "es5m",
     "target": "es5",
     "sourceMap": true,
     "module": "es2015",

@@ -17,9 +17,6 @@
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.8.4",
-    "@babel/preset-env": "^7.8.4",
-    "@babel/register": "^7.8.3",
     "@types/node": "^13.7.0",
     "bson": "^4.0.3",
     "eval": "^0.1.4",

@@ -3,7 +3,7 @@
     "outDir": "lib",
     "target": "es5",
     "sourceMap": true,
-    "module": "commonjs",
+    "module": "es2015",
     "moduleResolution": "node",
     "declaration": true,
     "declarationDir": "lib",

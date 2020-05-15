@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "outDir": "es5m",
-    "target": "es6",
+    "outDir": "lib",
+    "target": "es5",
     "sourceMap": true,
     "module": "commonjs",
     "moduleResolution": "node",

@@ -236,14 +236,6 @@ describe(__filename + "#", function() {
       [{ a: { b: [{ status: 0 }] } }, { a: { b: [{ status: 2 }] } }]
     ],
     [
-      { x: { $in: [{ $regex: ".*aaa.*" }, { $regex: ".*bbb.*" }] } },
-      [{ x: { b: "aaa" } }, { x: "bbb" }, { x: "ccc" }, { x: "aaa" }],
-      [{ x: "bbb" }, { x: "aaa" }],
-
-      // FIXME: #60 - cannot nest $ under $in
-      false
-    ],
-    [
       { x: { $in: [/.*aaa.*/, /.*bbb.*/] } },
       [{ x: { b: "aaa" } }, { x: "bbb" }, { x: "ccc" }, { x: "aaa" }],
       [{ x: "bbb" }, { x: "aaa" }]
@@ -264,14 +256,7 @@ describe(__filename + "#", function() {
       []
     ],
     [{ aaaaa: { $nin: [null] } }, [{ root: { defined: 1337 } }], []],
-    [
-      { x: { $nin: [{ $regex: ".*aaa.*" }, { $regex: ".*bbb.*" }] } },
-      [{ x: { b: "aaa" } }, { x: "bbb" }, { x: "ccc" }, { x: "aaa" }],
-      [{ x: { b: "aaa" } }, { x: "ccc" }],
 
-      // FIXME: #61 - cannot nest $ under $in
-      false
-    ],
     [
       { x: { $nin: [/.*aaa.*/, /.*bbb.*/] } },
       [{ x: { b: "aaa" } }, { x: "bbb" }, { x: "ccc" }, { x: "aaa" }],

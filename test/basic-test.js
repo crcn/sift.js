@@ -330,4 +330,49 @@ describe(__filename + "#", function() {
     const filtered = [whereProps].filter(sift(where));
     assert.equal(filtered.length, 0);
   });
+
+  // --- ticket fixes go here ----
+
+  it("passes #196", () => {
+    const filter = {
+      Demo: { $in: [null, [], "C"] }
+    };
+
+    const fun = sift(filter);
+
+    assert.equal(fun({ Demo: ["A", "B"] }), false); // should be false but it return true
+    assert.equal(fun({ Demo: null }), true); // true is ok
+    assert.equal(fun({ Demo: [] }), true); // true is ok
+    assert.equal(fun({ Demo: ["C"] }), true); // true is ok
+  });
+
+  it("Throws an error if $ is nested in $in", () => {
+    const filter = {
+      Demo: { $in: [{ $eq: 1 }] }
+    };
+
+    let err;
+    try {
+      const fun = sift(filter);
+    } catch (e) {
+      err = e;
+    }
+
+    assert.equal(err.message, "cannot nest $ under $in");
+  });
+
+  it("Throws an error if $ is nested in $nin", () => {
+    const filter = {
+      Demo: { $nin: [{ $eq: 1 }] }
+    };
+
+    let err;
+    try {
+      const fun = sift(filter);
+    } catch (e) {
+      err = e;
+    }
+
+    assert.equal(err.message, "cannot nest $ under $nin");
+  });
 });

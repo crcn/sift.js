@@ -10,7 +10,8 @@ import {
   Operation,
   Query,
   GroupOperation,
-  numericalOperation
+  numericalOperation,
+  containsOperation
 } from "./core";
 import { Key, comparable, isFunction, isArray } from "./utils";
 
@@ -116,6 +117,42 @@ class $Nor extends $Or {
   }
 }
 
+class $In extends BaseOperation<any> {
+  private _testers: Tester[];
+  init() {
+    this._testers = this.params.map(value => {
+      if (containsOperation(value)) {
+        throw new Error(
+          `cannot nest $ under ${this.constructor.name.toLowerCase()}`
+        );
+      }
+      return createTester(value, this.options.compare);
+    });
+  }
+  next(item: any, key: Key, owner: any) {
+    let done = false;
+    let success = false;
+    for (let i = 0, { length } = this._testers; i < length; i++) {
+      const test = this._testers[i];
+      if (test(item)) {
+        done = true;
+        success = true;
+        break;
+      }
+    }
+
+    this.success = success;
+    this.done = done;
+  }
+}
+
+class $Nin extends $In {
+  next(item: any, key: Key, owner: any) {
+    super.next(item, key, owner);
+    this.success = !this.success;
+  }
+}
+
 class $Exists extends BaseOperation<boolean> {
   next(item: any, key: Key, owner: any) {
     if (owner.hasOwnProperty(key) === this.params) {
@@ -150,9 +187,9 @@ export const $nor = (params: Query[], owneryQuery: Query, options: Options) =>
 export const $elemMatch = (params: any, owneryQuery: Query, options: Options) =>
   new $ElemMatch(params, owneryQuery, options);
 export const $nin = (params: any, owneryQuery: Query, options: Options) =>
-  new $Nor(params, owneryQuery, options);
+  new $Nin(params, owneryQuery, options);
 export const $in = (params: any, owneryQuery: Query, options: Options) =>
-  new $Or(params, owneryQuery, options);
+  new $In(params, owneryQuery, options);
 
 export const $lt = numericalOperation(params => b => b < params);
 export const $lte = numericalOperation(params => b => b <= params);

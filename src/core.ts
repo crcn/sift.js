@@ -275,7 +275,7 @@ const createOperation = (
   return operationCreator(params, parentQuery, options);
 };
 
-const containsOperation = (query: any) => {
+export const containsOperation = (query: any) => {
   for (const key in query) {
     if (key.charAt(0) === "$") return true;
   }

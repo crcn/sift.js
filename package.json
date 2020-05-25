@@ -17,6 +17,8 @@
     }
   },
   "devDependencies": {
+    "@rollup/plugin-replace": "^2.3.2",
+    "@rollup/plugin-typescript": "^4.1.1",
     "@types/node": "^13.7.0",
     "bson": "^4.0.3",
     "eval": "^0.1.4",
@@ -26,24 +28,33 @@
     "mongodb": "^3.5.5",
     "prettier": "1.15.3",
     "pretty-quick": "^1.11.1",
+    "rimraf": "^3.0.2",
     "rollup": "^2.7.2",
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.8.3",
-    "@rollup/plugin-typescript": "^4.1.1",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-sourcemaps": "^0.5.0",
     "rollup-plugin-terser": "^5.3.0",
-    "rollup-plugin-typescript2": "^0.27.0"
+    "tslib": "^2.0.0",
+    "typescript": "^3.8.3"
   },
   "main": "./index.js",
   "module": "./es5m/index.js",
+  "es2015": "./es/index.js",
   "scripts": {
-    "build": "npm run build:lib && npm run build:lib:es5 && npm run build:min",
-    "build:lib": "tsc",
-    "build:lib:es5": "tsc --build tsconfig.es5.json",
-    "build:min": "rollup --config",
+    "clean": "rimraf lib es5m es",
+    "prebuild": "npm run clean && npm run build:types",
+    "build": "rollup -c",
+    "build:types": "tsc -p tsconfig.json --emitDeclarationOnly --outDir lib",
     "build:watch": "tsc --watch",
     "test": "mocha ./test -R spec",
     "prepublishOnly": "npm run build && npm run test"
-  }
+  },
+  "files": [
+    "es",
+    "es5m",
+    "lib",
+    "*.d.ts",
+    "*.js.map",
+    "index.js",
+    "sift.csp.min.js",
+    "sift.min.js",
+    "MIT-LICENSE.txt"
+  ]
 }

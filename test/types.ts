@@ -44,7 +44,7 @@ type PersonSchema = Person & {
   "address.zip": number;
 };
 
-sift<Person, PersonSchema>({ "address.zip": 4 });
+sift<Person, PersonSchema>({ "address.zip": 4, name: "a" });
 
 type Test2 = {
   name: string | number;

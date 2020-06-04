@@ -4,7 +4,6 @@ sift<any>({ $gt: 10 });
 sift<string>({ $gt: "10" });
 sift<Date>({ $gt: new Date(10) });
 sift<{}>({ $gt: "10" });
-sift<[]>({ $eq: [] });
 
 sift({ $gte: 10 });
 sift({ $gte: "10" });
@@ -40,7 +39,6 @@ sift<Person>({ name: "a", address: { zip: 55555 } });
 // pass
 sift<Person>({
   name: "a",
-  address: { $elemMatch: {} },
   $or: [{ name: "jeffery", last: "joe" }]
 });
 

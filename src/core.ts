@@ -25,7 +25,7 @@ export type OperationCreator = (
 type ValueQuery<TValue> = {
   $eq?: TValue;
   $ne?: TValue;
-  $elemMatch?: Query<TValue, true>;
+  $elemMatch?: Query<TValue>;
   $lt?: TValue;
   $gt?: TValue;
   $lte?: TValue;
@@ -42,14 +42,10 @@ type ValueQuery<TValue> = {
 type NotObject = string | number | Date | boolean | Array<any>;
 type ShapeQuery<TItemSchema> = TItemSchema extends NotObject
   ? {}
-  : { [k in keyof TItemSchema]: TItemSchema[k] | Query<TItemSchema[k]> };
+  : { [k in keyof TItemSchema]?: TItemSchema[k] | Query<TItemSchema[k]> };
 
-export declare type Query<TItemSchema, exact = false> = ValueQuery<
-  TItemSchema
-> &
-  (exact extends false
-    ? Partial<ShapeQuery<TItemSchema>>
-    : ShapeQuery<TItemSchema>);
+export declare type Query<TItemSchema> = ValueQuery<TItemSchema> &
+  ShapeQuery<TItemSchema>;
 
 /**
  * Walks through each value given the context - used for nested operations. E.g:
@@ -376,8 +372,8 @@ const createQueryOperations = (query: any, options: Options) => {
   return [selfOperations, nestedOperations];
 };
 
-export const createQueryTester = <TItem>(
-  query: Query<TItem>,
+export const createQueryTester = <TItem, TSchema = TItem>(
+  query: Query<TSchema>,
   { compare, operations }: Partial<Options> = {}
 ) => {
   const operation = createQueryOperation(query, null, {

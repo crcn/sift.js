@@ -27,6 +27,9 @@ type Person = {
 };
 
 sift<Person>({ name: "a", last: { $eq: "a" } });
+
+// fail
+// sift<Person>({ name: 5, last: { $eq: "a" } });
 sift<Person>({ name: "a", last: { $elemMatch: { $eq: "a" } } });
 sift<Person>({ name: "a", address: { $elemMatch: { zip: 55124 } } });
 
@@ -36,6 +39,12 @@ sift<Person>({
   address: { $elemMatch: {} },
   $or: [{ name: "jeffery", last: "joe" }]
 });
+
+type PersonSchema = Person & {
+  "address.zip": number;
+};
+
+sift<Person, PersonSchema>({ "address.zip": 4 });
 
 type Test2 = {
   name: string | number;

@@ -22,15 +22,17 @@ export type OperationCreator = (
   options: Options
 ) => Operation;
 
+type Comparable = string | number | Date;
+
 export type Query = {
   [identifier: string]: Query | Object | undefined;
   $eq?: any;
   $ne?: any;
   $elemMatch?: Query;
-  $lt?: number;
-  $gt?: number;
-  $lte?: number;
-  $gte?: number;
+  $lt?: Comparable;
+  $gt?: Comparable;
+  $lte?: Comparable;
+  $gte?: Comparable;
   $mod?: [number, number];
   $exists?: boolean;
   $regex?: string;

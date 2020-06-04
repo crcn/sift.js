@@ -4,6 +4,9 @@ coverage
 .idea
 sift.csp.*
 sift.min.*
+src/*.d.ts
+src/*.js.map
+src/*.js
 lib/
 es5m/
 es/

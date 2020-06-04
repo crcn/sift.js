@@ -1,4 +1,4 @@
 import sift from "..";
 
 sift({ $gt: 10 });
-sift({});
+sift({ $gt: "10" });

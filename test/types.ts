@@ -96,3 +96,18 @@ const obj = {
     }
   })
 );
+
+const a = [obj].some(
+  sift<
+    typeof obj,
+    {
+      "foo.bar.baz": number;
+    } & typeof obj
+  >({
+    "foo.bar.baz": {
+      $in: [1, 2, 3]
+    }
+  })
+); // returns false
+
+console.log(a);

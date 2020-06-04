@@ -22,10 +22,9 @@ export type OperationCreator = (
   options: Options
 ) => Operation;
 
-type ValueQuery<TValue> = {
+type NestedValueQuery<TValue> = {
   $eq?: TValue;
   $ne?: TValue;
-  $elemMatch?: Query<TValue>;
   $lt?: TValue;
   $gt?: TValue;
   $lte?: TValue;
@@ -41,13 +40,28 @@ type ValueQuery<TValue> = {
   $nor?: Query<TValue>[];
 };
 
-type NotObject = string | number | Date | boolean | Array<any>;
-type ShapeQuery<TItemSchema> = TItemSchema extends NotObject
-  ? {}
-  : { [k in keyof TItemSchema]?: TItemSchema[k] | Query<TItemSchema[k]> };
+type RootValueQuery<TValue> = {
+  $elemMatch?: Query<TValue, true>;
+} & NestedValueQuery<TValue>;
 
-export type Query<TItemSchema> = ValueQuery<TItemSchema> &
-  ShapeQuery<TItemSchema>;
+type ValueQuery<TValue, nested> = nested extends true
+  ? NestedValueQuery<TValue>
+  : RootValueQuery<TValue>;
+
+type NotObject = string | number | Date | boolean | Array<any>;
+type ShapeQuery<TItemSchema, nested> = TItemSchema extends NotObject
+  ? {}
+  : {
+      [k in keyof TItemSchema]?:
+        | TItemSchema[k]
+        | ValueQuery<TItemSchema[k], nested>
+    };
+
+export type Query<TItemSchema, nested = false> = ValueQuery<
+  TItemSchema,
+  nested
+> &
+  ShapeQuery<TItemSchema, nested>;
 
 /**
  * Walks through each value given the context - used for nested operations. E.g:

@@ -44,7 +44,7 @@ type ShapeQuery<TItemSchema> = TItemSchema extends NotObject
   ? {}
   : { [k in keyof TItemSchema]?: TItemSchema[k] | Query<TItemSchema[k]> };
 
-export declare type Query<TItemSchema> = ValueQuery<TItemSchema> &
+export type Query<TItemSchema> = ValueQuery<TItemSchema> &
   ShapeQuery<TItemSchema>;
 
 /**

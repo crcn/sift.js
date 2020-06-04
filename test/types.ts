@@ -56,3 +56,10 @@ sift<Test2>({ name: { $gt: 10 } });
 // fail
 // sift<Something>({ name: { $gt: new Date(10) } });
 sift<Test2>({ name: { $gt: "5" } });
+
+[{ string: "hello", number: 1 }].filter(
+  sift({
+    string: "a",
+    number: 1
+  })
+);

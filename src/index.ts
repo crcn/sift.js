@@ -7,7 +7,7 @@ import {
   createEqualsOperation
 } from "./core";
 
-const createDefaultQueryTester = <TItem, TSchema = TItem>(
+const createDefaultQueryTester = <TItem, TSchema extends TItem = TItem>(
   query: Query<TSchema>,
   { compare, operations }: Partial<Options> = {}
 ) => {

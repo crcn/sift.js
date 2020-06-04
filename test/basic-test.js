@@ -375,4 +375,56 @@ describe(__filename + "#", function() {
 
     assert.equal(err.message, "cannot nest $ under $nin");
   });
+
+  // https://github.com/crcn/sift.js/issues/200
+  it("works with RegExp with global flag", () => {
+    const objects = [
+      {
+        prop1: "asdf",
+        prop2: "as"
+      },
+      {
+        prop1: "asdf 1234",
+        prop2: "as"
+      },
+      {
+        prop1: "asdf qwer",
+        prop2: "as"
+      }
+    ];
+
+    const resultsWithGlobal = objects.filter(
+      sift({
+        prop1: /.*?(as|df).*?/g,
+        prop2: "as"
+      })
+    );
+
+    const resultsWithoutGlobal = objects.filter(
+      sift({
+        prop1: /.*?(as|df).*?/,
+        prop2: "as"
+      })
+    );
+
+    const resultsWithGlobal2 = objects.filter(
+      sift({
+        prop1: { $regex: ".*?(as|df).*?", $options: "g" },
+        prop2: "as"
+      })
+    );
+
+    const resultsWithoutGlobal2 = objects.filter(
+      sift({
+        prop1: { $regex: ".*?(as|df).*?" },
+        prop2: "as"
+      })
+    );
+
+    assert.equal(resultsWithGlobal.length, 3);
+    assert.equal(resultsWithoutGlobal.length, 3);
+
+    assert.equal(resultsWithGlobal2.length, 3);
+    assert.equal(resultsWithoutGlobal2.length, 3);
+  });
 });

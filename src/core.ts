@@ -198,7 +198,11 @@ export const createTester = (a, compare: Comparator) => {
     return a;
   }
   if (a instanceof RegExp) {
-    return b => typeof b === "string" && a.test(b);
+    return b => {
+      const result = typeof b === "string" && a.test(b);
+      a.lastIndex = 0;
+      return result;
+    };
   }
   const comparableA = comparable(a);
   return b => compare(comparableA, comparable(b));

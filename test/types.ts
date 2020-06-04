@@ -24,6 +24,7 @@ type Person = {
   address: {
     zip?: number;
   };
+  friends: Person[];
 };
 
 sift<Person>({
@@ -33,8 +34,8 @@ sift<Person>({
 
 // fail
 // sift<Person>({ name: 5, last: { $eq: "a" } });
-sift<Person>({ name: "a", last: { $elemMatch: { $eq: "a" } } });
-sift<Person>({ name: "a", address: { $elemMatch: { zip: 55124 } } });
+sift<Person>({ name: "a", friends: { $elemMatch: { name: "first" } } });
+sift<Person>({ name: "a", address: { zip: 55555 } });
 
 // pass
 sift<Person>({
@@ -84,7 +85,8 @@ const obj = {
   },
   foo: {
     bar: {
-      baz: 1
+      baz: 1,
+      biz: 5
     }
   }
 };
@@ -106,6 +108,13 @@ const a = [obj].some(
   >({
     "foo.bar.baz": {
       $in: [1, 2, 3]
+    },
+    foo: {
+      bar: {
+        // $in: [1, 2, 3] should fail
+        baz: 4,
+        biz: 5
+      }
     }
   })
 ); // returns false

@@ -26,7 +26,10 @@ type Person = {
   };
 };
 
-sift<Person>({ name: "a", last: { $eq: "a" } });
+sift<Person>({
+  name: "a",
+  last: { $eq: "a", $ne: "a", $in: ["a"], $nin: ["a"], $or: [{ $eq: "a" }] }
+});
 
 // fail
 // sift<Person>({ name: 5, last: { $eq: "a" } });
@@ -61,5 +64,35 @@ sift<Test2>({ name: { $gt: "5" } });
   sift({
     string: "a",
     number: 1
+  })
+);
+
+const obj = {
+  string: "foo",
+  number: 123,
+  date: new Date(),
+  boolean: true,
+  arrayOfNumbers: [1, 2, 3],
+  arrayOfStrings: ["a", "b", "c"],
+  nestedArrayOfNumbers: [[1], [2], [3]],
+  doubleNested: [[[1], [2]], [[1, 2]]],
+  tripleNested: [[[[1]]]],
+  arrayOfObjects: [{ a: 1 }, { a: 2 }],
+  nestedArrayOfObjects: [[{ a: 1 }], [{ a: 2 }], [{ a: 3 }]],
+  nested: {
+    prop: true
+  },
+  foo: {
+    bar: {
+      baz: 1
+    }
+  }
+};
+
+[obj].filter(
+  sift({
+    number: {
+      $in: [123, 2, 3] // Type '{ $in: number[]; }' is not assignable to type 'number | alueQuery<number>   undefined'. Object literal may only specify known properties, and '$in' does not exist in type 'ValueQuery<number>'.
+    }
   })
 );

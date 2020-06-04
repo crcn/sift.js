@@ -30,6 +30,8 @@ type ValueQuery<TValue> = {
   $gt?: TValue;
   $lte?: TValue;
   $gte?: TValue;
+  $in?: TValue[];
+  $nin?: TValue[];
   $mod?: [number, number];
   $exists?: boolean;
   $regex?: string;

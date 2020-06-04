@@ -35,7 +35,7 @@ export type Query = {
   $exists?: boolean;
   $regex?: string;
   $options?: "i" | "g" | "m" | "u";
-  $type: Function;
+  $type?: Function;
   $or?: Query[];
   $nor?: Query[];
 };

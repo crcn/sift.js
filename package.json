@@ -24,7 +24,7 @@
     "eval": "^0.1.4",
     "husky": "^1.2.1",
     "immutable": "^3.7.6",
-    "mocha": "^5.2.0",
+    "mocha": "^7.2.0",
     "mongodb": "^3.5.5",
     "prettier": "1.15.3",
     "pretty-quick": "^1.11.1",

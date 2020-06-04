@@ -34,18 +34,19 @@ type BasicValueQuery<TValue> = {
   $all?: TValue[];
   $mod?: [number, number];
   $exists?: boolean;
-  $regex?: string;
+  $regex?: string | RegExp;
   $size?: number;
   $where?: Function | string;
   $options?: "i" | "g" | "m" | "u";
   $type?: Function;
-  $or?: Query<TValue>[];
-  $nor?: Query<TValue>[];
-  $and?: Query<TValue>[];
+  $not?: NestedQuery<TValue>;
+  $or?: NestedQuery<TValue>[];
+  $nor?: NestedQuery<TValue>[];
+  $and?: NestedQuery<TValue>[];
 };
 
 type ArrayValueQuery<TValue> = {
-  $elemMatch?: Query<TValue, true>;
+  $elemMatch?: Query<TValue>;
 } & BasicValueQuery<TValue>;
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 
@@ -58,8 +59,12 @@ type ShapeQuery<TItemSchema> = TItemSchema extends NotObject
   ? {}
   : { [k in keyof TItemSchema]?: TItemSchema[k] | ValueQuery<TItemSchema[k]> };
 
-export type Query<TItemSchema, nested = false> = ValueQuery<TItemSchema> &
+type NestedQuery<TItemSchema> = ValueQuery<TItemSchema> &
   ShapeQuery<TItemSchema>;
+export type Query<TItemSchema> =
+  | TItemSchema
+  | RegExp
+  | NestedQuery<TItemSchema>;
 
 /**
  * Walks through each value given the context - used for nested operations. E.g:

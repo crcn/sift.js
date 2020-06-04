@@ -1,4 +1,4 @@
-import sift from "..";
+import sift, { createQueryTester, $in, $or, $eq } from "..";
 
 sift<any>({ $gt: 10 });
 sift<string>({ $gt: "10" });
@@ -123,3 +123,161 @@ console.log(a);
   { tags: ["books", "programming", "travel"] },
   { tags: ["travel", "cooking"] }
 ].filter(sift({ tags: { $all: ["books", "programming"] } }));
+
+["craig", "john", "jake"].filter(sift(/^j/));
+["craig", "tim", "jake"].filter(sift({ $not: { $in: ["craig", "tim"] } }));
+
+//intersecting arrays
+const result1 = ["hello", "sifted", "array!"].filter(
+  sift({ $in: ["hello", "world"] })
+); //['hello']
+
+//regexp filter
+const result2 = ["craig", "john", "jake"].filter(sift(/^j/)); //['john','jake']
+
+// function filter
+const testFilter = sift({
+  //you can also filter against functions
+  name: function(value) {
+    return value.length == 5;
+  }
+});
+
+[
+  {
+    name: "craig"
+  },
+  {
+    name: "john"
+  },
+  {
+    name: "jake"
+  }
+].filter(testFilter); // filtered: [{ name: 'craig' }]
+
+//you can test *single values* against your custom sifter
+testFilter({ name: "sarah" }); //true
+testFilter({ name: "tim" }); //false
+[3, 4, 5, 6, 7].filter(sift({ $exists: true })); // [6, 7]
+
+createQueryTester({ $eq: 5 }, { operations: { $eq, $in } });
+
+["Brazil", "Haiti", "Peru", "Chile"].filter(
+  sift({ $in: ["Costa Rica", "Brazil"] })
+);
+
+[{ name: "Craig", location: "Brazil" }].filter(
+  sift({ location: { $in: ["Costa Rica", "Brazil"] } })
+);
+
+["Brazil", "Haiti", "Peru", "Chile"].filter(
+  sift({ $nin: ["Costa Rica", "Brazil"] })
+);
+
+[{ name: "Craig", city: "Minneapolis" }, { name: "Tim" }].filter(
+  sift({ city: { $exists: false } })
+);
+[0, 1, 2, 3].filter(sift({ $gte: 2 }));
+
+[0, 1, 2, 3].filter(sift({ $gt: 2 }));
+[0, 1, 2, 3].filter(sift({ $lte: 2 }));
+[0, 1, 2, 3].filter(sift({ $lt: 2 }));
+[{ state: "MN" }, { state: "CA" }, { state: "WI" }].filter(
+  sift({ state: { $eq: "MN" } })
+);
+[{ state: "MN" }, { state: "CA" }, { state: "WI" }].filter(
+  sift({ state: "MN" })
+);
+[{ state: "MN" }, { state: "CA" }, { state: "WI" }].filter(
+  sift({ state: { $ne: "MN" } })
+);
+[100, 200, 300, 400, 500, 600].filter(sift({ $mod: [3, 0] }));
+[
+  { tags: ["books", "programming", "travel"] },
+  { tags: ["travel", "cooking"] }
+].filter(sift({ tags: { $all: ["books", "programming"] } }));
+
+[
+  { name: "Craig", state: "MN" },
+  { name: "Tim", state: "MN" },
+  { name: "Joe", state: "CA" }
+].filter(sift({ $and: [{ name: "Craig" }, { state: "MN" }] }));
+
+[
+  { name: "Craig", state: "MN" },
+  { name: "Tim", state: "MN" },
+  { name: "Joe", state: "CA" }
+].filter(sift({ $or: [{ name: "Craig" }, { state: "MN" }] }));
+
+[
+  { name: "Craig", state: "MN" },
+  { name: "Tim", state: "MN" },
+  { name: "Joe", state: "CA" }
+].filter(sift({ $nor: [{ name: "Craig" }, { state: "MN" }] }));
+
+[{ tags: ["food", "cooking"] }, { tags: ["traveling"] }].filter(
+  sift({ tags: { $size: 2 } })
+);
+
+[new Date(), 4342, "hello world"].filter(sift({ $type: Date })); //returns single date
+[new Date(), 4342, "hello world"].filter(sift({ $type: String })); //returns ['hello world']
+
+["frank", "fred", "sam", "frost"].filter(
+  sift({ $regex: /^f/i, $nin: ["frank"] })
+); // ["fred", "frost"]
+["frank", "fred", "sam", "frost"].filter(
+  sift({ $regex: "^f", $options: "i", $nin: ["frank"] })
+); // ["fred", "frost"]
+
+[{ name: "frank" }, { name: "joe" }].filter(
+  sift({ $where: "this.name === 'frank'" })
+); // ["frank"]
+[{ name: "frank" }, { name: "joe" }].filter(
+  sift({
+    $where: function() {
+      return this.name === "frank";
+    }
+  })
+); // ["frank"]
+
+var bills = [
+  {
+    month: "july",
+    casts: [
+      {
+        id: 1,
+        value: 200
+      },
+      {
+        id: 2,
+        value: 1000
+      }
+    ]
+  },
+  {
+    month: "august",
+    casts: [
+      {
+        id: 3,
+        value: 1000
+      },
+      {
+        id: 4,
+        value: 4000
+      }
+    ]
+  }
+];
+
+var result = bills.filter(
+  sift({
+    casts: {
+      $elemMatch: {
+        value: { $gt: 1000 }
+      }
+    }
+  })
+); // {month:'august', casts:[{id:3, value: 1000},{id: 4, value: 4000}]}
+
+["craig", "tim", "jake"].filter(sift({ $not: { $in: ["craig", "tim"] } })); //['jake']
+["craig", "tim", "jake"].filter(sift({ $not: { $size: 5 } })); //['tim','jake']

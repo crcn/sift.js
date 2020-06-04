@@ -31,13 +31,17 @@ type BasicValueQuery<TValue> = {
   $gte?: TValue;
   $in?: TValue[];
   $nin?: TValue[];
+  $all?: TValue[];
   $mod?: [number, number];
   $exists?: boolean;
   $regex?: string;
+  $size?: number;
+  $where?: Function | string;
   $options?: "i" | "g" | "m" | "u";
   $type?: Function;
   $or?: Query<TValue>[];
   $nor?: Query<TValue>[];
+  $and?: Query<TValue>[];
 };
 
 type ArrayValueQuery<TValue> = {

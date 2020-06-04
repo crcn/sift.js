@@ -53,7 +53,7 @@ type Test2 = {
 };
 
 sift<Test2>({ name: 5 });
-sift<Test2>({ name: { $gt: 10 } });
+sift<Test2>({ name: { $gt: 10 }, $where: () => {} });
 
 // fail
 // sift<Something>({ name: { $gt: new Date(10) } });
@@ -118,3 +118,8 @@ const a = [obj].some(
 ); // returns false
 
 console.log(a);
+
+[
+  { tags: ["books", "programming", "travel"] },
+  { tags: ["travel", "cooking"] }
+].filter(sift({ tags: { $all: ["books", "programming"] } }));

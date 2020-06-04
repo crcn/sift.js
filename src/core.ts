@@ -22,25 +22,29 @@ export type OperationCreator = (
   options: Options
 ) => Operation;
 
-type Comparable = string | number | Date;
-
-export type Query = {
-  [identifier: string]: Query | Object | undefined;
-  $eq?: any;
-  $ne?: any;
-  $elemMatch?: Query;
-  $lt?: Comparable;
-  $gt?: Comparable;
-  $lte?: Comparable;
-  $gte?: Comparable;
+type ValueQuery<TValue> = {
+  $eq?: TValue;
+  $ne?: TValue;
+  $elemMatch?: TValue;
+  $lt?: TValue;
+  $gt?: TValue;
+  $lte?: TValue;
+  $gte?: TValue;
   $mod?: [number, number];
   $exists?: boolean;
   $regex?: string;
   $options?: "i" | "g" | "m" | "u";
   $type?: Function;
-  $or?: Query[];
-  $nor?: Query[];
+  $or?: Query<TValue>[];
+  $nor?: Query<TValue>[];
 };
+
+type ShapeQuery<TItemSchema> = {
+  [k in keyof TItemSchema]?: TItemSchema[k] | ValueQuery<TItemSchema[k]>
+};
+
+export declare type Query<TItemSchema> = ValueQuery<TItemSchema> &
+  ShapeQuery<TItemSchema>;
 
 /**
  * Walks through each value given the context - used for nested operations. E.g:
@@ -248,7 +252,7 @@ export const numericalOperationCreator = (
 
 export const numericalOperation = (createTester: (any) => Tester) =>
   numericalOperationCreator(
-    (params: any, owneryQuery: Query, options: Options) => {
+    (params: any, owneryQuery: Query<any>, options: Options) => {
       const typeofParams = typeof comparable(params);
       const test = createTester(params);
       return new EqualsOperation(
@@ -368,7 +372,7 @@ const createQueryOperations = (query: any, options: Options) => {
 };
 
 export const createQueryTester = <TItem>(
-  query: Query,
+  query: Query<TItem>,
   { compare, operations }: Partial<Options> = {}
 ) => {
   const operation = createQueryOperation(query, null, {

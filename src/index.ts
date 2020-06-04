@@ -8,7 +8,7 @@ import {
 } from "./core";
 
 const createDefaultQueryTester = <TItem>(
-  query: Query,
+  query: Query<TItem>,
   { compare, operations }: Partial<Options> = {}
 ) => {
   return createQueryTester<TItem>(query, {

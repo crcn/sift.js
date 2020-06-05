@@ -53,7 +53,12 @@ type Test2 = {
 };
 
 sift<Test2>({ name: 5 });
-sift<Test2>({ name: { $gt: 10 }, $where: () => {} });
+sift<Test2>({
+  name: { $gt: 10 },
+  $where: () => {
+    return true;
+  }
+});
 
 // fail
 // sift<Something>({ name: { $gt: new Date(10) } });

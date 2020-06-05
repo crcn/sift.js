@@ -36,7 +36,7 @@ type BasicValueQuery<TValue> = {
   $exists?: boolean;
   $regex?: string | RegExp;
   $size?: number;
-  $where?: ((this: TValue) => void) | string;
+  $where?: ((this: TValue) => boolean) | string;
   $options?: "i" | "g" | "m" | "u";
   $type?: Function;
   $not?: NestedQuery<TValue>;

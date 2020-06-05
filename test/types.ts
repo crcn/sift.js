@@ -279,5 +279,13 @@ var result = bills.filter(
   })
 ); // {month:'august', casts:[{id:3, value: 1000},{id: 4, value: 4000}]}
 
+[{ name: "frank" }, { name: "joe", last: "bob" }].filter(
+  sift({
+    $where: function() {
+      return this.name === "frank" || this.last === "bob";
+    }
+  })
+);
+
 ["craig", "tim", "jake"].filter(sift({ $not: { $in: ["craig", "tim"] } })); //['jake']
 ["craig", "tim", "jake"].filter(sift({ $not: { $size: 5 } })); //['tim','jake']

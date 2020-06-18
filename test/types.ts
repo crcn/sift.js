@@ -1,4 +1,5 @@
 import sift, { createQueryTester, $in, $or, $eq } from "..";
+import { createQueryOperation, createOperationTester } from "../lib/core";
 
 sift<any>({ $gt: 10 });
 sift<string>({ $gt: "10" });
@@ -26,6 +27,13 @@ type Person = {
   friends: Person[];
 };
 
+const demoFriend: Person = {
+  name: "a",
+  last: "b",
+  address: {},
+  friends: []
+};
+
 sift<Person>({
   name: "a",
   last: { $eq: "a", $ne: "a", $in: ["a"], $nin: ["a"], $or: [{ $eq: "a" }] }
@@ -46,7 +54,7 @@ type PersonSchema = Person & {
   "address.zip": number;
 };
 
-sift<Person, PersonSchema>({ "address.zip": 4, name: "a" });
+sift<Person, PersonSchema>({ "address.zip": 4, name: "a" })(demoFriend);
 
 type Test2 = {
   name: string | number;
@@ -121,8 +129,6 @@ const a = [obj].some(
     }
   })
 ); // returns false
-
-console.log(a);
 
 [
   { tags: ["books", "programming", "travel"] },
@@ -294,3 +300,7 @@ var result = bills.filter(
 
 ["craig", "tim", "jake"].filter(sift({ $not: { $in: ["craig", "tim"] } })); //['jake']
 ["craig", "tim", "jake"].filter(sift({ $not: { $size: 5 } })); //['tim','jake']
+
+const o = createQueryOperation<Person>({ name: "a" });
+const t = createOperationTester(o);
+t(demoFriend);

@@ -4,20 +4,38 @@ import {
   Options,
   createQueryTester,
   EqualsOperation,
-  createEqualsOperation
+  createQueryOperation,
+  createEqualsOperation,
+  createOperationTester
 } from "./core";
 
-const createDefaultQueryTester = <TItem, TSchema extends TItem = TItem>(
+const createDefaultQueryOperation = <TItem, TSchema extends TItem = TItem>(
   query: Query<TSchema>,
+  ownerQuery: any,
   { compare, operations }: Partial<Options> = {}
 ) => {
-  return createQueryTester<TItem, TSchema>(query, {
+  return createQueryOperation(query, ownerQuery, {
     compare: compare,
-    operations: Object.assign({}, defaultOperations, operations)
+    operations: Object.assign({}, defaultOperations, operations || {})
   });
 };
 
-export { Query, EqualsOperation, createQueryTester, createEqualsOperation };
+const createDefaultQueryTester = <TItem, TSchema extends TItem = TItem>(
+  query: Query<TSchema>,
+  options: Partial<Options> = {}
+) => {
+  const op = createDefaultQueryOperation(query, null, options);
+  return createOperationTester(op);
+};
+
+export {
+  Query,
+  EqualsOperation,
+  createQueryTester,
+  createDefaultQueryOperation,
+  createEqualsOperation,
+  createQueryOperation
+};
 export * from "./operations";
 
 export default createDefaultQueryTester;

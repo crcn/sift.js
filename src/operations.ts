@@ -1,21 +1,21 @@
 import {
-  BaseOperation,
+  NamedBaseOperation,
   EqualsOperation,
   Options,
   createTester,
   Tester,
   createQueryOperation,
   QueryOperation,
-  numericalOperationCreator,
   Operation,
   Query,
-  GroupOperation,
+  NamedGroupOperation,
   numericalOperation,
-  containsOperation
+  containsOperation,
+  NamedOperation
 } from "./core";
 import { Key, comparable, isFunction, isArray } from "./utils";
 
-class $Ne extends BaseOperation<any> {
+class $Ne extends NamedBaseOperation<any> {
   private _test: Tester;
   init() {
     this._test = createTester(this.params, this.options.compare);
@@ -33,8 +33,8 @@ class $Ne extends BaseOperation<any> {
 }
 
 // https://docs.mongodb.com/manual/reference/operator/query/elemMatch/
-class $ElemMatch extends BaseOperation<Query<any>> {
-  private _queryOperation: QueryOperation;
+class $ElemMatch extends NamedBaseOperation<Query<any>> {
+  private _queryOperation: QueryOperation<any>;
   private _current: any;
   init() {
     this._queryOperation = createQueryOperation(
@@ -59,8 +59,8 @@ class $ElemMatch extends BaseOperation<Query<any>> {
   }
 }
 
-class $Not extends BaseOperation<Query<any>> {
-  private _queryOperation: QueryOperation;
+class $Not extends NamedBaseOperation<Query<any>> {
+  private _queryOperation: QueryOperation<any>;
   init() {
     this._queryOperation = createQueryOperation(
       this.params,
@@ -78,8 +78,8 @@ class $Not extends BaseOperation<Query<any>> {
   }
 }
 
-class $Or extends BaseOperation<any> {
-  private _ops: Operation[];
+class $Or extends NamedBaseOperation<any> {
+  private _ops: Operation<any>[];
   init() {
     this._ops = this.params.map(op =>
       createQueryOperation(op, null, this.options)
@@ -117,7 +117,7 @@ class $Nor extends $Or {
   }
 }
 
-class $In extends BaseOperation<any> {
+class $In extends NamedBaseOperation<any> {
   private _testers: Tester[];
   init() {
     this._testers = this.params.map(value => {
@@ -153,7 +153,7 @@ class $Nin extends $In {
   }
 }
 
-class $Exists extends BaseOperation<boolean> {
+class $Exists extends NamedBaseOperation<boolean> {
   next(item: any, key: Key, owner: any) {
     if (owner.hasOwnProperty(key) === this.params) {
       this.done = true;
@@ -162,13 +162,19 @@ class $Exists extends BaseOperation<boolean> {
   }
 }
 
-class $And extends GroupOperation {
-  constructor(params: Query<any>[], owneryQuery: Query<any>, options: Options) {
+class $And extends NamedGroupOperation {
+  constructor(
+    params: Query<any>[],
+    owneryQuery: Query<any>,
+    options: Options,
+    name: string
+  ) {
     super(
       params,
       owneryQuery,
       options,
-      params.map(query => createQueryOperation(query, owneryQuery, options))
+      params.map(query => createQueryOperation(query, owneryQuery, options)),
+      name
     );
   }
   next(item: any, key: Key, owner: any) {
@@ -178,27 +184,42 @@ class $And extends GroupOperation {
 
 export const $eq = (params: any, owneryQuery: Query<any>, options: Options) =>
   new EqualsOperation(params, owneryQuery, options);
-export const $ne = (params: any, owneryQuery: Query<any>, options: Options) =>
-  new $Ne(params, owneryQuery, options);
+export const $ne = (
+  params: any,
+  owneryQuery: Query<any>,
+  options: Options,
+  name: string
+) => new $Ne(params, owneryQuery, options, name);
 export const $or = (
   params: Query<any>[],
   owneryQuery: Query<any>,
-  options: Options
-) => new $Or(params, owneryQuery, options);
+  options: Options,
+  name: string
+) => new $Or(params, owneryQuery, options, name);
 export const $nor = (
   params: Query<any>[],
   owneryQuery: Query<any>,
-  options: Options
-) => new $Nor(params, owneryQuery, options);
+  options: Options,
+  name: string
+) => new $Nor(params, owneryQuery, options, name);
 export const $elemMatch = (
   params: any,
   owneryQuery: Query<any>,
-  options: Options
-) => new $ElemMatch(params, owneryQuery, options);
-export const $nin = (params: any, owneryQuery: Query<any>, options: Options) =>
-  new $Nin(params, owneryQuery, options);
-export const $in = (params: any, owneryQuery: Query<any>, options: Options) =>
-  new $In(params, owneryQuery, options);
+  options: Options,
+  name: string
+) => new $ElemMatch(params, owneryQuery, options, name);
+export const $nin = (
+  params: any,
+  owneryQuery: Query<any>,
+  options: Options,
+  name: string
+) => new $Nin(params, owneryQuery, options, name);
+export const $in = (
+  params: any,
+  owneryQuery: Query<any>,
+  options: Options,
+  name: string
+) => new $In(params, owneryQuery, options, name);
 
 export const $lt = numericalOperation(params => b => b < params);
 export const $lte = numericalOperation(params => b => b <= params);
@@ -217,8 +238,9 @@ export const $mod = (
 export const $exists = (
   params: boolean,
   owneryQuery: Query<any>,
-  options: Options
-) => new $Exists(params, owneryQuery, options);
+  options: Options,
+  name: string
+) => new $Exists(params, owneryQuery, options, name);
 export const $regex = (
   pattern: string,
   owneryQuery: Query<any>,
@@ -229,8 +251,12 @@ export const $regex = (
     owneryQuery,
     options
   );
-export const $not = (params: any, owneryQuery: Query<any>, options: Options) =>
-  new $Not(params, owneryQuery, options);
+export const $not = (
+  params: any,
+  owneryQuery: Query<any>,
+  options: Options,
+  name: string
+) => new $Not(params, owneryQuery, options, name);
 export const $type = (
   clazz: Function,
   owneryQuery: Query<any>,
@@ -244,8 +270,9 @@ export const $type = (
 export const $and = (
   params: Query<any>[],
   ownerQuery: Query<any>,
-  options: Options
-) => new $And(params, ownerQuery, options);
+  options: Options,
+  name: string
+) => new $And(params, ownerQuery, options, name);
 export const $all = $and;
 export const $size = (
   params: number,

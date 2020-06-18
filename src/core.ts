@@ -7,20 +7,25 @@ import {
   equals
 } from "./utils";
 
-export interface Operation {
+export interface Operation<TItem> {
   readonly success: boolean;
   readonly done: boolean;
   reset();
-  next(item: any, key: Key, owner: any);
+  next(item: TItem, key?: Key, owner?: any);
 }
 
 export type Tester = (item: any, key?: Key, owner?: any) => boolean;
 
-export type OperationCreator = (
+export interface NamedOperation {
+  name: string;
+}
+
+export type OperationCreator<TItem> = (
   params: any,
   parentQuery: any,
-  options: Options
-) => Operation;
+  options: Options,
+  name: string
+) => Operation<TItem>;
 
 type BasicValueQuery<TValue> = {
   $eq?: TValue;
@@ -107,7 +112,7 @@ const walkKeyPathValues = (
   );
 };
 
-export abstract class BaseOperation<TParams> implements Operation {
+abstract class BaseOperation<TParams, TItem = any> implements Operation<TItem> {
   success: boolean;
   done: boolean;
   constructor(
@@ -125,7 +130,20 @@ export abstract class BaseOperation<TParams> implements Operation {
   abstract next(item: any, key: Key, parent: any);
 }
 
-export abstract class GroupOperation extends BaseOperation<any> {
+export abstract class NamedBaseOperation<TParams, TItem = any>
+  extends BaseOperation<TParams, TItem>
+  implements NamedOperation {
+  constructor(
+    params: TParams,
+    owneryQuery: any,
+    options: Options,
+    readonly name: string
+  ) {
+    super(params, owneryQuery, options);
+  }
+}
+
+abstract class GroupOperation extends BaseOperation<any> {
   success: boolean;
   done: boolean;
 
@@ -133,7 +151,7 @@ export abstract class GroupOperation extends BaseOperation<any> {
     params: any,
     owneryQuery: any,
     options: Options,
-    protected readonly _children: Operation[]
+    public readonly children: Operation<any>[]
   ) {
     super(params, owneryQuery, options);
   }
@@ -144,8 +162,8 @@ export abstract class GroupOperation extends BaseOperation<any> {
   reset() {
     this.success = false;
     this.done = false;
-    for (let i = 0, { length } = this._children; i < length; i++) {
-      this._children[i].reset();
+    for (let i = 0, { length } = this.children; i < length; i++) {
+      this.children[i].reset();
     }
   }
 
@@ -157,8 +175,8 @@ export abstract class GroupOperation extends BaseOperation<any> {
   protected childrenNext(item: any, key: Key, owner: any) {
     let done = true;
     let success = true;
-    for (let i = 0, { length } = this._children; i < length; i++) {
-      const childOperation = this._children[i];
+    for (let i = 0, { length } = this.children; i < length; i++) {
+      const childOperation = this.children[i];
       childOperation.next(item, key, owner);
       if (!childOperation.success) {
         success = false;
@@ -177,11 +195,24 @@ export abstract class GroupOperation extends BaseOperation<any> {
   }
 }
 
-export class QueryOperation extends GroupOperation {
+export abstract class NamedGroupOperation extends GroupOperation
+  implements NamedOperation {
+  constructor(
+    params: any,
+    owneryQuery: any,
+    options: Options,
+    children: Operation<any>[],
+    readonly name: string
+  ) {
+    super(params, owneryQuery, options, children);
+  }
+}
+
+export class QueryOperation<TItem> extends GroupOperation {
   /**
    */
 
-  next(item: any, key: Key, parent: any) {
+  next(item: TItem, key: Key, parent: any) {
     this.childrenNext(item, key, parent);
   }
 }
@@ -192,7 +223,7 @@ export class NestedOperation extends GroupOperation {
     params: any,
     owneryQuery: any,
     options: Options,
-    children: Operation[]
+    children: Operation<any>[]
   ) {
     super(params, owneryQuery, options, children);
   }
@@ -261,13 +292,13 @@ export class NopeOperation<TParam> extends BaseOperation<TParam> {
 }
 
 export const numericalOperationCreator = (
-  createNumericalOperation: OperationCreator
-) => (params: any, owneryQuery: any, options: Options) => {
+  createNumericalOperation: OperationCreator<any>
+) => (params: any, owneryQuery: any, options: Options, name: string) => {
   if (params == null) {
     return new NopeOperation(params, owneryQuery, options);
   }
 
-  return createNumericalOperation(params, owneryQuery, options);
+  return createNumericalOperation(params, owneryQuery, options, name);
 };
 
 export const numericalOperation = (createTester: (any) => Tester) =>
@@ -287,12 +318,12 @@ export const numericalOperation = (createTester: (any) => Tester) =>
 
 export type Options = {
   operations: {
-    [identifier: string]: OperationCreator;
+    [identifier: string]: OperationCreator<any>;
   };
   compare: (a, b) => boolean;
 };
 
-const createOperation = (
+const createNamedOperation = (
   name: string,
   params: any,
   parentQuery: any,
@@ -302,7 +333,7 @@ const createOperation = (
   if (!operationCreator) {
     throw new Error(`Unsupported operation: ${name}`);
   }
-  return operationCreator(params, parentQuery, options);
+  return operationCreator(params, parentQuery, options, name);
 };
 
 export const containsOperation = (query: any) => {
@@ -340,11 +371,16 @@ const createNestedOperation = (
   ]);
 };
 
-export const createQueryOperation = (
-  query: any,
-  owneryQuery: any,
-  options: Options
-) => {
+export const createQueryOperation = <TItem, TSchema = TItem>(
+  query: Query<TSchema>,
+  owneryQuery: any = null,
+  { compare, operations }: Partial<Options> = {}
+): QueryOperation<TItem> => {
+  const options = {
+    compare: compare || equals,
+    operations: Object.assign({}, operations || {})
+  };
+
   const [selfOperations, nestedOperations] = createQueryOperations(
     query,
     options
@@ -375,7 +411,7 @@ const createQueryOperations = (query: any, options: Options) => {
   }
   for (const key in query) {
     if (key.charAt(0) === "$") {
-      const op = createOperation(key, query[key], query, options);
+      const op = createNamedOperation(key, query[key], query, options);
 
       // probably just a flag for another operation (like $options)
       if (op != null) {
@@ -391,17 +427,21 @@ const createQueryOperations = (query: any, options: Options) => {
   return [selfOperations, nestedOperations];
 };
 
+export const createOperationTester = <TItem>(operation: Operation<TItem>) => (
+  item: TItem,
+  key?: Key,
+  owner?: any
+) => {
+  operation.reset();
+  operation.next(item, key, owner);
+  return operation.success;
+};
+
 export const createQueryTester = <TItem, TSchema = TItem>(
   query: Query<TSchema>,
-  { compare, operations }: Partial<Options> = {}
+  options: Partial<Options> = {}
 ) => {
-  const operation = createQueryOperation(query, null, {
-    compare: compare || equals,
-    operations: Object.assign({}, operations || {})
-  });
-  return (item: TItem, key?: Key, owner?: any) => {
-    operation.reset();
-    operation.next(item, key, owner);
-    return operation.success;
-  };
+  return createOperationTester(
+    createQueryOperation<TItem, TSchema>(query, null, options)
+  );
 };

@@ -82,7 +82,7 @@ var a = [obj].some(
     }
   })
 ); // returns false
-console.log(a);
+
 [
   { tags: ["books", "programming", "travel"] },
   { tags: ["travel", "cooking"] }

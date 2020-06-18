@@ -32,6 +32,7 @@ export {
   Query,
   EqualsOperation,
   createQueryTester,
+  createOperationTester,
   createDefaultQueryOperation,
   createEqualsOperation,
   createQueryOperation

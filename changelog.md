@@ -1,3 +1,11 @@
+## 13.1.0
+
+- Added stronger types for queries: https://github.com/crcn/sift.js/issues/197
+
+## 13.0.0
+
+- Fix behavior discrepancy with Mongo: https://github.com/crcn/sift.js/issues/196
+
 ## 12.0.0
 
 - Fix bug where \$elemMatch tested objects: e.g: `sift({a: {$elemMatch: 1}})({ a: { b: 1}})`. \$elemMatch now expects arrays based on Mongodb syntax. E.g: `sift({a: {$elemMatch: 1}})({ a: { b: 1}})`

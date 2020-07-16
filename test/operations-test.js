@@ -527,6 +527,48 @@ describe(__filename + "#", function() {
       ]
     ],
 
+    // address https://github.com/crcn/sift.js/issues/203
+    [
+      {
+        areas: {
+          $elemMatch: {
+            type: { $eq: "driveway" },
+            elements: {
+              $nin: ["grass", "green"]
+            }
+          }
+        }
+      },
+      [
+        {
+          areas: [
+            { type: "roof" },
+            { type: "driveway", propertyLines: ["green"], elements: ["tiles"] }
+          ]
+        },
+        {
+          areas: [
+            { type: "driveway", propertyLines: ["green"], elements: ["tiles"] },
+            { type: "roof" }
+          ]
+        }
+      ],
+      [
+        {
+          areas: [
+            { type: "roof" },
+            { type: "driveway", propertyLines: ["green"], elements: ["tiles"] }
+          ]
+        },
+        {
+          areas: [
+            { type: "driveway", propertyLines: ["green"], elements: ["tiles"] },
+            { type: "roof" }
+          ]
+        }
+      ]
+    ],
+
     // addresses: https://github.com/crcn/sift.js/issues/183
     [
       {

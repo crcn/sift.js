@@ -42,7 +42,6 @@
     "prebuild": "npm run clean && npm run build:types",
     "build": "rollup -c",
     "build:types": "tsc -p tsconfig.json --emitDeclarationOnly --outDir lib",
-    "build:watch": "tsc --watch",
     "test": "npm run test:spec && npm run test:types",
     "test:spec": "mocha ./test -R spec",
     "test:types": "cd test && tsc types.ts --noEmit",

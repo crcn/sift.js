@@ -31,11 +31,9 @@ class $Ne extends NamedBaseOperation<any> {
     }
   }
 }
-
 // https://docs.mongodb.com/manual/reference/operator/query/elemMatch/
 class $ElemMatch extends NamedBaseOperation<Query<any>> {
   private _queryOperation: QueryOperation<any>;
-  private _current: any;
   init() {
     this._queryOperation = createQueryOperation(
       this.params,
@@ -48,10 +46,11 @@ class $ElemMatch extends NamedBaseOperation<Query<any>> {
   }
   next(item: any, key: Key, owner: any[]) {
     this._queryOperation.reset();
+
     if (isArray(owner)) {
       this._queryOperation.next(item, key, owner);
       this.done = this._queryOperation.done || key === owner.length - 1;
-      this.success = this._queryOperation.success;
+      this.success = this.success || this._queryOperation.success;
     } else {
       this.done = true;
       this.success = false;

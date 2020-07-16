@@ -491,6 +491,42 @@ describe(__filename + "#", function() {
       [{ tags: [{ a: 1 }] }, { tags: [{ a: 1 }, { b: 1 }] }],
       [{ tags: [{ a: 1 }] }, { tags: [{ a: 1 }, { b: 1 }] }]
     ],
+    [
+      {
+        moves: {
+          $elemMatch: {
+            player: {
+              $ne: 5
+            }
+          }
+        }
+      },
+      [
+        {
+          moves: [
+            {
+              player: 3
+            },
+            {
+              player: 5
+            }
+          ]
+        }
+      ],
+      [
+        {
+          moves: [
+            {
+              player: 3
+            },
+            {
+              player: 5
+            }
+          ]
+        }
+      ]
+    ],
+
     // addresses: https://github.com/crcn/sift.js/issues/183
     [
       {

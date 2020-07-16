@@ -49,7 +49,8 @@ class $ElemMatch extends NamedBaseOperation<Query<any>> {
 
     if (isArray(owner)) {
       this._queryOperation.next(item, key, owner);
-      this.done = this._queryOperation.done || key === owner.length - 1;
+      this.done =
+        this.done || this._queryOperation.done || key === owner.length - 1;
       this.success = this.success || this._queryOperation.success;
     } else {
       this.done = true;

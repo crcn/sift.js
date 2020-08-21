@@ -30,6 +30,15 @@ describe(__filename + "#", function() {
       [new Date(1)],
       false
     ],
+
+    // addresses https://github.com/crcn/sift.js/issues/208
+    [
+      {
+        "field.0": null
+      },
+      [{ field: [] }, { field: null }],
+      [{ field: null }]
+    ],
     [/^a/, ["a", "ab", "abc", "b", "bc"], ["a", "ab", "abc"], false],
 
     [

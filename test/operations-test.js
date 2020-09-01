@@ -39,6 +39,25 @@ describe(__filename + "#", function() {
       [{ field: [] }, { field: null }],
       [{ field: null }]
     ],
+    [
+      {
+        "field.b": null
+      },
+      [
+        { field: {} },
+        { field: null },
+        { field: { b: 0 } },
+        { field: { b: null } }
+      ],
+      [{ field: {} }, { field: null }, { field: { b: null } }]
+    ],
+
+    // addresses https://github.com/crcn/sift.js/issues/209
+    [
+      { field: null },
+      [{ name: "A" }, { field: null }, { field: 0 }, { field: false }],
+      [{ name: "A" }, { field: null }]
+    ],
     [/^a/, ["a", "ab", "abc", "b", "bc"], ["a", "ab", "abc"], false],
 
     [
@@ -127,6 +146,12 @@ describe(__filename + "#", function() {
     ],
     // $ne
     [{ $ne: 5 }, [5, "5", 6], ["5", 6], false],
+    ,
+    [
+      { field: { $ne: null } },
+      [{ name: "A" }, { field: null }, { field: 0 }, { field: false }],
+      [{ field: 0 }, { field: false }]
+    ],
     [{ $ne: "5" }, ["5", 6], [6], false],
     [{ $ne: false }, [false], [], false],
     [{ $ne: undefined }, [false, 0, "0", undefined], [false, 0, "0"], false],

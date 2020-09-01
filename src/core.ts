@@ -271,12 +271,11 @@ export class EqualsOperation<TParam> extends BaseOperation<TParam> {
     this._test = createTester(this.params, this.options.compare);
   }
   next(item, key: Key, parent: any) {
-    if (
-      this._test(item, key, parent) &&
-      (!parent || parent.hasOwnProperty(key))
-    ) {
-      this.done = true;
-      this.success = true;
+    if (!Array.isArray(parent) || parent.hasOwnProperty(key)) {
+      if (this._test(item, key, parent)) {
+        this.done = true;
+        this.success = true;
+      }
     }
   }
 }

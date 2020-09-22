@@ -362,6 +362,45 @@ describe(__filename + "#", function() {
     assert.equal(test(items[1]), false);
   });
 
+  it("passes for #211", () => {
+    const values = [
+      {
+        name: "zeroElements",
+        myArray: []
+      },
+
+      {
+        name: "oneElement",
+        myArray: [{ firstKey: "a", secondKey: "b" }]
+      },
+
+      {
+        name: "twoElements",
+        myArray: [
+          { firstKey: "a", secondKey: "b" },
+          { firstKey: "c", secondKey: "d" }
+        ]
+      },
+
+      {
+        name: "otherElement",
+        myArray: [{ firstKey: "e", secondKey: "f" }]
+      }
+    ];
+
+    const query1 = {
+      myArray: {
+        $elemMatch: { firstKey: "a", secondKey: "b" }
+      }
+    };
+
+    const test = sift(query1);
+
+    assert.equal(test(values[1]), true);
+    assert.equal(test(values[3]), false);
+    assert.equal(test(values[2]), true);
+  });
+
   it("Throws an error if $ is nested in $in", () => {
     const filter = {
       Demo: { $in: [{ $eq: 1 }] }

@@ -346,6 +346,22 @@ describe(__filename + "#", function() {
     assert.equal(fun({ Demo: ["C"] }), true); // true is ok
   });
 
+  it("properly resets $elemMatch", () => {
+    const test = sift({
+      groups: {
+        $elemMatch: { id: 1, status: "review" }
+      }
+    });
+
+    const items = [
+      { groups: [{ id: 1, status: "review" }] },
+      { groups: [{ id: 1, status: "done" }] }
+    ];
+
+    assert.equal(test(items[0]), true);
+    assert.equal(test(items[1]), false);
+  });
+
   it("Throws an error if $ is nested in $in", () => {
     const filter = {
       Demo: { $in: [{ $eq: 1 }] }

@@ -42,6 +42,7 @@ class $ElemMatch extends NamedBaseOperation<Query<any>> {
     );
   }
   reset() {
+    super.reset();
     this._queryOperation.reset();
   }
   next(item: any, key: Key, owner: any[]) {

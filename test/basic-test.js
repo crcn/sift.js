@@ -482,4 +482,33 @@ describe(__filename + "#", function() {
     assert.equal(resultsWithGlobal2.length, 3);
     assert.equal(resultsWithoutGlobal2.length, 3);
   });
+
+  // fixes #214
+  it("$elemMatch and $size work", () => {
+    const values = [
+      {
+        name: "oneElement",
+        myArray: [{ firstKey: "a", secondKey: "b" }]
+      },
+
+      {
+        name: "twoElements",
+        myArray: [
+          { firstKey: "a", secondKey: "b" },
+          { firstKey: "c", secondKey: "d" }
+        ]
+      }
+    ];
+
+    const query = {
+      myArray: {
+        $elemMatch: { firstKey: "a", secondKey: "b" },
+        $size: 1
+      }
+    };
+
+    const result = values.filter(sift(query));
+
+    assert.equal(result[0], values[0]);
+  });
 });

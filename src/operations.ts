@@ -79,6 +79,16 @@ class $Not extends NamedBaseOperation<Query<any>> {
   }
 }
 
+export class $Size extends NamedBaseOperation<any> {
+  init() {}
+  next(item, key: Key, parent: any) {
+    if (parent && parent.length === this.params) {
+      this.done = true;
+      this.success = true;
+    }
+  }
+}
+
 class $Or extends NamedBaseOperation<any> {
   private _ops: Operation<any>[];
   init() {
@@ -275,11 +285,18 @@ export const $and = (
   name: string
 ) => new $And(params, ownerQuery, options, name);
 export const $all = $and;
+// export const $size = (
+//   params: number,
+//   ownerQuery: Query<any>,
+//   options: Options
+// ) => new EqualsOperation(b => {
+//   return b && b.length === params;
+// }, ownerQuery, options);
 export const $size = (
   params: number,
   ownerQuery: Query<any>,
   options: Options
-) => new EqualsOperation(b => b && b.length === params, ownerQuery, options);
+) => new $Size(params, ownerQuery, options, "$size");
 export const $options = () => null;
 export const $where = (
   params: string | Function,

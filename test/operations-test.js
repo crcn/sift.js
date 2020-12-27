@@ -405,7 +405,10 @@ describe(__filename + "#", function() {
       ]
     ],
     // $size
-    [{ $size: 3 }, ["123", [1, 2, 3], "1"], ["123", [1, 2, 3], "1"], false],
+    [{ a: { $size: 0 } }, [{ a: [] }, { a: [1, 2] }], [{ a: [] }], false],
+
+    [{ $size: 3 }, ["123", [1, 2, 3], "1"], [[1, 2, 3]], false],
+    [{ $size: 0 }, ["", [], "123"], [[]], false],
 
     // $or
     [{ $or: [1, 2, 3] }, [1, 2, 3, 4], [1, 2, 3], false],
@@ -494,7 +497,6 @@ describe(__filename + "#", function() {
     [{ $where: "obj.v === 1" }, [{ v: 1 }, { v: 2 }], [{ v: 1 }]],
 
     // $elemMatch
-    //{'person': {'$elemMatch': {'gender': 'male', 'age': {'$lt': 30}}}}
     [
       { a: { $elemMatch: { b: 1, c: 2 } } },
       [
@@ -544,8 +546,26 @@ describe(__filename + "#", function() {
               player: 5
             }
           ]
+        },
+        {
+          moves: [
+            {
+              player: 5
+            },
+            {
+              player: 3
+            }
+          ]
+        },
+        {
+          moves: [
+            {
+              player: 5
+            }
+          ]
         }
       ],
+
       [
         {
           moves: [
@@ -554,6 +574,16 @@ describe(__filename + "#", function() {
             },
             {
               player: 5
+            }
+          ]
+        },
+        {
+          moves: [
+            {
+              player: 5
+            },
+            {
+              player: 3
             }
           ]
         }

@@ -8,7 +8,7 @@ import {
 } from "./utils";
 
 export interface Operation<TItem> {
-  readonly success: boolean;
+  readonly keep: boolean;
   readonly done: boolean;
   reset();
   next(item: TItem, key?: Key, owner?: any);
@@ -113,7 +113,7 @@ const walkKeyPathValues = (
 };
 
 abstract class BaseOperation<TParams, TItem = any> implements Operation<TItem> {
-  success: boolean;
+  keep: boolean;
   done: boolean;
   constructor(
     readonly params: TParams,
@@ -125,7 +125,7 @@ abstract class BaseOperation<TParams, TItem = any> implements Operation<TItem> {
   protected init() {}
   reset() {
     this.done = false;
-    this.success = false;
+    this.keep = false;
   }
   abstract next(item: any, key: Key, parent: any);
 }
@@ -144,7 +144,7 @@ export abstract class NamedBaseOperation<TParams, TItem = any>
 }
 
 abstract class GroupOperation extends BaseOperation<any> {
-  success: boolean;
+  keep: boolean;
   done: boolean;
 
   constructor(
@@ -160,7 +160,7 @@ abstract class GroupOperation extends BaseOperation<any> {
    */
 
   reset() {
-    this.success = false;
+    this.keep = false;
     this.done = false;
     for (let i = 0, { length } = this.children; i < length; i++) {
       this.children[i].reset();
@@ -174,24 +174,23 @@ abstract class GroupOperation extends BaseOperation<any> {
 
   protected childrenNext(item: any, key: Key, owner: any) {
     let done = true;
-    let success = true;
+    let keep = true;
     for (let i = 0, { length } = this.children; i < length; i++) {
       const childOperation = this.children[i];
       childOperation.next(item, key, owner);
-      if (!childOperation.success) {
-        success = false;
+      if (!childOperation.keep) {
+        keep = false;
       }
       if (childOperation.done) {
-        if (!childOperation.success) {
+        if (!childOperation.keep) {
           break;
         }
       } else {
         done = false;
       }
     }
-    // console.log("DONE", this.params, done, success);
     this.done = done;
-    this.success = success;
+    this.keep = keep;
   }
 }
 
@@ -274,7 +273,7 @@ export class EqualsOperation<TParam> extends BaseOperation<TParam> {
     if (!Array.isArray(parent) || parent.hasOwnProperty(key)) {
       if (this._test(item, key, parent)) {
         this.done = true;
-        this.success = true;
+        this.keep = true;
       }
     }
   }
@@ -289,7 +288,7 @@ export const createEqualsOperation = (
 export class NopeOperation<TParam> extends BaseOperation<TParam> {
   next() {
     this.done = true;
-    this.success = false;
+    this.keep = false;
   }
 }
 
@@ -436,7 +435,7 @@ export const createOperationTester = <TItem>(operation: Operation<TItem>) => (
 ) => {
   operation.reset();
   operation.next(item, key, owner);
-  return operation.success;
+  return operation.keep;
 };
 
 export const createQueryTester = <TItem, TSchema = TItem>(

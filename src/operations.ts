@@ -22,12 +22,12 @@ class $Ne extends NamedBaseOperation<any> {
   }
   reset() {
     super.reset();
-    this.success = true;
+    this.keep = true;
   }
   next(item: any) {
     if (this._test(item)) {
       this.done = true;
-      this.success = false;
+      this.keep = false;
     }
   }
 }
@@ -45,17 +45,21 @@ class $ElemMatch extends NamedBaseOperation<Query<any>> {
     super.reset();
     this._queryOperation.reset();
   }
-  next(item: any, key: Key, owner: any[]) {
-    this._queryOperation.reset();
+  next(item: any) {
+    if (isArray(item)) {
+      for (let i = 0, { length } = item; i < length; i++) {
+        // reset query operation since item being tested needs to pass _all_ query
+        // operations for it to be a success
+        this._queryOperation.reset();
 
-    if (isArray(owner)) {
-      this._queryOperation.next(item, key, owner);
-      this.done =
-        this.done || this._queryOperation.done || key === owner.length - 1;
-      this.success = this.success || this._queryOperation.success;
-    } else {
+        // check item
+        this._queryOperation.next(item[i], i, item);
+        this.keep = this.keep || this._queryOperation.keep;
+      }
       this.done = true;
-      this.success = false;
+    } else {
+      this.done = false;
+      this.keep = false;
     }
   }
 }
@@ -75,17 +79,21 @@ class $Not extends NamedBaseOperation<Query<any>> {
   next(item: any, key: Key, owner: any) {
     this._queryOperation.next(item, key, owner);
     this.done = this._queryOperation.done;
-    this.success = !this._queryOperation.success;
+    this.keep = !this._queryOperation.keep;
   }
 }
 
 export class $Size extends NamedBaseOperation<any> {
   init() {}
-  next(item, key: Key, parent: any) {
-    if (parent && parent.length === this.params) {
+  next(item) {
+    if (isArray(item) && item.length === this.params) {
       this.done = true;
-      this.success = true;
+      this.keep = true;
     }
+    // if (parent && parent.length === this.params) {
+    //   this.done = true;
+    //   this.keep = true;
+    // }
   }
 }
 
@@ -98,7 +106,7 @@ class $Or extends NamedBaseOperation<any> {
   }
   reset() {
     this.done = false;
-    this.success = false;
+    this.keep = false;
     for (let i = 0, { length } = this._ops; i < length; i++) {
       this._ops[i].reset();
     }
@@ -109,14 +117,14 @@ class $Or extends NamedBaseOperation<any> {
     for (let i = 0, { length } = this._ops; i < length; i++) {
       const op = this._ops[i];
       op.next(item, key, owner);
-      if (op.success) {
+      if (op.keep) {
         done = true;
-        success = op.success;
+        success = op.keep;
         break;
       }
     }
 
-    this.success = success;
+    this.keep = success;
     this.done = done;
   }
 }
@@ -124,7 +132,7 @@ class $Or extends NamedBaseOperation<any> {
 class $Nor extends $Or {
   next(item: any, key: Key, owner: any) {
     super.next(item, key, owner);
-    this.success = !this.success;
+    this.keep = !this.keep;
   }
 }
 
@@ -152,7 +160,7 @@ class $In extends NamedBaseOperation<any> {
       }
     }
 
-    this.success = success;
+    this.keep = success;
     this.done = done;
   }
 }
@@ -160,7 +168,7 @@ class $In extends NamedBaseOperation<any> {
 class $Nin extends $In {
   next(item: any, key: Key, owner: any) {
     super.next(item, key, owner);
-    this.success = !this.success;
+    this.keep = !this.keep;
   }
 }
 
@@ -168,7 +176,7 @@ class $Exists extends NamedBaseOperation<boolean> {
   next(item: any, key: Key, owner: any) {
     if (owner.hasOwnProperty(key) === this.params) {
       this.done = true;
-      this.success = true;
+      this.keep = true;
     }
   }
 }
@@ -285,13 +293,6 @@ export const $and = (
   name: string
 ) => new $And(params, ownerQuery, options, name);
 export const $all = $and;
-// export const $size = (
-//   params: number,
-//   ownerQuery: Query<any>,
-//   options: Options
-// ) => new EqualsOperation(b => {
-//   return b && b.length === params;
-// }, ownerQuery, options);
 export const $size = (
   params: number,
   ownerQuery: Query<any>,

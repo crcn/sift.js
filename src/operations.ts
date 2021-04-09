@@ -276,13 +276,33 @@ export const $not = (
   options: Options,
   name: string
 ) => new $Not(params, owneryQuery, options, name);
+
+const typeAliases = {
+  number: v => typeof v === "number",
+  string: v => typeof v === "string",
+  bool: v => typeof v === "boolean",
+  array: v => Array.isArray(v),
+  null: v => v === null,
+  timestamp: v => v instanceof Date
+};
+
 export const $type = (
-  clazz: Function,
+  clazz: Function | string,
   owneryQuery: Query<any>,
   options: Options
 ) =>
   new EqualsOperation(
-    b => (b != null ? b instanceof clazz || b.constructor === clazz : false),
+    b => {
+      if (typeof clazz === "string") {
+        if (!typeAliases[clazz]) {
+          throw new Error(`Type alias does not exist`);
+        }
+
+        return typeAliases[clazz](b);
+      }
+
+      return b != null ? b instanceof clazz || b.constructor === clazz : false;
+    },
     owneryQuery,
     options
   );

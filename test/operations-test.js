@@ -304,9 +304,15 @@ describe(__filename + "#", function() {
 
     // $type
     [{ $type: Date }, [0, new Date(1)], [new Date(1)], false],
+    [{ $type: "timestamp" }, [0, new Date(1)], [new Date(1)], false],
+    [{ $type: "null" }, [0, null], [null], false],
+    [{ $type: "array" }, [0, [], [1]], [[], [1]], false],
     [{ $type: Number }, [0, false, 1], [0, 1], false],
+    [{ $type: "number" }, [0, false, 1], [0, 1], false],
     [{ $type: Boolean }, [0, false, undefined], [false], false],
+    [{ $type: "bool" }, [0, false, undefined], [false], false],
     [{ $type: String }, ["1", 1, false], ["1"], false],
+    [{ $type: "string" }, ["1", 1, false], ["1"], false],
 
     // $all
     [

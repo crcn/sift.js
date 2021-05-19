@@ -287,7 +287,7 @@ OR array of expressions.
 opposite of or:
 
 ```javascript
-//filtered: [ { name: 'Tim', state: 'MN' }, { name: 'Joe', state: 'CA' }]
+//filtered: [{ name: 'Joe', state: 'CA' }]
 [
   { name: "Craig", state: "MN" },
   { name: "Tim", state: "MN" },

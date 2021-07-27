@@ -1,5 +1,5 @@
 const assert = require("assert");
-const sift = require("..");
+const sift = require("../src");
 
 describe(__filename + "#", () => {
   [

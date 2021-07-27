@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-var __1 = require("..");
+var __1 = require("../src");
 __1["default"]({ $gt: 10 });
 __1["default"]({ $gt: "10" });
 __1["default"]({ $gt: new Date(10) });
@@ -16,7 +16,7 @@ __1["default"]({ $lte: "10" });
 __1["default"]({ $lte: new Date(10) });
 __1["default"]({
   name: "a",
-  last: { $eq: "a", $ne: "a", $in: ["a"], $nin: ["a"], $or: [{ $eq: "a" }] }
+  last: { $eq: "a", $ne: "a", $in: ["a"], $nin: ["a"] }
 });
 // fail
 // sift<Person>({ name: 5, last: { $eq: "a" } });

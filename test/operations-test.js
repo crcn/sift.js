@@ -1,8 +1,8 @@
 const assert = require("assert");
-const sift = require("..");
 var ObjectID = require("bson").ObjectID;
 const MongoClient = require("mongodb").MongoClient;
 const { promisify } = require("util");
+const { default: sift } = require("../src");
 
 describe(__filename + "#", function() {
   [

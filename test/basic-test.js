@@ -1,6 +1,6 @@
 const assert = require("assert");
 const _eval = require("eval");
-const { default: sift } = require("..");
+const { default: sift } = require("../src");
 const { ObjectID } = require("bson");
 
 describe(__filename + "#", function() {
@@ -510,5 +510,22 @@ describe(__filename + "#", function() {
     const result = values.filter(sift(query));
 
     assert.equal(result[0], values[0]);
+  });
+
+  it("should not handle $elemMatch with string value", () => {
+    assert.equal(
+      sift({ responsible: { $elemMatch: "Poyan" } })({
+        responsible: ["Poyan", "Marcus"]
+      }),
+      false
+    );
+  });
+
+  it("$or in prop doesn't work", () => {
+    assert.throws(() => {
+      sift({
+        responsible: { $or: [{ name: "Poyan" }, { name: "Marcus" }] }
+      })({ responsible: { name: "Poyan" } });
+    }, new Error("Malformed query. $or cannot be matched against property."));
   });
 });

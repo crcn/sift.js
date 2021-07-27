@@ -16,6 +16,7 @@ import {
 import { Key, comparable, isFunction, isArray } from "./utils";
 
 class $Ne extends NamedBaseOperation<any> {
+  readonly propop = true;
   private _test: Tester;
   init() {
     this._test = createTester(this.params, this.options.compare);
@@ -33,6 +34,7 @@ class $Ne extends NamedBaseOperation<any> {
 }
 // https://docs.mongodb.com/manual/reference/operator/query/elemMatch/
 class $ElemMatch extends NamedBaseOperation<Query<any>> {
+  readonly propop = true;
   private _queryOperation: QueryOperation<any>;
   init() {
     this._queryOperation = createQueryOperation(
@@ -52,9 +54,12 @@ class $ElemMatch extends NamedBaseOperation<Query<any>> {
         // operations for it to be a success
         this._queryOperation.reset();
 
-        // check item
-        this._queryOperation.next(item[i], i, item);
-        this.keep = this.keep || this._queryOperation.keep;
+        const child = item[i];
+        if (child && typeof child === "object") {
+          // check item
+          this._queryOperation.next(child, i, item);
+          this.keep = this.keep || this._queryOperation.keep;
+        }
       }
       this.done = true;
     } else {
@@ -65,6 +70,7 @@ class $ElemMatch extends NamedBaseOperation<Query<any>> {
 }
 
 class $Not extends NamedBaseOperation<Query<any>> {
+  readonly propop = true;
   private _queryOperation: QueryOperation<any>;
   init() {
     this._queryOperation = createQueryOperation(
@@ -84,6 +90,7 @@ class $Not extends NamedBaseOperation<Query<any>> {
 }
 
 export class $Size extends NamedBaseOperation<any> {
+  readonly propop = true;
   init() {}
   next(item) {
     if (isArray(item) && item.length === this.params) {
@@ -98,6 +105,7 @@ export class $Size extends NamedBaseOperation<any> {
 }
 
 class $Or extends NamedBaseOperation<any> {
+  readonly propop = false;
   private _ops: Operation<any>[];
   init() {
     this._ops = this.params.map(op =>
@@ -130,6 +138,7 @@ class $Or extends NamedBaseOperation<any> {
 }
 
 class $Nor extends $Or {
+  readonly propop = false;
   next(item: any, key: Key, owner: any) {
     super.next(item, key, owner);
     this.keep = !this.keep;
@@ -137,6 +146,7 @@ class $Nor extends $Or {
 }
 
 class $In extends NamedBaseOperation<any> {
+  readonly propop = true;
   private _testers: Tester[];
   init() {
     this._testers = this.params.map(value => {
@@ -166,6 +176,7 @@ class $In extends NamedBaseOperation<any> {
 }
 
 class $Nin extends $In {
+  readonly propop = true;
   next(item: any, key: Key, owner: any) {
     super.next(item, key, owner);
     this.keep = !this.keep;
@@ -173,6 +184,7 @@ class $Nin extends $In {
 }
 
 class $Exists extends NamedBaseOperation<boolean> {
+  readonly propop = true;
   next(item: any, key: Key, owner: any) {
     if (owner.hasOwnProperty(key) === this.params) {
       this.done = true;
@@ -182,6 +194,28 @@ class $Exists extends NamedBaseOperation<boolean> {
 }
 
 class $And extends NamedGroupOperation {
+  readonly propop = false;
+  constructor(
+    params: Query<any>[],
+    owneryQuery: Query<any>,
+    options: Options,
+    name: string
+  ) {
+    super(
+      params,
+      owneryQuery,
+      options,
+      params.map(query => createQueryOperation(query, owneryQuery, options)),
+      name
+    );
+  }
+  next(item: any, key: Key, owner: any) {
+    this.childrenNext(item, key, owner);
+  }
+}
+
+class $All extends NamedGroupOperation {
+  readonly propop = true;
   constructor(
     params: Query<any>[],
     owneryQuery: Query<any>,
@@ -312,7 +346,13 @@ export const $and = (
   options: Options,
   name: string
 ) => new $And(params, ownerQuery, options, name);
-export const $all = $and;
+
+export const $all = (
+  params: Query<any>[],
+  ownerQuery: Query<any>,
+  options: Options,
+  name: string
+) => new $All(params, ownerQuery, options, name);
 export const $size = (
   params: number,
   ownerQuery: Query<any>,

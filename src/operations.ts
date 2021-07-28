@@ -150,7 +150,7 @@ class $In extends NamedBaseOperation<any> {
   private _testers: Tester[];
   init() {
     this._testers = this.params.map(value => {
-      if (containsOperation(value)) {
+      if (containsOperation(value, this.options)) {
         throw new Error(
           `cannot nest $ under ${this.constructor.name.toLowerCase()}`
         );

@@ -513,12 +513,14 @@ describe(__filename + "#", function() {
   });
 
   it("should not handle $elemMatch with string value", () => {
-    assert.equal(
-      sift({ responsible: { $elemMatch: "Poyan" } })({
-        responsible: ["Poyan", "Marcus"]
-      }),
-      false
-    );
+    assert.throws(() => {
+      assert.equal(
+        sift({ responsible: { $elemMatch: "Poyan" } })({
+          responsible: ["Poyan", "Marcus"]
+        }),
+        false
+      );
+    }, new Error("Malformed query. $elemMatch must by an object."));
   });
 
   it("$or in prop doesn't work", () => {

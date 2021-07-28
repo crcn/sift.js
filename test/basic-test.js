@@ -1,6 +1,6 @@
 const assert = require("assert");
 const _eval = require("eval");
-const { default: sift } = require("../src");
+const { default: sift, createQueryTester, $mod, $eq } = require("../src");
 const { ObjectID } = require("bson");
 
 describe(__filename + "#", function() {
@@ -32,17 +32,6 @@ describe(__filename + "#", function() {
 
     assert.equal(filtered.length, 1);
     assert.equal(filtered[0], people[0]);
-  });
-
-  it("throws an error if the operation is invalid", function() {
-    var err;
-    try {
-      sift({ $aaa: 1 })("b");
-    } catch (e) {
-      err = e;
-    }
-
-    assert.equal(err.message, "Unsupported operation: $aaa");
   });
 
   it("can match empty arrays", function() {
@@ -513,12 +502,14 @@ describe(__filename + "#", function() {
   });
 
   it("should not handle $elemMatch with string value", () => {
-    assert.equal(
-      sift({ responsible: { $elemMatch: "Poyan" } })({
-        responsible: ["Poyan", "Marcus"]
-      }),
-      false
-    );
+    assert.throws(() => {
+      assert.equal(
+        sift({ responsible: { $elemMatch: "Poyan" } })({
+          responsible: ["Poyan", "Marcus"]
+        }),
+        false
+      );
+    }, new Error("Malformed query. $elemMatch must by an object."));
   });
 
   it("$or in prop doesn't work", () => {
@@ -527,5 +518,20 @@ describe(__filename + "#", function() {
         responsible: { $or: [{ name: "Poyan" }, { name: "Marcus" }] }
       })({ responsible: { name: "Poyan" } });
     }, new Error("Malformed query. $or cannot be matched against property."));
+  });
+
+  it("can register an operation without $", () => {
+    const filter = createQueryTester({ eq: 2 }, { operations: { eq: $eq } });
+
+    assert.equal(filter(2), true);
+  });
+
+  it("Throws error if operations are mixed with props", () => {
+    assert.throws(() => {
+      createQueryTester(
+        { name: { eq: 5, prop: 100 } },
+        { operations: { eq: $eq } }
+      );
+    }, new Error("Property queries must contain only operations, or exact objects."));
   });
 });

@@ -37,6 +37,9 @@ class $ElemMatch extends NamedBaseOperation<Query<any>> {
   readonly propop = true;
   private _queryOperation: QueryOperation<any>;
   init() {
+    if (!this.params || typeof this.params !== "object") {
+      throw new Error(`Malformed query. $elemMatch must by an object.`);
+    }
     this._queryOperation = createQueryOperation(
       this.params,
       this.owneryQuery,
@@ -55,11 +58,8 @@ class $ElemMatch extends NamedBaseOperation<Query<any>> {
         this._queryOperation.reset();
 
         const child = item[i];
-        if (child && typeof child === "object") {
-          // check item
-          this._queryOperation.next(child, i, item);
-          this.keep = this.keep || this._queryOperation.keep;
-        }
+        this._queryOperation.next(child, i, item);
+        this.keep = this.keep || this._queryOperation.keep;
       }
       this.done = true;
     } else {
@@ -150,7 +150,7 @@ class $In extends NamedBaseOperation<any> {
   private _testers: Tester[];
   init() {
     this._testers = this.params.map(value => {
-      if (containsOperation(value)) {
+      if (containsOperation(value, this.options)) {
         throw new Error(
           `cannot nest $ under ${this.constructor.name.toLowerCase()}`
         );

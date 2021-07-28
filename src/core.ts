@@ -345,9 +345,9 @@ const createNamedOperation = (
   return operationCreator(params, parentQuery, options, name);
 };
 
-export const containsOperation = (query: any) => {
+export const containsOperation = (query: any, options: Options) => {
   for (const key in query) {
-    if (key.charAt(0) === "$") return true;
+    if (options.operations[key]) return true;
   }
   return false;
 };
@@ -358,7 +358,7 @@ const createNestedOperation = (
   owneryQuery: any,
   options: Options
 ) => {
-  if (containsOperation(nestedQuery)) {
+  if (containsOperation(nestedQuery, options)) {
     const [selfOperations, nestedOperations] = createQueryOperations(
       nestedQuery,
       parentKey,
@@ -426,11 +426,11 @@ const createQueryOperations = (
     return [selfOperations, nestedOperations];
   }
   for (const key in query) {
-    if (key.charAt(0) === "$") {
+    if (options.operations[key]) {
       const op = createNamedOperation(key, query[key], query, options);
 
       if (op) {
-        if (!op.propop && parentKey && parentKey.charAt(0) !== "$") {
+        if (!op.propop && parentKey && !options.operations[parentKey]) {
           throw new Error(
             `Malformed query. ${key} cannot be matched against property.`
           );

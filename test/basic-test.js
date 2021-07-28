@@ -525,4 +525,13 @@ describe(__filename + "#", function() {
 
     assert.equal(filter(2), true);
   });
+
+  it("Throws error if operations are mixed with props", () => {
+    assert.throws(() => {
+      createQueryTester(
+        { name: { eq: 5, prop: 100 } },
+        { operations: { eq: $eq } }
+      );
+    }, new Error("Property queries must contain only operations, or exact objects."));
+  });
 });

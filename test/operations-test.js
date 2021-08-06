@@ -260,6 +260,11 @@ describe(__filename + "#", function() {
     [{ $in: [1, "1", "2"] }, ["1", "2", "3"], ["1", "2"], false],
     [{ $in: [new Date(1)] }, [new Date(1), new Date(2)], [new Date(1)], false],
     [
+      { a: { $in: [1, 2, 3, 4] } },
+      [{ a: [3, 4] }, { a: [5, 6] }],
+      [{ a: [3, 4] }]
+    ],
+    [
       { "a.b.status": { $in: [0] } },
       [{ a: { b: [{ status: 0 }] } }, { a: { b: [{ status: 2 }] } }],
       [{ a: { b: [{ status: 0 }] } }]

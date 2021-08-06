@@ -534,4 +534,11 @@ describe(__filename + "#", function() {
       );
     }, new Error("Property queries must contain only operations, or exact objects."));
   });
+
+  it("Throws error if operations are mixed with props", () => {
+    const test = sift({
+      _id: { $in: [new ObjectID("610b6bc9e29dbd1bb5f045bf")] }
+    });
+    assert.equal(test({ _id: new ObjectID("610b6bc9e29dbd1bb5f045bf") }), true);
+  });
 });

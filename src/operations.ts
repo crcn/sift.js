@@ -104,10 +104,17 @@ export class $Size extends NamedBaseOperation<any> {
   }
 }
 
+const assertGroupNotEmpty = (values: any[]) => {
+  if (values.length === 0) {
+    throw new Error(`$and/$or/$nor must be a nonempty array`);
+  }
+};
+
 class $Or extends NamedBaseOperation<any> {
   readonly propop = false;
   private _ops: Operation<any>[];
   init() {
+    assertGroupNotEmpty(this.params);
     this._ops = this.params.map(op =>
       createQueryOperation(op, null, this.options)
     );
@@ -208,6 +215,8 @@ class $And extends NamedGroupOperation {
       params.map(query => createQueryOperation(query, owneryQuery, options)),
       name
     );
+
+    assertGroupNotEmpty(params);
   }
   next(item: any, key: Key, owner: any) {
     this.childrenNext(item, key, owner);

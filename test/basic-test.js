@@ -543,4 +543,16 @@ describe(__filename + "#", function() {
     });
     assert.equal(test({ _id: new ObjectID("610b6bc9e29dbd1bb5f045bf") }), true);
   });
+
+  it("Empty $or/$and/$nor throws error if empty", () => {
+    assert.throws(() => {
+      sift({ $or: [] });
+    }, new Error("$and/$or/$nor must be a nonempty array"));
+    assert.throws(() => {
+      sift({ $and: [] });
+    }, new Error("$and/$or/$nor must be a nonempty array"));
+    assert.throws(() => {
+      sift({ $nor: [] });
+    }, new Error("$and/$or/$nor must be a nonempty array"));
+  });
 });

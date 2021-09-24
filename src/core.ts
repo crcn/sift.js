@@ -347,7 +347,7 @@ const createNamedOperation = (
 
 export const containsOperation = (query: any, options: Options) => {
   for (const key in query) {
-    if (options.operations[key]) return true;
+    if (options.operations.hasOwnProperty(key)) return true;
   }
   return false;
 };
@@ -426,7 +426,7 @@ const createQueryOperations = (
     return [selfOperations, nestedOperations];
   }
   for (const key in query) {
-    if (options.operations[key]) {
+    if (options.operations.hasOwnProperty(key)) {
       const op = createNamedOperation(key, query[key], query, options);
 
       if (op) {

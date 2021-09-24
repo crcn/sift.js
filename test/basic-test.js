@@ -536,6 +536,8 @@ describe(__filename + "#", function() {
   });
 
   it("Throws error if operations are mixed with props", () => {
+    sift({ _id: { $in: [new ObjectID("610b6bc9e29dbd1bb5f045bf")] } });
+
     const test = sift({
       _id: { $in: [new ObjectID("610b6bc9e29dbd1bb5f045bf")] }
     });

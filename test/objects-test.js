@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { default: sift } = require("../src");
+const { default: sift } = require("../lib");
 
 describe(__filename + "#", function() {
   var topic = [

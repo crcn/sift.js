@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-var __1 = require("../src");
+var __1 = require("../lib");
 __1["default"]({ $gt: 10 });
 __1["default"]({ $gt: "10" });
 __1["default"]({ $gt: new Date(10) });

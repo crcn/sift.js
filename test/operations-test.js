@@ -2,8 +2,11 @@ const assert = require("assert");
 var ObjectID = require("bson").ObjectID;
 const MongoClient = require("mongodb").MongoClient;
 const { promisify } = require("util");
-const { default: sift, createQueryTester } = require("../src");
-const defaultOperations = require("../src/operations");
+const {
+  default: sift,
+  createQueryTester,
+  ...defaultOperations
+} = require("../lib");
 
 describe(__filename + "#", function() {
   [

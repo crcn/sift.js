@@ -1,5 +1,5 @@
 const assert = require("assert");
-const sift = require("../src");
+const sift = require("../lib");
 
 describe(__filename + "#", () => {
   [

@@ -340,14 +340,19 @@ const createNamedOperation = (
 ) => {
   const operationCreator = options.operations[name];
   if (!operationCreator) {
-    throw new Error(`Unsupported operation: ${name}`);
+    throwUnsupportedOperation(name);
   }
   return operationCreator(params, parentQuery, options, name);
 };
 
+const throwUnsupportedOperation = (name: string) => {
+  throw new Error(`Unsupported operation: ${name}`);
+};
+
 export const containsOperation = (query: any, options: Options) => {
   for (const key in query) {
-    if (options.operations.hasOwnProperty(key)) return true;
+    if (options.operations.hasOwnProperty(key) || key.charAt(0) === "$")
+      return true;
   }
   return false;
 };
@@ -441,6 +446,8 @@ const createQueryOperations = (
       if (op != null) {
         selfOperations.push(op);
       }
+    } else if (key.charAt(0) === "$") {
+      throwUnsupportedOperation(key);
     } else {
       nestedOperations.push(
         createNestedOperation(key.split("."), query[key], key, query, options)

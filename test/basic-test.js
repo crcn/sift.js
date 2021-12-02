@@ -1,6 +1,6 @@
 const assert = require("assert");
 const _eval = require("eval");
-const { default: sift, createQueryTester, $mod, $eq } = require("../src");
+const { default: sift, createQueryTester, $mod, $eq } = require("../lib");
 const { ObjectID } = require("bson");
 
 describe(__filename + "#", function() {
@@ -542,6 +542,15 @@ describe(__filename + "#", function() {
       _id: { $in: [new ObjectID("610b6bc9e29dbd1bb5f045bf")] }
     });
     assert.equal(test({ _id: new ObjectID("610b6bc9e29dbd1bb5f045bf") }), true);
+  });
+
+  // fix https://github.com/crcn/sift.js/issues/239
+  it("Throws an error if an operation is not found", () => {
+    assert.throws(() => {
+      sift({
+        _id: { $notFound: "blah" }
+      });
+    }, new Error("Unsupported operation: $notFound"));
   });
 
   it("Empty $or/$and/$nor throws error if empty", () => {

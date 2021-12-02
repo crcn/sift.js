@@ -456,7 +456,7 @@ const test = createQueryTester(
   {
     $eq: 10
   },
-  { $in, $all, $nin, $lt }
+  { operations: { $in, $all, $nin, $lt } }
 );
 
 [1, 2, 3, 4, 10].filter(test);

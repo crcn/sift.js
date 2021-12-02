@@ -15,7 +15,7 @@ const createDefaultQueryOperation = <TItem, TSchema extends TItem = TItem>(
   { compare, operations }: Partial<Options> = {}
 ) => {
   return createQueryOperation(query, ownerQuery, {
-    compare: compare,
+    compare,
     operations: Object.assign({}, defaultOperations, operations || {})
   });
 };

@@ -2,7 +2,8 @@ const assert = require("assert");
 var ObjectID = require("bson").ObjectID;
 const MongoClient = require("mongodb").MongoClient;
 const { promisify } = require("util");
-const { default: sift } = require("../src");
+const { default: sift, createQueryTester } = require("../src");
+const defaultOperations = require("../src/operations");
 
 describe(__filename + "#", function() {
   [
@@ -760,8 +761,18 @@ describe(__filename + "#", function() {
     var testWithMongo = operation[3];
 
     it(i + ": " + JSON.stringify(filter), async function() {
+      // out of the box
       assert.equal(
         JSON.stringify(array.filter(sift(filter))),
+        JSON.stringify(matchArray)
+      );
+
+      // custom
+      const tester = createQueryTester(filter, {
+        operations: defaultOperations
+      });
+      assert.equal(
+        JSON.stringify(array.filter(tester)),
         JSON.stringify(matchArray)
       );
 

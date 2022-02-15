@@ -51,6 +51,7 @@
     "es",
     "es5m",
     "lib",
+    "src",
     "*.d.ts",
     "*.js.map",
     "index.js",

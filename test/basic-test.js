@@ -584,5 +584,14 @@ describe(__filename + "#", function() {
         }
       })
     );
+
+    assert.deepEqual(result, [
+      {
+        tags: ["animal", "dog"]
+      },
+      {
+        tags: ["animal", "cat"]
+      }
+    ]);
   });
 });

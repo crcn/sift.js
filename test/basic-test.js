@@ -564,4 +564,25 @@ describe(__filename + "#", function() {
       sift({ $nor: [] });
     }, new Error("$and/$or/$nor must be a nonempty array"));
   });
+
+  it(`supports implicit $and`, () => {
+    const result = [
+      {
+        tags: ["animal", "dog"]
+      },
+      {
+        tags: ["animal", "cat"]
+      },
+      {
+        tags: ["animal", "mouse"]
+      }
+    ].filter(
+      sift({
+        tags: {
+          $in: ["animal"],
+          $nin: ["mouse"]
+        }
+      })
+    );
+  });
 });

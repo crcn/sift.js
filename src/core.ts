@@ -290,7 +290,7 @@ export const createEqualsOperation = (
   params: any,
   owneryQuery: any,
   options: Options
-) => new EqualsOperation(params, owneryQuery, options, "$eq");
+) => new EqualsOperation(params, owneryQuery, options);
 
 export class NopeOperation<TParam> extends BaseOperation<TParam> {
   readonly propop = true;
@@ -428,7 +428,7 @@ const createQueryOperations = (
   const selfOperations = [];
   const nestedOperations = [];
   if (!isVanillaObject(query)) {
-    selfOperations.push(new EqualsOperation(query, query, options, "$eq"));
+    selfOperations.push(new EqualsOperation(query, query, options));
     return [selfOperations, nestedOperations];
   }
   for (const key in query) {

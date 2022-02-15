@@ -1,5 +1,5 @@
 import {
-  NamedBaseOperation,
+  BaseOperation,
   EqualsOperation,
   Options,
   createTester,
@@ -15,7 +15,7 @@ import {
 } from "./core";
 import { Key, comparable, isFunction, isArray } from "./utils";
 
-class $Ne extends NamedBaseOperation<any> {
+class $Ne extends BaseOperation<any> {
   readonly propop = true;
   private _test: Tester;
   init() {
@@ -33,7 +33,7 @@ class $Ne extends NamedBaseOperation<any> {
   }
 }
 // https://docs.mongodb.com/manual/reference/operator/query/elemMatch/
-class $ElemMatch extends NamedBaseOperation<Query<any>> {
+class $ElemMatch extends BaseOperation<Query<any>> {
   readonly propop = true;
   private _queryOperation: QueryOperation<any>;
   init() {
@@ -58,7 +58,7 @@ class $ElemMatch extends NamedBaseOperation<Query<any>> {
         this._queryOperation.reset();
 
         const child = item[i];
-        this._queryOperation.next(child, i, item);
+        this._queryOperation.next(child, i, item, false);
         this.keep = this.keep || this._queryOperation.keep;
       }
       this.done = true;
@@ -69,7 +69,7 @@ class $ElemMatch extends NamedBaseOperation<Query<any>> {
   }
 }
 
-class $Not extends NamedBaseOperation<Query<any>> {
+class $Not extends BaseOperation<Query<any>> {
   readonly propop = true;
   private _queryOperation: QueryOperation<any>;
   init() {
@@ -80,16 +80,17 @@ class $Not extends NamedBaseOperation<Query<any>> {
     );
   }
   reset() {
+    super.reset();
     this._queryOperation.reset();
   }
-  next(item: any, key: Key, owner: any) {
-    this._queryOperation.next(item, key, owner);
+  next(item: any, key: Key, owner: any, root: boolean) {
+    this._queryOperation.next(item, key, owner, root);
     this.done = this._queryOperation.done;
     this.keep = !this._queryOperation.keep;
   }
 }
 
-export class $Size extends NamedBaseOperation<any> {
+export class $Size extends BaseOperation<any> {
   readonly propop = true;
   init() {}
   next(item) {
@@ -110,7 +111,7 @@ const assertGroupNotEmpty = (values: any[]) => {
   }
 };
 
-class $Or extends NamedBaseOperation<any> {
+class $Or extends BaseOperation<any> {
   readonly propop = false;
   private _ops: Operation<any>[];
   init() {
@@ -152,15 +153,13 @@ class $Nor extends $Or {
   }
 }
 
-class $In extends NamedBaseOperation<any> {
+class $In extends BaseOperation<any> {
   readonly propop = true;
   private _testers: Tester[];
   init() {
     this._testers = this.params.map(value => {
       if (containsOperation(value, this.options)) {
-        throw new Error(
-          `cannot nest $ under ${this.constructor.name.toLowerCase()}`
-        );
+        throw new Error(`cannot nest $ under ${this.name.toLowerCase()}`);
       }
       return createTester(value, this.options.compare);
     });
@@ -182,15 +181,36 @@ class $In extends NamedBaseOperation<any> {
   }
 }
 
-class $Nin extends $In {
+class $Nin extends BaseOperation<any> {
   readonly propop = true;
-  next(item: any, key: Key, owner: any) {
-    super.next(item, key, owner);
-    this.keep = !this.keep;
+  private _in: $In;
+  constructor(params: any, ownerQuery: any, options: Options, name: string) {
+    super(params, ownerQuery, options, name);
+    this._in = new $In(params, ownerQuery, options, name);
+  }
+  next(item: any, key: Key, owner: any, root: boolean) {
+    this._in.next(item, key, owner);
+
+    if (isArray(owner) && !root) {
+      if (this._in.keep) {
+        this.keep = false;
+        this.done = true;
+      } else if (key == owner.length - 1) {
+        this.keep = true;
+        this.done = true;
+      }
+    } else {
+      this.keep = !this._in.keep;
+      this.done = true;
+    }
+  }
+  reset() {
+    super.reset();
+    this._in.reset();
   }
 }
 
-class $Exists extends NamedBaseOperation<boolean> {
+class $Exists extends BaseOperation<boolean> {
   readonly propop = true;
   next(item: any, key: Key, owner: any) {
     if (owner.hasOwnProperty(key) === this.params) {
@@ -218,8 +238,8 @@ class $And extends NamedGroupOperation {
 
     assertGroupNotEmpty(params);
   }
-  next(item: any, key: Key, owner: any) {
-    this.childrenNext(item, key, owner);
+  next(item: any, key: Key, owner: any, root: boolean) {
+    this.childrenNext(item, key, owner, root);
   }
 }
 
@@ -239,8 +259,8 @@ class $All extends NamedGroupOperation {
       name
     );
   }
-  next(item: any, key: Key, owner: any) {
-    this.childrenNext(item, key, owner);
+  next(item: any, key: Key, owner: any, root: boolean) {
+    this.childrenNext(item, key, owner, root);
   }
 }
 
@@ -281,7 +301,9 @@ export const $in = (
   owneryQuery: Query<any>,
   options: Options,
   name: string
-) => new $In(params, owneryQuery, options, name);
+) => {
+  return new $In(params, owneryQuery, options, name);
+};
 
 export const $lt = numericalOperation(params => b => b < params);
 export const $lte = numericalOperation(params => b => b <= params);

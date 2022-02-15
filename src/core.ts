@@ -12,10 +12,15 @@ export interface Operation<TItem> {
   readonly done: boolean;
   propop: boolean;
   reset();
-  next(item: TItem, key?: Key, owner?: any);
+  next(item: TItem, key?: Key, owner?: any, root?: boolean);
 }
 
-export type Tester = (item: any, key?: Key, owner?: any) => boolean;
+export type Tester = (
+  item: any,
+  key?: Key,
+  owner?: any,
+  root?: boolean
+) => boolean;
 
 export interface NamedOperation {
   name: string;
@@ -100,7 +105,7 @@ const walkKeyPathValues = (
   }
 
   if (depth === keyPath.length || item == null) {
-    return next(item, key, owner);
+    return next(item, key, owner, depth === 0);
   }
 
   return walkKeyPathValues(
@@ -113,14 +118,16 @@ const walkKeyPathValues = (
   );
 };
 
-abstract class BaseOperation<TParams, TItem = any> implements Operation<TItem> {
+export abstract class BaseOperation<TParams, TItem = any>
+  implements Operation<TItem> {
   keep: boolean;
   done: boolean;
   abstract propop: boolean;
   constructor(
     readonly params: TParams,
     readonly owneryQuery: any,
-    readonly options: Options
+    readonly options: Options,
+    readonly name?: string
   ) {
     this.init();
   }
@@ -129,21 +136,7 @@ abstract class BaseOperation<TParams, TItem = any> implements Operation<TItem> {
     this.done = false;
     this.keep = false;
   }
-  abstract next(item: any, key: Key, parent: any);
-}
-
-export abstract class NamedBaseOperation<TParams, TItem = any>
-  extends BaseOperation<TParams, TItem>
-  implements NamedOperation {
-  abstract propop: boolean;
-  constructor(
-    params: TParams,
-    owneryQuery: any,
-    options: Options,
-    readonly name: string
-  ) {
-    super(params, owneryQuery, options);
-  }
+  abstract next(item: any, key: Key, parent: any, root: boolean);
 }
 
 abstract class GroupOperation extends BaseOperation<any> {
@@ -170,17 +163,19 @@ abstract class GroupOperation extends BaseOperation<any> {
     }
   }
 
-  abstract next(item: any, key: Key, owner: any);
+  abstract next(item: any, key: Key, owner: any, root: boolean);
 
   /**
    */
 
-  protected childrenNext(item: any, key: Key, owner: any) {
+  protected childrenNext(item: any, key: Key, owner: any, root: boolean) {
     let done = true;
     let keep = true;
     for (let i = 0, { length } = this.children; i < length; i++) {
       const childOperation = this.children[i];
-      childOperation.next(item, key, owner);
+      if (!childOperation.done) {
+        childOperation.next(item, key, owner, root);
+      }
       if (!childOperation.keep) {
         keep = false;
       }
@@ -216,8 +211,8 @@ export class QueryOperation<TItem> extends GroupOperation {
   /**
    */
 
-  next(item: TItem, key: Key, parent: any) {
-    this.childrenNext(item, key, parent);
+  next(item: TItem, key: Key, parent: any, root: boolean) {
+    this.childrenNext(item, key, parent, root);
   }
 }
 
@@ -249,8 +244,13 @@ export class NestedOperation extends GroupOperation {
   /**
    */
 
-  private _nextNestedValue = (value: any, key: Key, owner: any) => {
-    this.childrenNext(value, key, owner);
+  private _nextNestedValue = (
+    value: any,
+    key: Key,
+    owner: any,
+    root: boolean
+  ) => {
+    this.childrenNext(value, key, owner, root);
     return !this.done;
   };
 }
@@ -304,7 +304,7 @@ export const numericalOperationCreator = (
   createNumericalOperation: OperationCreator<any>
 ) => (params: any, owneryQuery: any, options: Options, name: string) => {
   if (params == null) {
-    return new NopeOperation(params, owneryQuery, options);
+    return new NopeOperation(params, owneryQuery, options, name);
   }
 
   return createNumericalOperation(params, owneryQuery, options, name);
@@ -312,7 +312,7 @@ export const numericalOperationCreator = (
 
 export const numericalOperation = (createTester: (any) => Tester) =>
   numericalOperationCreator(
-    (params: any, owneryQuery: Query<any>, options: Options) => {
+    (params: any, owneryQuery: Query<any>, options: Options, name: string) => {
       const typeofParams = typeof comparable(params);
       const test = createTester(params);
       return new EqualsOperation(
@@ -320,7 +320,8 @@ export const numericalOperation = (createTester: (any) => Tester) =>
           return typeof comparable(b) === typeofParams && test(b);
         },
         owneryQuery,
-        options
+        options,
+        name
       );
     }
   );

@@ -10,3 +10,4 @@ src/*.js
 lib/
 es5m/
 es/
+*.tgz

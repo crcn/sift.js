@@ -1,3 +1,8 @@
+## 16.0.0
+
+- Fix https://github.com/crcn/sift.js/issues/243
+- Fix https://github.com/crcn/sift.js/issues/242
+
 ## 13.1.0
 
 - Added stronger types for queries: https://github.com/crcn/sift.js/issues/197

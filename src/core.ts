@@ -56,6 +56,8 @@ type BasicValueQuery<TValue> = {
   $and?: NestedQuery<TValue>[];
 };
 
+export type QueryKeys = keyof BasicValueQuery<any>;
+
 type ArrayValueQuery<TValue> = {
   $elemMatch?: Query<TValue>;
 } & BasicValueQuery<TValue>;

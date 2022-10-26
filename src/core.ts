@@ -66,7 +66,7 @@ type ValueQuery<TValue> = TValue extends Array<any>
   : BasicValueQuery<TValue>;
 
 type NotObject = string | number | Date | boolean | Array<any>;
-type ShapeQuery<TItemSchema> = TItemSchema extends NotObject
+export type ShapeQuery<TItemSchema> = TItemSchema extends NotObject
   ? {}
   : { [k in keyof TItemSchema]?: TItemSchema[k] | ValueQuery<TItemSchema[k]> };
 

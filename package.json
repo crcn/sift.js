@@ -58,5 +58,6 @@
     "sift.csp.min.js",
     "sift.min.js",
     "MIT-LICENSE.txt"
-  ]
+  ],
+  "packageManager": "yarn@3.2.4"
 }

@@ -70,11 +70,11 @@
 
 ```javascript
 sift.use({
-  $operator: function(a) {
-    return function(b) {
+  $operator: function (a) {
+    return function (b) {
       // compare here
     };
-  }
+  },
 });
 ```
 

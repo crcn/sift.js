@@ -1,4 +1,4 @@
-import sift, { createQueryTester, $in, $or, $eq } from "..";
+import sift, { createQueryTester, $in, $or, $eq, Query } from "..";
 import { createQueryOperation, createOperationTester } from "../lib/core";
 
 sift<any>({ $gt: 10 });
@@ -31,12 +31,12 @@ const demoFriend: Person = {
   name: "a",
   last: "b",
   address: {},
-  friends: []
+  friends: [],
 };
 
 sift<Person>({
   name: "a",
-  last: { $eq: "a", $ne: "a", $in: ["a"], $nin: ["a"], $or: [{ $eq: "a" }] }
+  last: { $eq: "a", $ne: "a", $in: ["a"], $nin: ["a"], $or: [{ $eq: "a" }] },
 });
 
 // fail
@@ -47,7 +47,7 @@ sift<Person>({ name: "a", address: { zip: 55555 } });
 // pass
 sift<Person>({
   name: "a",
-  $or: [{ name: "jeffery", last: "joe" }]
+  $or: [{ name: "jeffery", last: "joe" }],
 });
 
 type PersonSchema = Person & {
@@ -65,7 +65,7 @@ sift<Test2>({
   name: { $gt: 10 },
   $where: () => {
     return true;
-  }
+  },
 });
 
 // fail
@@ -75,7 +75,7 @@ sift<Test2>({ name: { $gt: "5" } });
 [{ string: "hello", number: 1 }].filter(
   sift({
     string: "a",
-    number: 1
+    number: 1,
   })
 );
 
@@ -92,21 +92,21 @@ const obj = {
   arrayOfObjects: [{ a: 1 }, { a: 2 }],
   nestedArrayOfObjects: [[{ a: 1 }], [{ a: 2 }], [{ a: 3 }]],
   nested: {
-    prop: true
+    prop: true,
   },
   foo: {
     bar: {
       baz: 1,
-      biz: 5
-    }
-  }
+      biz: 5,
+    },
+  },
 };
 
 [obj].filter(
   sift({
     number: {
-      $in: [123, 2, 3] // Type '{ $in: number[]; }' is not assignable to type 'number | alueQuery<number>   undefined'. Object literal may only specify known properties, and '$in' does not exist in type 'ValueQuery<number>'.
-    }
+      $in: [123, 2, 3], // Type '{ $in: number[]; }' is not assignable to type 'number | alueQuery<number>   undefined'. Object literal may only specify known properties, and '$in' does not exist in type 'ValueQuery<number>'.
+    },
   })
 );
 
@@ -118,21 +118,21 @@ const a = [obj].some(
     } & typeof obj
   >({
     "foo.bar.baz": {
-      $in: [1, 2, 3]
+      $in: [1, 2, 3],
     },
     foo: {
       bar: {
         // $in: [1, 2, 3] should fail
         baz: 4,
-        biz: 5
-      }
-    }
+        biz: 5,
+      },
+    },
   })
 ); // returns false
 
 [
   { tags: ["books", "programming", "travel"] },
-  { tags: ["travel", "cooking"] }
+  { tags: ["travel", "cooking"] },
 ].filter(sift({ tags: { $all: ["books", "programming"] } }));
 
 ["craig", "john", "jake"].filter(sift(/^j/));
@@ -149,21 +149,21 @@ const result2 = ["craig", "john", "jake"].filter(sift(/^j/)); //['john','jake']
 // function filter
 const testFilter = sift({
   //you can also filter against functions
-  name: function(value) {
+  name: function (value) {
     return value.length == 5;
-  }
+  },
 });
 
 [
   {
-    name: "craig"
+    name: "craig",
   },
   {
-    name: "john"
+    name: "john",
   },
   {
-    name: "jake"
-  }
+    name: "jake",
+  },
 ].filter(testFilter); // filtered: [{ name: 'craig' }]
 
 //you can test *single values* against your custom sifter
@@ -205,25 +205,25 @@ createQueryTester({ $eq: 5 }, { operations: { $eq, $in } });
 [100, 200, 300, 400, 500, 600].filter(sift({ $mod: [3, 0] }));
 [
   { tags: ["books", "programming", "travel"] },
-  { tags: ["travel", "cooking"] }
+  { tags: ["travel", "cooking"] },
 ].filter(sift({ tags: { $all: ["books", "programming"] } }));
 
 [
   { name: "Craig", state: "MN" },
   { name: "Tim", state: "MN" },
-  { name: "Joe", state: "CA" }
+  { name: "Joe", state: "CA" },
 ].filter(sift({ $and: [{ name: "Craig" }, { state: "MN" }] }));
 
 [
   { name: "Craig", state: "MN" },
   { name: "Tim", state: "MN" },
-  { name: "Joe", state: "CA" }
+  { name: "Joe", state: "CA" },
 ].filter(sift({ $or: [{ name: "Craig" }, { state: "MN" }] }));
 
 [
   { name: "Craig", state: "MN" },
   { name: "Tim", state: "MN" },
-  { name: "Joe", state: "CA" }
+  { name: "Joe", state: "CA" },
 ].filter(sift({ $nor: [{ name: "Craig" }, { state: "MN" }] }));
 
 [{ tags: ["food", "cooking"] }, { tags: ["traveling"] }].filter(
@@ -245,9 +245,9 @@ createQueryTester({ $eq: 5 }, { operations: { $eq, $in } });
 ); // ["frank"]
 [{ name: "frank" }, { name: "joe" }].filter(
   sift({
-    $where: function() {
+    $where: function () {
       return this.name === "frank";
-    }
+    },
   })
 ); // ["frank"]
 
@@ -257,44 +257,44 @@ var bills = [
     casts: [
       {
         id: 1,
-        value: 200
+        value: 200,
       },
       {
         id: 2,
-        value: 1000
-      }
-    ]
+        value: 1000,
+      },
+    ],
   },
   {
     month: "august",
     casts: [
       {
         id: 3,
-        value: 1000
+        value: 1000,
       },
       {
         id: 4,
-        value: 4000
-      }
-    ]
-  }
+        value: 4000,
+      },
+    ],
+  },
 ];
 
 var result = bills.filter(
   sift({
     casts: {
       $elemMatch: {
-        value: { $gt: 1000 }
-      }
-    }
+        value: { $gt: 1000 },
+      },
+    },
   })
 ); // {month:'august', casts:[{id:3, value: 1000},{id: 4, value: 4000}]}
 
 [{ name: "frank" }, { name: "joe", last: "bob" }].filter(
   sift({
-    $where: function() {
+    $where: function () {
       return this.name === "frank" || this.last === "bob";
-    }
+    },
   })
 );
 
@@ -304,3 +304,33 @@ var result = bills.filter(
 const o = createQueryOperation<Person>({ name: "a" });
 const t = createOperationTester(o);
 t(demoFriend);
+
+// https://github.com/crcn/sift.js/issues/245
+
+type TmpClass = Query<{
+  name: string;
+  address: {
+    street: string;
+  };
+}>;
+
+var tmp: TmpClass = {
+  name: { $in: ["test"] },
+  address: {
+    street: { $in: ["mainstreet"] },
+  },
+};
+
+sift<TmpClass>({
+  name: { $in: ["test"] },
+  address: {
+    street: { $in: ["mainstreet"] },
+  },
+});
+
+console.log(
+  "testSift:",
+  [{ address: { street: "mainStreet" } }].filter(
+    sift({ address: { street: "mainStreet" } })
+  )
+);

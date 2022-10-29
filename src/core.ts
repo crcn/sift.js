@@ -4,8 +4,15 @@ import {
   Comparator,
   isVanillaObject,
   comparable,
-  equals
+  equals,
 } from "./utils";
+import { DotPath } from "./types";
+
+type KV<T extends object> = { [K in DotPath<T>]?: string };
+
+let path: KV<{ name: { value: string } }> = {
+  "name.value": "dd",
+};
 
 export interface Operation<TItem> {
   readonly keep: boolean;
@@ -119,7 +126,8 @@ const walkKeyPathValues = (
 };
 
 export abstract class BaseOperation<TParams, TItem = any>
-  implements Operation<TItem> {
+  implements Operation<TItem>
+{
   keep: boolean;
   done: boolean;
   abstract propop: boolean;
@@ -192,8 +200,10 @@ abstract class GroupOperation extends BaseOperation<any> {
   }
 }
 
-export abstract class NamedGroupOperation extends GroupOperation
-  implements NamedOperation {
+export abstract class NamedGroupOperation
+  extends GroupOperation
+  implements NamedOperation
+{
   abstract propop: boolean;
   constructor(
     params: any,
@@ -260,14 +270,14 @@ export const createTester = (a, compare: Comparator) => {
     return a;
   }
   if (a instanceof RegExp) {
-    return b => {
+    return (b) => {
       const result = typeof b === "string" && a.test(b);
       a.lastIndex = 0;
       return result;
     };
   }
   const comparableA = comparable(a);
-  return b => compare(comparableA, comparable(b));
+  return (b) => compare(comparableA, comparable(b));
 };
 
 export class EqualsOperation<TParam> extends BaseOperation<TParam> {
@@ -300,15 +310,15 @@ export class NopeOperation<TParam> extends BaseOperation<TParam> {
   }
 }
 
-export const numericalOperationCreator = (
-  createNumericalOperation: OperationCreator<any>
-) => (params: any, owneryQuery: any, options: Options, name: string) => {
-  if (params == null) {
-    return new NopeOperation(params, owneryQuery, options, name);
-  }
+export const numericalOperationCreator =
+  (createNumericalOperation: OperationCreator<any>) =>
+  (params: any, owneryQuery: any, options: Options, name: string) => {
+    if (params == null) {
+      return new NopeOperation(params, owneryQuery, options, name);
+    }
 
-  return createNumericalOperation(params, owneryQuery, options, name);
-};
+    return createNumericalOperation(params, owneryQuery, options, name);
+  };
 
 export const numericalOperation = (createTester: (any) => Tester) =>
   numericalOperationCreator(
@@ -316,7 +326,7 @@ export const numericalOperation = (createTester: (any) => Tester) =>
       const typeofParams = typeof comparable(params);
       const test = createTester(params);
       return new EqualsOperation(
-        b => {
+        (b) => {
           return typeof comparable(b) === typeofParams && test(b);
         },
         owneryQuery,
@@ -384,7 +394,7 @@ const createNestedOperation = (
     );
   }
   return new NestedOperation(keyPath, nestedQuery, owneryQuery, options, [
-    new EqualsOperation(nestedQuery, owneryQuery, options)
+    new EqualsOperation(nestedQuery, owneryQuery, options),
   ]);
 };
 
@@ -395,7 +405,7 @@ export const createQueryOperation = <TItem, TSchema = TItem>(
 ): QueryOperation<TItem> => {
   const options = {
     compare: compare || equals,
-    operations: Object.assign({}, operations || {})
+    operations: Object.assign({}, operations || {}),
   };
 
   const [selfOperations, nestedOperations] = createQueryOperations(
@@ -459,15 +469,13 @@ const createQueryOperations = (
   return [selfOperations, nestedOperations];
 };
 
-export const createOperationTester = <TItem>(operation: Operation<TItem>) => (
-  item: TItem,
-  key?: Key,
-  owner?: any
-) => {
-  operation.reset();
-  operation.next(item, key, owner);
-  return operation.keep;
-};
+export const createOperationTester =
+  <TItem>(operation: Operation<TItem>) =>
+  (item: TItem, key?: Key, owner?: any) => {
+    operation.reset();
+    operation.next(item, key, owner);
+    return operation.keep;
+  };
 
 export const createQueryTester = <TItem, TSchema = TItem>(
   query: Query<TSchema>,

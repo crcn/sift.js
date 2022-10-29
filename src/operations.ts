@@ -11,7 +11,7 @@ import {
   NamedGroupOperation,
   numericalOperation,
   containsOperation,
-  NamedOperation
+  NamedOperation,
 } from "./core";
 import { Key, comparable, isFunction, isArray } from "./utils";
 
@@ -116,7 +116,7 @@ class $Or extends BaseOperation<any> {
   private _ops: Operation<any>[];
   init() {
     assertGroupNotEmpty(this.params);
-    this._ops = this.params.map(op =>
+    this._ops = this.params.map((op) =>
       createQueryOperation(op, null, this.options)
     );
   }
@@ -157,7 +157,7 @@ class $In extends BaseOperation<any> {
   readonly propop = true;
   private _testers: Tester[];
   init() {
-    this._testers = this.params.map(value => {
+    this._testers = this.params.map((value) => {
       if (containsOperation(value, this.options)) {
         throw new Error(`cannot nest $ under ${this.name.toLowerCase()}`);
       }
@@ -232,7 +232,7 @@ class $And extends NamedGroupOperation {
       params,
       owneryQuery,
       options,
-      params.map(query => createQueryOperation(query, owneryQuery, options)),
+      params.map((query) => createQueryOperation(query, owneryQuery, options)),
       name
     );
 
@@ -255,7 +255,7 @@ class $All extends NamedGroupOperation {
       params,
       owneryQuery,
       options,
-      params.map(query => createQueryOperation(query, owneryQuery, options)),
+      params.map((query) => createQueryOperation(query, owneryQuery, options)),
       name
     );
   }
@@ -305,17 +305,17 @@ export const $in = (
   return new $In(params, owneryQuery, options, name);
 };
 
-export const $lt = numericalOperation(params => b => b < params);
-export const $lte = numericalOperation(params => b => b <= params);
-export const $gt = numericalOperation(params => b => b > params);
-export const $gte = numericalOperation(params => b => b >= params);
+export const $lt = numericalOperation((params) => (b) => b < params);
+export const $lte = numericalOperation((params) => (b) => b <= params);
+export const $gt = numericalOperation((params) => (b) => b > params);
+export const $gte = numericalOperation((params) => (b) => b >= params);
 export const $mod = (
   [mod, equalsValue]: number[],
   owneryQuery: Query<any>,
   options: Options
 ) =>
   new EqualsOperation(
-    b => comparable(b) % mod === equalsValue,
+    (b) => comparable(b) % mod === equalsValue,
     owneryQuery,
     options
   );
@@ -343,12 +343,12 @@ export const $not = (
 ) => new $Not(params, owneryQuery, options, name);
 
 const typeAliases = {
-  number: v => typeof v === "number",
-  string: v => typeof v === "string",
-  bool: v => typeof v === "boolean",
-  array: v => Array.isArray(v),
-  null: v => v === null,
-  timestamp: v => v instanceof Date
+  number: (v) => typeof v === "number",
+  string: (v) => typeof v === "string",
+  bool: (v) => typeof v === "boolean",
+  array: (v) => Array.isArray(v),
+  null: (v) => v === null,
+  timestamp: (v) => v instanceof Date,
 };
 
 export const $type = (
@@ -357,7 +357,7 @@ export const $type = (
   options: Options
 ) =>
   new EqualsOperation(
-    b => {
+    (b) => {
       if (typeof clazz === "string") {
         if (!typeAliases[clazz]) {
           throw new Error(`Type alias does not exist`);
@@ -407,5 +407,5 @@ export const $where = (
     );
   }
 
-  return new EqualsOperation(b => test.bind(b)(b), ownerQuery, options);
+  return new EqualsOperation((b) => test.bind(b)(b), ownerQuery, options);
 };

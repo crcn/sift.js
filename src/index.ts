@@ -1,7 +1,7 @@
 import * as defaultOperations from "./operations";
 import {
   Query,
-  QueryKeys,
+  QueryOperators,
   ShapeQuery,
   Options,
   createQueryTester,
@@ -32,7 +32,7 @@ const createDefaultQueryTester = <TItem, TSchema extends TItem = TItem>(
 
 export {
   Query,
-  QueryKeys,
+  QueryOperators,
   ShapeQuery,
   EqualsOperation,
   createQueryTester,

@@ -56,8 +56,6 @@ type BasicValueQuery<TValue> = {
   $and?: NestedQuery<TValue>[];
 };
 
-export type QueryKeys = keyof BasicValueQuery<any>;
-
 type ArrayValueQuery<TValue> = {
   $elemMatch?: Query<TValue>;
 } & BasicValueQuery<TValue>;
@@ -78,6 +76,8 @@ export type Query<TItemSchema> =
   | TItemSchema
   | RegExp
   | NestedQuery<TItemSchema>;
+
+export type QueryOperators<TValue = any> = keyof ValueQuery<TValue>;
 
 /**
  * Walks through each value given the context - used for nested operations. E.g:

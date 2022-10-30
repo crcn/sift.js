@@ -33,7 +33,7 @@ export type OperationCreator<TItem> = (
   name: string
 ) => Operation<TItem>;
 
-type BasicValueQuery<TValue> = {
+export type BasicValueQuery<TValue> = {
   $eq?: TValue;
   $ne?: TValue;
   $lt?: TValue;
@@ -56,12 +56,12 @@ type BasicValueQuery<TValue> = {
   $and?: NestedQuery<TValue>[];
 };
 
-type ArrayValueQuery<TValue> = {
+export type ArrayValueQuery<TValue> = {
   $elemMatch?: Query<TValue>;
 } & BasicValueQuery<TValue>;
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 
-type ValueQuery<TValue> = TValue extends Array<any>
+export type ValueQuery<TValue> = TValue extends Array<any>
   ? ArrayValueQuery<Unpacked<TValue>>
   : BasicValueQuery<TValue>;
 
@@ -70,7 +70,7 @@ export type ShapeQuery<TItemSchema> = TItemSchema extends NotObject
   ? {}
   : { [k in keyof TItemSchema]?: TItemSchema[k] | ValueQuery<TItemSchema[k]> };
 
-type NestedQuery<TItemSchema> = ValueQuery<TItemSchema> &
+export type NestedQuery<TItemSchema> = ValueQuery<TItemSchema> &
   ShapeQuery<TItemSchema>;
 export type Query<TItemSchema> =
   | TItemSchema

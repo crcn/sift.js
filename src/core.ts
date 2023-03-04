@@ -4,7 +4,8 @@ import {
   Comparator,
   isVanillaObject,
   comparable,
-  equals
+  equals,
+  coercePotentiallyNull
 } from "./utils";
 
 export interface Operation<TItem> {
@@ -294,21 +295,9 @@ export const createEqualsOperation = (
   options: Options
 ) => new EqualsOperation(params, owneryQuery, options);
 
-export class NopeOperation<TParam> extends BaseOperation<TParam> {
-  readonly propop = true;
-  next(item) {
-    this.done = true;
-    this.keep = item == null;
-  }
-}
-
 export const numericalOperationCreator = (
   createNumericalOperation: OperationCreator<any>
 ) => (params: any, owneryQuery: any, options: Options, name: string) => {
-  if (params == null) {
-    return new NopeOperation(params, owneryQuery, options, name);
-  }
-
   return createNumericalOperation(params, owneryQuery, options, name);
 };
 
@@ -319,7 +308,10 @@ export const numericalOperation = (createTester: (any) => Tester) =>
       const test = createTester(params);
       return new EqualsOperation(
         b => {
-          return typeof comparable(b) === typeofParams && test(b);
+          const actualValue = coercePotentiallyNull(b);
+          return (
+            typeof comparable(actualValue) === typeofParams && test(actualValue)
+          );
         },
         owneryQuery,
         options,

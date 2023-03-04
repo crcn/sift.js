@@ -10,8 +10,7 @@ import {
   Query,
   NamedGroupOperation,
   numericalOperation,
-  containsOperation,
-  NamedOperation
+  containsOperation
 } from "./core";
 import { Key, comparable, isFunction, isArray } from "./utils";
 
@@ -305,10 +304,18 @@ export const $in = (
   return new $In(params, owneryQuery, options, name);
 };
 
-export const $lt = numericalOperation(params => b => b < params);
-export const $lte = numericalOperation(params => b => b <= params);
-export const $gt = numericalOperation(params => b => b > params);
-export const $gte = numericalOperation(params => b => b >= params);
+export const $lt = numericalOperation(params => b => {
+  return b != null && b < params;
+});
+export const $lte = numericalOperation(params => b => {
+  return b === params || b <= params;
+});
+export const $gt = numericalOperation(params => b => {
+  return b != null && b > params;
+});
+export const $gte = numericalOperation(params => b => {
+  return b === params || b >= params;
+});
 export const $mod = (
   [mod, equalsValue]: number[],
   owneryQuery: Query<any>,

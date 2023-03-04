@@ -192,6 +192,12 @@ describe(__filename + "#", function() {
     [{ $lte: "5" }, ["4", "3", "2"], ["4", "3", "2"], false],
     [{ ab: { $lte: null } }, [{ ab: 5 }, { cd: 5 }], [{ cd: 5 }], false],
     [
+      { ab: { $lte: "blue" } },
+      [{ ab: "blue" }, { cd: 5 }],
+      [{ ab: "blue" }],
+      false
+    ],
+    [
       { groups: { $lt: 5 } },
       [{ groups: [1, 2, 3, 4] }, { groups: [7, 8] }],
       [{ groups: [1, 2, 3, 4] }],
@@ -212,6 +218,13 @@ describe(__filename + "#", function() {
     // $gte
     [{ $gte: 5 }, [3, 4, 5, 6], [5, 6], false],
     [{ $gte: "5" }, [4, 3, 2, 1], [], false],
+    [{ ab: { $gte: null } }, [{ ab: 5 }, { cd: 5 }], [{ cd: 5 }], false],
+    [
+      { ab: { $gte: "blue" } },
+      [{ ab: "blue" }, { cd: 5 }],
+      [{ ab: "blue" }],
+      false
+    ],
     [
       { groups: { $gte: 5 } },
       [{ groups: [1, 2, 3, 4] }, { groups: [7, 8] }],

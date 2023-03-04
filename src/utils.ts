@@ -21,6 +21,9 @@ export const comparable = (value: any) => {
   return value;
 };
 
+export const coercePotentiallyNull = (value: any) =>
+  value == null ? null : value;
+
 export const isArray = typeChecker<Array<any>>("Array");
 export const isObject = typeChecker<Object>("Object");
 export const isFunction = typeChecker<Function>("Function");

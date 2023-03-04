@@ -296,9 +296,9 @@ export const createEqualsOperation = (
 
 export class NopeOperation<TParam> extends BaseOperation<TParam> {
   readonly propop = true;
-  next() {
+  next(item) {
     this.done = true;
-    this.keep = false;
+    this.keep = item == null;
   }
 }
 

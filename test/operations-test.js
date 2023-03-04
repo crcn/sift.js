@@ -190,6 +190,7 @@ describe(__filename + "#", function() {
     [{ $lte: 5 }, [3, 4, 5, 6], [3, 4, 5], false],
     [{ $lte: "5" }, [4, 3, 2, 1], [], false],
     [{ $lte: "5" }, ["4", "3", "2"], ["4", "3", "2"], false],
+    [{ ab: { $lte: null } }, [{ ab: 5 }, { cd: 5 }], [{ cd: 5 }], false],
     [
       { groups: { $lt: 5 } },
       [{ groups: [1, 2, 3, 4] }, { groups: [7, 8] }],

@@ -22,12 +22,12 @@
 ```javascript
 import sift from "sift";
 
-//intersecting arrays
+// intersecting arrays
 const result1 = ["hello", "sifted", "array!"].filter(
-  sift({ $in: ["hello", "world"] })
-); //['hello']
+        sift({ $in: ["hello", "world"] })
+); // ['hello']
 
-//regexp filter
+// regexp filter
 const result2 = ["craig", "john", "jake"].filter(sift(/^j/)); //['john','jake']
 
 // function filter
@@ -50,7 +50,7 @@ const result3 = [
   }
 ].filter(testFilter); // filtered: [{ name: 'craig' }]
 
-//you can test *single values* against your custom sifter
+// you can test *single values* against your custom sifter
 testFilter({ name: "sarah" }); //true
 testFilter({ name: "tim" }); //false
 ```
@@ -59,7 +59,7 @@ testFilter({ name: "tim" }); //false
 
 ### sift(query: MongoQuery, options?: Options): Function
 
-Creates a filter with all of the built-in MongoDB query operations.
+Creates a filter with all the built-in MongoDB query operations.
 
 - `query` - the filter to use against the target array
 - `options`
@@ -71,12 +71,12 @@ Example:
 ```javascript
 import sift from "sift";
 
-const test = sift({ $gt: 5 }));
+const test = sift({ $gt: 5 });
 
 console.log(test(6)); // true
 console.log(test(4)); // false
 
-[3, 4, 5, 6, 7].filter(sift({ $exists: true })); // [6, 7]
+[3, 4, 5, 6, 7].filter(test); // [6, 7]
 ```
 
 ### createQueryTester(query: Query, options?: Options): Function
@@ -124,7 +124,7 @@ array value must be _\$in_ the given query:
 Intersecting two arrays:
 
 ```javascript
-//filtered: ['Brazil']
+// filtered: ['Brazil']
 ["Brazil", "Haiti", "Peru", "Chile"].filter(
   sift({ $in: ["Costa Rica", "Brazil"] })
 );
@@ -143,7 +143,7 @@ Here's another example. This acts more like the \$or operator:
 Opposite of \$in:
 
 ```javascript
-//filtered: ['Haiti','Peru','Chile']
+// filtered: ['Haiti','Peru','Chile']
 ["Brazil", "Haiti", "Peru", "Chile"].filter(
   sift({ $nin: ["Costa Rica", "Brazil"] })
 );
@@ -154,14 +154,14 @@ Opposite of \$in:
 Checks if whether a value exists:
 
 ```javascript
-//filtered: ['Craig','Tim']
+// filtered: ['Craig','Tim']
 sift({ $exists: true })(["Craig", null, "Tim"]);
 ```
 
 You can also filter out values that don't exist
 
 ```javascript
-//filtered: [{ name: "Tim" }]
+// filtered: [{ name: "Tim" }]
 [{ name: "Craig", city: "Minneapolis" }, { name: "Tim" }].filter(
   sift({ city: { $exists: false } })
 );
@@ -172,7 +172,7 @@ You can also filter out values that don't exist
 Checks if a number is >= value:
 
 ```javascript
-//filtered: [2, 3]
+// filtered: [2, 3]
 [0, 1, 2, 3].filter(sift({ $gte: 2 }));
 ```
 
@@ -181,7 +181,7 @@ Checks if a number is >= value:
 Checks if a number is > value:
 
 ```javascript
-//filtered: [3]
+// filtered: [3]
 [0, 1, 2, 3].filter(sift({ $gt: 2 }));
 ```
 
@@ -190,7 +190,7 @@ Checks if a number is > value:
 Checks if a number is <= value.
 
 ```javascript
-//filtered: [0, 1, 2]
+// filtered: [0, 1, 2]
 [0, 1, 2, 3].filter(sift({ $lte: 2 }));
 ```
 
@@ -199,7 +199,7 @@ Checks if a number is <= value.
 Checks if number is < value.
 
 ```javascript
-//filtered: [0, 1]
+// filtered: [0, 1]
 [0, 1, 2, 3].filter(sift({ $lt: 2 }));
 ```
 
@@ -208,7 +208,7 @@ Checks if number is < value.
 Checks if `query === value`. Note that **\$eq can be omitted**. For **\$eq**, and **\$ne**
 
 ```javascript
-//filtered: [{ state: 'MN' }]
+// filtered: [{ state: 'MN' }]
 [{ state: "MN" }, { state: "CA" }, { state: "WI" }].filter(
   sift({ state: { $eq: "MN" } })
 );
@@ -217,7 +217,7 @@ Checks if `query === value`. Note that **\$eq can be omitted**. For **\$eq**, an
 Or:
 
 ```javascript
-//filtered: [{ state: 'MN' }]
+// filtered: [{ state: 'MN' }]
 [{ state: "MN" }, { state: "CA" }, { state: "WI" }].filter(
   sift({ state: "MN" })
 );
@@ -228,7 +228,7 @@ Or:
 Checks if `query !== value`.
 
 ```javascript
-//filtered: [{ state: 'CA' }, { state: 'WI'}]
+// filtered: [{ state: 'CA' }, { state: 'WI'}]
 [{ state: "MN" }, { state: "CA" }, { state: "WI" }].filter(
   sift({ state: { $ne: "MN" } })
 );
@@ -239,7 +239,7 @@ Checks if `query !== value`.
 Modulus:
 
 ```javascript
-//filtered: [300, 600]
+// filtered: [300, 600]
 [100, 200, 300, 400, 500, 600].filter(sift({ $mod: [3, 0] }));
 ```
 
@@ -248,7 +248,7 @@ Modulus:
 values must match **everything** in array:
 
 ```javascript
-//filtered: [ { tags: ['books','programming','travel' ]} ]
+// filtered: [ { tags: ['books','programming','travel' ]} ]
 [
   { tags: ["books", "programming", "travel"] },
   { tags: ["travel", "cooking"] }
@@ -260,7 +260,7 @@ values must match **everything** in array:
 ability to use an array of expressions. All expressions must test true.
 
 ```javascript
-//filtered: [ { name: 'Craig', state: 'MN' }]
+// filtered: [ { name: 'Craig', state: 'MN' }]
 
 [
   { name: "Craig", state: "MN" },
@@ -274,7 +274,7 @@ ability to use an array of expressions. All expressions must test true.
 OR array of expressions.
 
 ```javascript
-//filtered: [ { name: 'Craig', state: 'MN' }, { name: 'Tim', state: 'MN' }]
+// filtered: [ { name: 'Craig', state: 'MN' }, { name: 'Tim', state: 'MN' }]
 [
   { name: "Craig", state: "MN" },
   { name: "Tim", state: "MN" },
@@ -287,7 +287,7 @@ OR array of expressions.
 opposite of or:
 
 ```javascript
-//filtered: [{ name: 'Joe', state: 'CA' }]
+// filtered: [{ name: 'Joe', state: 'CA' }]
 [
   { name: "Craig", state: "MN" },
   { name: "Tim", state: "MN" },
@@ -300,7 +300,7 @@ opposite of or:
 Matches an array - must match given size:
 
 ```javascript
-//filtered: ['food','cooking']
+// filtered: ['food','cooking']
 [{ tags: ["food", "cooking"] }, { tags: ["traveling"] }].filter(
   sift({ tags: { $size: 2 } })
 );
@@ -311,8 +311,8 @@ Matches an array - must match given size:
 Matches a values based on the type
 
 ```javascript
-[new Date(), 4342, "hello world"].filter(sift({ $type: Date })); //returns single date
-[new Date(), 4342, "hello world"].filter(sift({ $type: String })); //returns ['hello world']
+[new Date(), 4342, "hello world"].filter(sift({ $type: Date })); // returns single date
+[new Date(), 4342, "hello world"].filter(sift({ $type: String })); // returns ['hello world']
 ```
 
 ### \$regex
@@ -395,8 +395,8 @@ var result = bills.filter(
 Not expression:
 
 ```javascript
-["craig", "tim", "jake"].filter(sift({ $not: { $in: ["craig", "tim"] } })); //['jake']
-["craig", "tim", "jake"].filter(sift({ $not: { $size: 5 } })); //['tim','jake']
+["craig", "tim", "jake"].filter(sift({ $not: { $in: ["craig", "tim"] } })); // ['jake']
+["craig", "tim", "jake"].filter(sift({ $not: { $size: 5 } })); // ['tim','jake']
 ```
 
 ### Date comparison
@@ -443,7 +443,7 @@ var filter = sift(
   }
 );
 
-[1, 2, 3, 4, 5].filter(filter); // 1, 3, 5
+[1, 2, 3, 4, 5].filter(filter); // [1, 3, 5]
 ```
 
 #### Omitting built-in operations

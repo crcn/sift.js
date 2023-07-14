@@ -11,12 +11,10 @@
 ## 15.1.0
 
 - Fix https://github.com/crcn/sift.js/issues/239
-- 
 
 ## 15.0.0
 
 - Fix https://github.com/crcn/sift.js/issues/236
-- 
 
 ## 14.0.3
 

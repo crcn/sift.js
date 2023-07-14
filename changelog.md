@@ -1,7 +1,34 @@
-## 16.0.0
+## 17.0.0
 
 - Fix https://github.com/crcn/sift.js/issues/243
 - Fix https://github.com/crcn/sift.js/issues/242
+
+## 16.0.0
+
+- Fix https://github.com/crcn/sift.js/issues/242
+- Fix https://github.com/crcn/sift.js/issues/243
+
+## 15.1.0
+
+- Fix https://github.com/crcn/sift.js/issues/239
+- 
+
+## 15.0.0
+
+- Fix https://github.com/crcn/sift.js/issues/236
+- 
+
+## 14.0.3
+
+- Fix https://github.com/crcn/sift.js/issues/231
+
+
+## 14.0.0
+
+- Fix https://github.com/crcn/sift.js/issues/227
+- Fix https://github.com/crcn/sift.js/issues/228
+- 
+
 
 ## 13.1.0
 

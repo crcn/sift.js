@@ -272,6 +272,22 @@ describe(__filename + "#", function() {
       [{ formData: { kg: null } }]
     ],
 
+    // https://github.com/crcn/sift.js/issues/263
+    [
+      {
+        "field.someKey": { $exists: true },
+      },
+      [{ field: null }, { field: undefined }, { field: { someKey: "value" } }],
+      [{ field: { someKey: "value" } }],
+    ],
+    [
+      {
+        "field.someKey": { $exists: false },
+      },
+      [{ field: null }, { field: undefined }, { field: { someKey: "value" } }],
+      [{ field: null }, { field: undefined }],
+    ],
+
     // $in
     // TODO - {$in:[Date]} doesn't work - make it work?
     [{ $in: [0, false, 1, "1"] }, [0, 1, 2, 3, 4, false], [0, 1, false], false],

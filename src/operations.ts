@@ -211,8 +211,11 @@ class $Nin extends BaseOperation<any> {
 
 class $Exists extends BaseOperation<boolean> {
   readonly propop = true;
-  next(item: any, key: Key, owner: any) {
-    if (owner.hasOwnProperty(key) === this.params) {
+  next(item: any, key: Key, owner: any, root: boolean, leaf?: boolean) {
+    if (!leaf) {
+      this.done = true;
+      this.keep = !this.params;
+    } else if (owner.hasOwnProperty(key) === this.params) {
       this.done = true;
       this.keep = true;
     }

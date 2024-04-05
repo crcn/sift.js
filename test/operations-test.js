@@ -297,6 +297,8 @@ describe(__filename + "#", function() {
       [{ x: { b: "aaa" } }, { x: "bbb" }, { x: "ccc" }, { x: "aaa" }],
       [{ x: "bbb" }, { x: "aaa" }]
     ],
+    // $in: primitive
+    [{ a: { $in: 1 } }, [{ a: 1 }, { a: 2 }], [{ a: 1 }]],
 
     // $nin
     [{ $nin: [0, false, 1, "1"] }, [0, 1, 2, 3, 4, false], [2, 3, 4], false],
@@ -313,6 +315,8 @@ describe(__filename + "#", function() {
       []
     ],
     [{ aaaaa: { $nin: [null] } }, [{ root: { defined: 1337 } }], []],
+    // $nin: primitive
+    [{ a: { $nin: 1 } }, [{ a: 1 }, { a: 2 }], [{ a: 2 }]],
 
     [
       { x: { $nin: [/.*aaa.*/, /.*bbb.*/] } },

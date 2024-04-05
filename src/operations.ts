@@ -156,7 +156,8 @@ class $In extends BaseOperation<any> {
   readonly propop = true;
   private _testers: Tester[];
   init() {
-    this._testers = this.params.map(value => {
+    const params = Array.isArray(this.params) ? this.params : [this.params];
+    this._testers = params.map((value) => {
       if (containsOperation(value, this.options)) {
         throw new Error(`cannot nest $ under ${this.name.toLowerCase()}`);
       }

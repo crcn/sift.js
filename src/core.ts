@@ -5,7 +5,8 @@ import {
   isVanillaObject,
   comparable,
   equals,
-  coercePotentiallyNull
+  coercePotentiallyNull,
+  isProperty,
 } from "./utils";
 
 export interface Operation<TItem> {
@@ -98,7 +99,11 @@ const walkKeyPathValues = (
 
   // if array, then try matching. Might fall through for cases like:
   // { $eq: [1, 2, 3] }, [ 1, 2, 3 ].
-  if (isArray(item) && isNaN(Number(currentKey))) {
+  if (
+    isArray(item) &&
+    isNaN(Number(currentKey)) &&
+    !isProperty(item, currentKey)
+  ) {
     for (let i = 0, { length } = item; i < length; i++) {
       // if FALSE is returned, then terminate walker. For operations, this simply
       // means that the search critera was met.

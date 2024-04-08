@@ -28,7 +28,7 @@ export const isArray = typeChecker<Array<any>>("Array");
 export const isObject = typeChecker<Object>("Object");
 export const isFunction = typeChecker<Function>("Function");
 export const isProperty = (item: any, key: any) => {
-  return key in item && !isFunction(item[key]);
+  return item.hasOwnProperty(key) && !isFunction(item[key]);
 };
 export const isVanillaObject = (value) => {
   return (

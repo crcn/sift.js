@@ -1,7 +1,7 @@
 const assert = require("assert");
 const _eval = require("eval");
 const { default: sift, createQueryTester, $mod, $eq } = require("../lib");
-const { ObjectID } = require("bson");
+const { ObjectId } = require("bson");
 
 describe(__filename + "#", function() {
   it("doesn't sort arrays", function() {
@@ -262,14 +262,14 @@ describe(__filename + "#", function() {
   it("Works with Object ids", () => {
     const test1 = sift({
       $in: [
-        new ObjectID("54dd5546b1d296a54d152e84"),
-        new ObjectID("54dd5546b1d296a54d152e85")
+        new ObjectId("54dd5546b1d296a54d152e84"),
+        new ObjectId("54dd5546b1d296a54d152e85")
       ]
     });
 
-    assert.equal(test1(new ObjectID("54dd5546b1d296a54d152e84")), true);
-    assert.equal(test1(new ObjectID("54dd5546b1d296a54d152e85")), true);
-    assert.equal(test1(new ObjectID("54dd5546b1d296a54d152e86")), false);
+    assert.equal(test1(new ObjectId("54dd5546b1d296a54d152e84")), true);
+    assert.equal(test1(new ObjectId("54dd5546b1d296a54d152e85")), true);
+    assert.equal(test1(new ObjectId("54dd5546b1d296a54d152e86")), false);
   });
 
   it("works with toJSON", () => {
@@ -536,12 +536,12 @@ describe(__filename + "#", function() {
   });
 
   it("Throws error if operations are mixed with props", () => {
-    sift({ _id: { $in: [new ObjectID("610b6bc9e29dbd1bb5f045bf")] } });
+    sift({ _id: { $in: [new ObjectId("610b6bc9e29dbd1bb5f045bf")] } });
 
     const test = sift({
-      _id: { $in: [new ObjectID("610b6bc9e29dbd1bb5f045bf")] }
+      _id: { $in: [new ObjectId("610b6bc9e29dbd1bb5f045bf")] }
     });
-    assert.equal(test({ _id: new ObjectID("610b6bc9e29dbd1bb5f045bf") }), true);
+    assert.equal(test({ _id: new ObjectId("610b6bc9e29dbd1bb5f045bf") }), true);
   });
 
   // fix https://github.com/crcn/sift.js/issues/239

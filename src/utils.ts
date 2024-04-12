@@ -27,7 +27,10 @@ export const coercePotentiallyNull = (value: any) =>
 export const isArray = typeChecker<Array<any>>("Array");
 export const isObject = typeChecker<Object>("Object");
 export const isFunction = typeChecker<Function>("Function");
-export const isVanillaObject = value => {
+export const isProperty = (item: any, key: any) => {
+  return item.hasOwnProperty(key) && !isFunction(item[key]);
+};
+export const isVanillaObject = (value) => {
   return (
     value &&
     (value.constructor === Object ||

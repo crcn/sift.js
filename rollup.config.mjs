@@ -49,6 +49,6 @@ export default [
     format: "umd",
     name: "sift",
     file: "sift.csp.min.js",
-    plugins: [replace({ "process.env.CSP_ENABLED": "true" })],
+    plugins: [replace({ "process.env.CSP_ENABLED": "true", preventAssignment: true })],
   }),
 ];

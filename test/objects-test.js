@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { default: sift } = require("../src");
+const { default: sift } = require("../lib");
 
 describe(__filename + "#", function() {
   var topic = [
@@ -267,7 +267,7 @@ describe(__filename + "#", function() {
       assert.deepEqual(sifted2, [objects[1]]);
     });
 
-    it("$ne for array of objects, returns if none of the array elements match the query", function () {
+    it("$ne for array of objects, returns if none of the array elements match the query", function() {
       let q = {
         "things.id": {
           $ne: 123
@@ -284,7 +284,7 @@ describe(__filename + "#", function() {
       assert.deepEqual(sifted2, [objects[0]]);
     });
 
-    it("$eq for array of objects, that have properties in addition to indices", function () {
+    it("$eq for array of objects, that have properties in addition to indices", function() {
       class ArrayWithGetters extends Array {
         get first() {
           return this.at(0);
@@ -296,28 +296,28 @@ describe(__filename + "#", function() {
 
       let objects = [
         {
-          things: new ArrayWithGetters({ id: 123 }, { id: 456 }),
+          things: new ArrayWithGetters({ id: 123 }, { id: 456 })
         },
         {
-          things: new ArrayWithGetters({ id: 123 }, { id: 789 }),
-        },
+          things: new ArrayWithGetters({ id: 123 }, { id: 789 })
+        }
       ];
 
       let q = {
-        "things.first.id": 123,
+        "things.first.id": 123
       };
       let sifted = objects.filter(sift(q));
       assert.deepEqual(sifted, objects);
 
       let q2 = {
-        "things.last.id": 789,
+        "things.last.id": 789
       };
       let sifted2 = objects.filter(sift(q2));
       assert.deepEqual(sifted2, [objects[1]]);
 
       objects = [
         { things: new ArrayWithGetters({ map: "USA" }, { map: "DEU" }) },
-        { things: new ArrayWithGetters({ map: "USA" }, { map: "MYS" }) },
+        { things: new ArrayWithGetters({ map: "USA" }, { map: "MYS" }) }
       ];
 
       let q3 = { "things.map": "USA" };
@@ -326,7 +326,7 @@ describe(__filename + "#", function() {
     });
   });
 
-  describe("$where", function () {
+  describe("$where", function() {
     var couples = [
       {
         name: "SMITH",

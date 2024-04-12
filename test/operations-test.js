@@ -1,5 +1,5 @@
 const assert = require("assert");
-var ObjectID = require("bson").ObjectID;
+var ObjectID = require("bson").ObjectId;
 const MongoClient = require("mongodb").MongoClient;
 const { promisify } = require("util");
 const {
@@ -8,7 +8,7 @@ const {
   ...defaultOperations
 } = require("../lib");
 
-describe(__filename + "#", function() {
+describe(__filename + "#", function () {
   [
     [{ $lt: new Date() }, [null], [], false],
 
@@ -17,7 +17,7 @@ describe(__filename + "#", function() {
     [
       { a: { $eq: { b: 1 } } },
       [{ a: { b: 1 } }, { a: { b: 1, c: 2 } }],
-      [{ a: { b: 1 } }]
+      [{ a: { b: 1 } }],
     ],
     ["5", [5, "5", 6], ["5"], false],
     [false, [false, "false", true], [false], false],
@@ -32,52 +32,52 @@ describe(__filename + "#", function() {
       new Date(1),
       [new Date(), new Date(1), new Date(2), new Date(3)],
       [new Date(1)],
-      false
+      false,
     ],
 
     // addresses https://github.com/crcn/sift.js/issues/208
     [
       {
-        "field.0": null
+        "field.0": null,
       },
       [{ field: [] }, { field: null }],
-      [{ field: null }]
+      [{ field: null }],
     ],
     [
       {
-        "field.b": null
+        "field.b": null,
       },
       [
         { field: {} },
         { field: null },
         { field: { b: 0 } },
-        { field: { b: null } }
+        { field: { b: null } },
       ],
-      [{ field: {} }, { field: null }, { field: { b: null } }]
+      [{ field: {} }, { field: null }, { field: { b: null } }],
     ],
 
     // addresses https://github.com/crcn/sift.js/issues/209
     [
       { field: null },
       [{ name: "A" }, { field: null }, { field: 0 }, { field: false }],
-      [{ name: "A" }, { field: null }]
+      [{ name: "A" }, { field: null }],
     ],
     [/^a/, ["a", "ab", "abc", "b", "bc"], ["a", "ab", "abc"], false],
 
     [
-      function(b) {
+      function (b) {
         return b === 1;
       },
       [1, 2, 3],
       [1],
-      false
+      false,
     ],
 
     [
       new ObjectID("54dd5546b1d296a54d152e84"),
       [new ObjectID(), new ObjectID("54dd5546b1d296a54d152e84")],
       [new ObjectID("54dd5546b1d296a54d152e84")],
-      false
+      false,
     ],
 
     // check for exactness
@@ -86,33 +86,33 @@ describe(__filename + "#", function() {
       [
         { a: "done", c: { d: "d" } },
         { c: { d: "d" } },
-        { c: { d: "d", e: "f" } }
+        { c: { d: "d", e: "f" } },
       ],
-      [{ a: "done", c: { d: "d" } }, { c: { d: "d" } }]
+      [{ a: "done", c: { d: "d" } }, { c: { d: "d" } }],
     ],
 
     [
       { a: 1 },
       [{ a: 1 }, { a: 2 }, { a: 1, b: 2 }],
-      [{ a: 1 }, { a: 1, b: 2 }]
+      [{ a: 1 }, { a: 1, b: 2 }],
     ],
 
     [
       { a: { c: 1 } },
       [{ a: { c: 1 } }, { a: { c: 1, d: 1 } }],
-      [{ a: { c: 1 } }]
+      [{ a: { c: 1 } }],
     ],
 
     [
       { a: [1, 2, 3] },
       [{ a: 1 }, { a: [1, 2] }, { a: [1, 2, 3], c: 2 }],
-      [{ a: [1, 2, 3], c: 2 }]
+      [{ a: [1, 2, 3], c: 2 }],
     ],
 
     [
       { a: [{ b: 1 }, { b: 2 }] },
       [{ a: [{ b: 1 }, { b: 2 }] }, { a: [{ b: 1 }] }, { a: [{ b: 1 }], b: 2 }],
-      [{ a: [{ b: 1 }, { b: 2 }] }]
+      [{ a: [{ b: 1 }, { b: 2 }] }],
     ],
     [
       {
@@ -121,32 +121,32 @@ describe(__filename + "#", function() {
             $or: [
               {
                 value: "refa",
-                $or: [{ unfinished: true }]
+                $or: [{ unfinished: true }],
               },
               {
                 value: "reno",
-                $or: [{ unfinished: true }]
-              }
-            ]
-          }
-        }
+                $or: [{ unfinished: true }],
+              },
+            ],
+          },
+        },
       },
       [
         {
           educations: [
             { value: "refa", unfinished: true },
-            { value: "reno", unfinished: true }
-          ]
-        }
+            { value: "reno", unfinished: true },
+          ],
+        },
       ],
       [
         {
           educations: [
             { value: "refa", unfinished: true },
-            { value: "reno", unfinished: true }
-          ]
-        }
-      ]
+            { value: "reno", unfinished: true },
+          ],
+        },
+      ],
     ],
     // $ne
     [{ $ne: 5 }, [5, "5", 6], ["5", 6], false],
@@ -154,7 +154,7 @@ describe(__filename + "#", function() {
     [
       { field: { $ne: null } },
       [{ name: "A" }, { field: null }, { field: 0 }, { field: false }],
-      [{ field: 0 }, { field: false }]
+      [{ field: 0 }, { field: false }],
     ],
     [{ $ne: "5" }, ["5", 6], [6], false],
     [{ $ne: false }, [false], [], false],
@@ -164,7 +164,7 @@ describe(__filename + "#", function() {
     [
       { groups: { $ne: 111 } },
       [{ groups: [111, 222, 333, 444] }, { groups: [222, 333, 444] }],
-      [{ groups: [222, 333, 444] }]
+      [{ groups: [222, 333, 444] }],
     ],
 
     // $lt
@@ -177,13 +177,13 @@ describe(__filename + "#", function() {
       { $lt: new Date() },
       [new Date("2010-01-01")],
       [new Date("2010-01-01")],
-      false
+      false,
     ],
     [
       { $lt: new Date(3) },
       [new Date(1), new Date(2), new Date(3)],
       [new Date(1), new Date(2)],
-      false
+      false,
     ],
 
     // $lte
@@ -195,13 +195,13 @@ describe(__filename + "#", function() {
       { ab: { $lte: "blue" } },
       [{ ab: "blue" }, { cd: 5 }],
       [{ ab: "blue" }],
-      false
+      false,
     ],
     [
       { groups: { $lt: 5 } },
       [{ groups: [1, 2, 3, 4] }, { groups: [7, 8] }],
       [{ groups: [1, 2, 3, 4] }],
-      false
+      false,
     ],
 
     // $gt
@@ -212,7 +212,7 @@ describe(__filename + "#", function() {
     [
       { groups: { $gt: 5 } },
       [{ groups: [1, 2, 3, 4] }, { groups: [7, 8] }],
-      [{ groups: [7, 8] }]
+      [{ groups: [7, 8] }],
     ],
 
     // $gte
@@ -223,12 +223,12 @@ describe(__filename + "#", function() {
       { ab: { $gte: "blue" } },
       [{ ab: "blue" }, { cd: 5 }],
       [{ ab: "blue" }],
-      false
+      false,
     ],
     [
       { groups: { $gte: 5 } },
       [{ groups: [1, 2, 3, 4] }, { groups: [7, 8] }],
-      [{ groups: [7, 8] }]
+      [{ groups: [7, 8] }],
     ],
 
     // $mod
@@ -236,7 +236,7 @@ describe(__filename + "#", function() {
     [
       { groups: { $mod: [2, 0] } },
       [{ groups: [1, 2, 3, 4] }, { groups: [7, 9] }],
-      [{ groups: [1, 2, 3, 4] }]
+      [{ groups: [1, 2, 3, 4] }],
     ],
 
     // $exists
@@ -245,12 +245,12 @@ describe(__filename + "#", function() {
       { $exists: true },
       [0, false, undefined, 1, {}],
       [0, false, undefined, 1, {}],
-      false
+      false,
     ],
     [
       { "a.b": { $exists: true } },
       [{ a: { b: "exists" } }, { a: { c: "does not exist" } }],
-      [{ a: { b: "exists" } }]
+      [{ a: { b: "exists" } }],
     ],
 
     [
@@ -260,16 +260,16 @@ describe(__filename + "#", function() {
         { a: 2, field: 5 },
         { a: 3, field: 0 },
         { a: 4, field: undefined },
-        { a: 5 }
+        { a: 5 },
       ],
-      [{ a: 1 }, { a: 5 }]
+      [{ a: 1 }, { a: 5 }],
     ],
 
     // based on https://github.com/crcn/sift.js/issues/146
     [
       { "formData.kg": { $exists: true } },
       [{ formData: { kg: null } }, { a: 1 }],
-      [{ formData: { kg: null } }]
+      [{ formData: { kg: null } }],
     ],
 
     // https://github.com/crcn/sift.js/issues/263
@@ -296,22 +296,22 @@ describe(__filename + "#", function() {
     [
       { a: { $in: [1, 2, 3, 4] } },
       [{ a: [3, 4] }, { a: [5, 6] }],
-      [{ a: [3, 4] }]
+      [{ a: [3, 4] }],
     ],
     [
       { "a.b.status": { $in: [0] } },
       [{ a: { b: [{ status: 0 }] } }, { a: { b: [{ status: 2 }] } }],
-      [{ a: { b: [{ status: 0 }] } }]
+      [{ a: { b: [{ status: 0 }] } }],
     ],
     [
       { "a.b.status": { $in: [0, 2] } },
       [{ a: { b: [{ status: 0 }] } }, { a: { b: [{ status: 2 }] } }],
-      [{ a: { b: [{ status: 0 }] } }, { a: { b: [{ status: 2 }] } }]
+      [{ a: { b: [{ status: 0 }] } }, { a: { b: [{ status: 2 }] } }],
     ],
     [
       { x: { $in: [/.*aaa.*/, /.*bbb.*/] } },
       [{ x: { b: "aaa" } }, { x: "bbb" }, { x: "ccc" }, { x: "aaa" }],
-      [{ x: "bbb" }, { x: "aaa" }]
+      [{ x: "bbb" }, { x: "aaa" }],
     ],
     // $in: primitive
     [{ a: { $in: 1 } }, [{ a: 1 }, { a: 2 }], [{ a: 1 }]],
@@ -323,12 +323,12 @@ describe(__filename + "#", function() {
     [
       { "root.notDefined": { $nin: [1, 2, 3] } },
       [{ root: { defined: 1337 } }],
-      [{ root: { defined: 1337 } }]
+      [{ root: { defined: 1337 } }],
     ],
     [
       { "root.notDefined": { $nin: [1, 2, 3, null] } },
       [{ root: { defined: 1337 } }],
-      []
+      [],
     ],
     [{ aaaaa: { $nin: [null] } }, [{ root: { defined: 1337 } }], []],
     // $nin: primitive
@@ -337,7 +337,7 @@ describe(__filename + "#", function() {
     [
       { x: { $nin: [/.*aaa.*/, /.*bbb.*/] } },
       [{ x: { b: "aaa" } }, { x: "bbb" }, { x: "ccc" }, { x: "aaa" }],
-      [{ x: { b: "aaa" } }, { x: "ccc" }]
+      [{ x: { b: "aaa" } }, { x: "ccc" }],
     ],
 
     // $not
@@ -360,22 +360,25 @@ describe(__filename + "#", function() {
     // $all
     [
       { $all: [1, 2, 3] },
-      [[1, 2, 3, 4], [1, 2, 4]],
+      [
+        [1, 2, 3, 4],
+        [1, 2, 4],
+      ],
       [[1, 2, 3, 4]],
-      false // FIXME: operation passed in cannot be an Array
+      false, // FIXME: operation passed in cannot be an Array
     ],
     [
       { $all: [0, false] },
       [[0, 1, 2], [0, false], ["0", "false"], undefined],
       [[0, false]],
-      false // FIXME: operation passed in cannot be an Array
+      false, // FIXME: operation passed in cannot be an Array
     ],
     [{ $all: ["1"] }, [[1]], [], false],
     [
       { $all: [new Date(1), new Date(2)] },
       [[new Date(1), new Date(2)], [new Date(1)]],
       [[new Date(1), new Date(2)]],
-      false // FIXME: operation passed in cannot be an Array
+      false, // FIXME: operation passed in cannot be an Array
     ],
 
     // https://github.com/crcn/sift.js/issues/160
@@ -391,23 +394,23 @@ describe(__filename + "#", function() {
                 product: "poster",
                 sku: "P18x24",
                 quantity: 1,
-                amount: 3000
+                amount: 3000,
               },
               {
                 product: "frame",
                 sku: "P18x24",
                 quantity: 1,
-                amount: 3000
+                amount: 3000,
               },
               {
                 product: "shipping",
                 sku: "shipping",
                 quantity: 1,
-                amount: 5000
-              }
-            ]
-          }
-        }
+                amount: 5000,
+              },
+            ],
+          },
+        },
       ],
       [
         {
@@ -419,39 +422,39 @@ describe(__filename + "#", function() {
                 product: "poster",
                 sku: "P18x24",
                 quantity: 1,
-                amount: 3000
+                amount: 3000,
               },
               {
                 product: "frame",
                 sku: "P18x24",
                 quantity: 1,
-                amount: 3000
+                amount: 3000,
               },
               {
                 product: "shipping",
                 sku: "shipping",
                 quantity: 1,
-                amount: 5000
-              }
-            ]
-          }
-        }
-      ]
+                amount: 5000,
+              },
+            ],
+          },
+        },
+      ],
     ],
     [
       {
-        "array.value": 1
+        "array.value": 1,
       },
       [
         {
-          array: [{ value: 1 }, { value: 2 }]
-        }
+          array: [{ value: 1 }, { value: 2 }],
+        },
       ],
       [
         {
-          array: [{ value: 1 }, { value: 2 }]
-        }
-      ]
+          array: [{ value: 1 }, { value: 2 }],
+        },
+      ],
     ],
     // $size
     [{ a: { $size: 0 } }, [{ a: [] }, { a: [1, 2] }], [{ a: [] }], false],
@@ -465,7 +468,7 @@ describe(__filename + "#", function() {
     [
       { $or: [{ a: 1 }, { b: 1 }] },
       [{ a: 1, b: 2 }, { a: 1 }],
-      [{ a: 1, b: 2 }, { a: 1 }]
+      [{ a: 1, b: 2 }, { a: 1 }],
     ],
 
     // $nor
@@ -474,18 +477,24 @@ describe(__filename + "#", function() {
     [
       { $nor: [{ a: 1 }, { b: 1 }] },
       [{ a: 1, b: 2 }, { a: 1 }, { c: 1 }],
-      [{ c: 1 }]
+      [{ c: 1 }],
     ],
 
     // $and
     [{ $and: [{ $gt: 1 }, { $lt: 4 }] }, [1, 2, 3, 4], [2, 3], false],
     [
       {
-        $and: [{ field: { $not: { $type: String } } }, { field: { $ne: null } }]
+        $and: [
+          { field: { $not: { $type: String } } },
+          { field: { $ne: null } },
+        ],
       },
-      [{ a: 1, field: 1 }, { a: 2, field: "2" }],
+      [
+        { a: 1, field: 1 },
+        { a: 2, field: "2" },
+      ],
       [{ a: 1, field: 1 }],
-      false
+      false,
     ],
 
     // $regex
@@ -493,17 +502,17 @@ describe(__filename + "#", function() {
       { $regex: "^a" },
       ["a", "ab", "abc", "bc", "bcd"],
       ["a", "ab", "abc"],
-      false
+      false,
     ],
     [
       { a: { $regex: "b|c" } },
       [{ a: ["b"] }, { a: ["c"] }, { a: "c" }, { a: "d" }],
-      [{ a: ["b"] }, { a: ["c"] }, { a: "c" }]
+      [{ a: ["b"] }, { a: ["c"] }, { a: "c" }],
     ],
     [
       { folder: { $regex: "^[0-9]{4}$" } },
       [{ folder: ["1234", "3212"] }],
-      [{ folder: ["1234", "3212"] }]
+      [{ folder: ["1234", "3212"] }],
     ],
 
     // $options
@@ -511,12 +520,12 @@ describe(__filename + "#", function() {
       { $regex: "^a", $options: "i" },
       ["a", "Ab", "abc", "bc", "bcd"],
       ["a", "Ab", "abc"],
-      false
+      false,
     ],
     [
       { text: { $regex: ".*lis.*", $options: "i" } },
       [{ text: ["Bob", "Melissa", "Joe", "Sherry"] }],
-      [{ text: ["Bob", "Melissa", "Joe", "Sherry"] }]
+      [{ text: ["Bob", "Melissa", "Joe", "Sherry"] }],
     ],
 
     // undefined
@@ -528,19 +537,19 @@ describe(__filename + "#", function() {
     [
       { "a.b": { $exists: true, $nin: [null] } },
       [{ a: { b: "exists" } }, { a: { c: "does not exist" } }],
-      [{ a: { b: "exists" } }]
+      [{ a: { b: "exists" } }],
     ],
 
     // $where
     [
       {
-        $where: function() {
+        $where: function () {
           return this.v === 1;
-        }
+        },
       },
       [{ v: 1 }, { v: 2 }],
       [{ v: 1 }],
-      false
+      false,
     ],
     [{ $where: "this.v === 1" }, [{ v: 1 }, { v: 2 }], [{ v: 1 }]],
     [{ $where: "obj.v === 1" }, [{ v: 1 }, { v: 2 }], [{ v: 1 }]],
@@ -551,92 +560,92 @@ describe(__filename + "#", function() {
       [
         { a: { b: 1, c: 2 } },
         { a: [{ b: 1, c: 2, d: 3 }] },
-        { a: { b: 2, c: 3 } }
+        { a: { b: 2, c: 3 } },
       ],
-      [{ a: [{ b: 1, c: 2, d: 3 }] }]
+      [{ a: [{ b: 1, c: 2, d: 3 }] }],
     ],
     [
       { a: { $elemMatch: { b: 2, c: { $gt: 2 } } } },
       [
         { a: [{ b: 1, c: 2 }] },
         { a: [{ b: 1, c: 3, d: 3 }] },
-        [{ a: [{ b: 2, c: 3 }] }]
+        [{ a: [{ b: 2, c: 3 }] }],
       ],
       [[{ a: [{ b: 2, c: 3 }] }]],
-      false
+      false,
     ],
     [
       { tags: { $all: [{ $elemMatch: { a: 1 } }] } },
       [{ tags: [{ a: 1 }] }, { tags: [{ a: 1 }, { b: 1 }] }],
-      [{ tags: [{ a: 1 }] }, { tags: [{ a: 1 }, { b: 1 }] }]
+      [{ tags: [{ a: 1 }] }, { tags: [{ a: 1 }, { b: 1 }] }],
     ],
     [
       { tags: { $elemMatch: { a: 1 } } },
       [{ tags: [{ a: 1 }] }, { tags: [{ a: 1 }, { b: 1 }] }],
-      [{ tags: [{ a: 1 }] }, { tags: [{ a: 1 }, { b: 1 }] }]
+      [{ tags: [{ a: 1 }] }, { tags: [{ a: 1 }, { b: 1 }] }],
     ],
     [
       {
         moves: {
           $elemMatch: {
             player: {
-              $ne: 5
-            }
-          }
-        }
+              $ne: 5,
+            },
+          },
+        },
       },
       [
         {
           moves: [
             {
-              player: 3
+              player: 3,
             },
             {
-              player: 5
-            }
-          ]
+              player: 5,
+            },
+          ],
         },
         {
           moves: [
             {
-              player: 5
+              player: 5,
             },
             {
-              player: 3
-            }
-          ]
+              player: 3,
+            },
+          ],
         },
         {
           moves: [
             {
-              player: 5
-            }
-          ]
-        }
+              player: 5,
+            },
+          ],
+        },
       ],
 
       [
         {
           moves: [
             {
-              player: 3
+              player: 3,
             },
             {
-              player: 5
-            }
-          ]
+              player: 5,
+            },
+          ],
         },
         {
           moves: [
             {
-              player: 5
+              player: 5,
             },
             {
-              player: 3
-            }
-          ]
-        }
-      ]
+              player: 3,
+            },
+          ],
+        },
+      ],
     ],
 
     // address https://github.com/crcn/sift.js/issues/203
@@ -646,39 +655,39 @@ describe(__filename + "#", function() {
           $elemMatch: {
             type: { $eq: "driveway" },
             elements: {
-              $nin: ["grass", "green"]
-            }
-          }
-        }
+              $nin: ["grass", "green"],
+            },
+          },
+        },
       },
       [
         {
           areas: [
             { type: "roof" },
-            { type: "driveway", propertyLines: ["green"], elements: ["tiles"] }
-          ]
+            { type: "driveway", propertyLines: ["green"], elements: ["tiles"] },
+          ],
         },
         {
           areas: [
             { type: "driveway", propertyLines: ["green"], elements: ["tiles"] },
-            { type: "roof" }
-          ]
-        }
+            { type: "roof" },
+          ],
+        },
       ],
       [
         {
           areas: [
             { type: "roof" },
-            { type: "driveway", propertyLines: ["green"], elements: ["tiles"] }
-          ]
+            { type: "driveway", propertyLines: ["green"], elements: ["tiles"] },
+          ],
         },
         {
           areas: [
             { type: "driveway", propertyLines: ["green"], elements: ["tiles"] },
-            { type: "roof" }
-          ]
-        }
-      ]
+            { type: "roof" },
+          ],
+        },
+      ],
     ],
 
     // addresses: https://github.com/crcn/sift.js/issues/183
@@ -687,45 +696,45 @@ describe(__filename + "#", function() {
         bills: {
           $elemMatch: {
             month: "july",
-            value: { $gt: 500 }
-          }
-        }
+            value: { $gt: 500 },
+          },
+        },
       },
       [
         {
           bills: [
             { month: "july", value: 200 },
-            { month: "august", value: 1000 }
-          ]
+            { month: "august", value: 1000 },
+          ],
         },
         {
           bills: [
             { month: "july", value: 200 },
-            { month: "august", value: 1000 }
-          ]
-        }
+            { month: "august", value: 1000 },
+          ],
+        },
       ],
-      []
+      [],
     ],
 
     // dot-notation
     [
       { "a.b": /c/ },
       [{ a: { b: "c" } }, { a: { b: "cd" } }, { a: { b: "e" } }],
-      [{ a: { b: "c" } }, { a: { b: "cd" } }]
+      [{ a: { b: "c" } }, { a: { b: "cd" } }],
     ],
     [
       { "foo.0": "baz" },
       [{ foo: ["bar", "baz"] }, { foo: ["baz", "bar"] }],
-      [{ foo: ["baz", "bar"] }]
+      [{ foo: ["baz", "bar"] }],
     ],
     [
       { "foo.0.name": "baz" },
       [
         { foo: [{ name: "bar" }, { name: "baz" }] },
-        { foo: [{ name: "baz" }, { name: "bar" }] }
+        { foo: [{ name: "baz" }, { name: "bar" }] },
       ],
-      [{ foo: [{ name: "baz" }, { name: "bar" }] }]
+      [{ foo: [{ name: "baz" }, { name: "bar" }] }],
     ],
 
     // object.toString() tests
@@ -763,7 +772,7 @@ describe(__filename + "#", function() {
       { $in: [{}] },
       [{}, {}],
       [{}, {}],
-      false // FIXME: unknown top level operator: $in
+      false, // FIXME: unknown top level operator: $in
     ],
 
     // based on https://gist.github.com/jdnichollsc/00ea8cf1204b17d9fb9a991fbd1dfee6
@@ -771,46 +780,46 @@ describe(__filename + "#", function() {
       {
         $and: [
           { "a.s": { $lte: new Date("2017-01-29T05:00:00.000Z") } },
-          { "a.e": { $gte: new Date("2017-01-08T05:00:00.000Z") } }
-        ]
+          { "a.e": { $gte: new Date("2017-01-08T05:00:00.000Z") } },
+        ],
       },
       [
         {
           a: {
             s: new Date("2017-01-13T05:00:00.000Z"),
-            e: new Date("2017-01-31T05:00:00.000Z")
-          }
-        }
+            e: new Date("2017-01-31T05:00:00.000Z"),
+          },
+        },
       ],
       [
         {
           a: {
             s: new Date("2017-01-13T05:00:00.000Z"),
-            e: new Date("2017-01-31T05:00:00.000Z")
-          }
-        }
-      ]
-    ]
-  ].forEach(function(operation, i) {
+            e: new Date("2017-01-31T05:00:00.000Z"),
+          },
+        },
+      ],
+    ],
+  ].forEach(function (operation, i) {
     var filter = operation[0];
     var array = operation[1];
     var matchArray = operation[2];
     var testWithMongo = operation[3];
 
-    it(i + ": " + JSON.stringify(filter), async function() {
+    it(i + ": " + JSON.stringify(filter), async function () {
       // out of the box
       assert.equal(
         JSON.stringify(array.filter(sift(filter))),
-        JSON.stringify(matchArray)
+        JSON.stringify(matchArray),
       );
 
       // custom
       const tester = createQueryTester(filter, {
-        operations: defaultOperations
+        operations: defaultOperations,
       });
       assert.equal(
         JSON.stringify(array.filter(tester)),
-        JSON.stringify(matchArray)
+        JSON.stringify(matchArray),
       );
 
       if (process.env.VALIDATE_WITH_MONGODB && testWithMongo !== false) {
@@ -839,13 +848,13 @@ async function testNativeQuery(filter, array, matchArray) {
 
   assert.equal(
     JSON.stringify(
-      results.map(result => {
+      results.map((result) => {
         const copy = { ...result };
         delete copy._id;
         return copy;
-      })
+      }),
     ),
-    JSON.stringify(matchArray)
+    JSON.stringify(matchArray),
   );
 
   await promisify(db.dropDatabase.bind(db))();

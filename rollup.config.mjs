@@ -1,8 +1,8 @@
 import ts from "@rollup/plugin-typescript";
 import replace from "@rollup/plugin-replace";
-import { terser } from "rollup-plugin-terser";
+import terser from "@rollup/plugin-terser";
 
-const config = options => {
+const config = (options) => {
   const extraOutput = options.file
     ? { file: options.file }
     : { dir: options.dir || options.format };
@@ -14,16 +14,16 @@ const config = options => {
       format: options.format,
       name: options.name,
       plugins: options.outputPlugins,
-      exports: "named"
+      exports: "named",
     },
     plugins: [
       ts({
         declaration: false,
         module: "es2015",
-        target: options.target || "es5"
+        target: options.target || "es5",
       }),
-      ...(options.plugins || [])
-    ]
+      ...(options.plugins || []),
+    ],
   };
 };
 
@@ -39,16 +39,16 @@ export default [
       terser({
         mangle: {
           properties: {
-            regex: /^_\w/
-          }
-        }
-      })
-    ]
+            regex: /^_\w/,
+          },
+        },
+      }),
+    ],
   }),
   config({
     format: "umd",
     name: "sift",
     file: "sift.csp.min.js",
-    plugins: [replace({ "process.env.CSP_ENABLED": "true" })]
-  })
+    plugins: [replace({ "process.env.CSP_ENABLED": "true", preventAssignment: true })],
+  }),
 ];

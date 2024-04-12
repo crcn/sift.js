@@ -10,7 +10,7 @@ import {
   Query,
   NamedGroupOperation,
   numericalOperation,
-  containsOperation
+  containsOperation,
 } from "./core";
 import { Key, comparable, isFunction, isArray } from "./utils";
 
@@ -42,7 +42,7 @@ class $ElemMatch extends BaseOperation<Query<any>> {
     this._queryOperation = createQueryOperation(
       this.params,
       this.owneryQuery,
-      this.options
+      this.options,
     );
   }
   reset() {
@@ -75,7 +75,7 @@ class $Not extends BaseOperation<Query<any>> {
     this._queryOperation = createQueryOperation(
       this.params,
       this.owneryQuery,
-      this.options
+      this.options,
     );
   }
   reset() {
@@ -115,8 +115,8 @@ class $Or extends BaseOperation<any> {
   private _ops: Operation<any>[];
   init() {
     assertGroupNotEmpty(this.params);
-    this._ops = this.params.map(op =>
-      createQueryOperation(op, null, this.options)
+    this._ops = this.params.map((op) =>
+      createQueryOperation(op, null, this.options),
     );
   }
   reset() {
@@ -229,14 +229,14 @@ class $And extends NamedGroupOperation {
     params: Query<any>[],
     owneryQuery: Query<any>,
     options: Options,
-    name: string
+    name: string,
   ) {
     super(
       params,
       owneryQuery,
       options,
-      params.map(query => createQueryOperation(query, owneryQuery, options)),
-      name
+      params.map((query) => createQueryOperation(query, owneryQuery, options)),
+      name,
     );
 
     assertGroupNotEmpty(params);
@@ -252,14 +252,14 @@ class $All extends NamedGroupOperation {
     params: Query<any>[],
     owneryQuery: Query<any>,
     options: Options,
-    name: string
+    name: string,
   ) {
     super(
       params,
       owneryQuery,
       options,
-      params.map(query => createQueryOperation(query, owneryQuery, options)),
-      name
+      params.map((query) => createQueryOperation(query, owneryQuery, options)),
+      name,
     );
   }
   next(item: any, key: Key, owner: any, root: boolean) {
@@ -273,102 +273,102 @@ export const $ne = (
   params: any,
   owneryQuery: Query<any>,
   options: Options,
-  name: string
+  name: string,
 ) => new $Ne(params, owneryQuery, options, name);
 export const $or = (
   params: Query<any>[],
   owneryQuery: Query<any>,
   options: Options,
-  name: string
+  name: string,
 ) => new $Or(params, owneryQuery, options, name);
 export const $nor = (
   params: Query<any>[],
   owneryQuery: Query<any>,
   options: Options,
-  name: string
+  name: string,
 ) => new $Nor(params, owneryQuery, options, name);
 export const $elemMatch = (
   params: any,
   owneryQuery: Query<any>,
   options: Options,
-  name: string
+  name: string,
 ) => new $ElemMatch(params, owneryQuery, options, name);
 export const $nin = (
   params: any,
   owneryQuery: Query<any>,
   options: Options,
-  name: string
+  name: string,
 ) => new $Nin(params, owneryQuery, options, name);
 export const $in = (
   params: any,
   owneryQuery: Query<any>,
   options: Options,
-  name: string
+  name: string,
 ) => {
   return new $In(params, owneryQuery, options, name);
 };
 
-export const $lt = numericalOperation(params => b => {
+export const $lt = numericalOperation((params) => (b) => {
   return b != null && b < params;
 });
-export const $lte = numericalOperation(params => b => {
+export const $lte = numericalOperation((params) => (b) => {
   return b === params || b <= params;
 });
-export const $gt = numericalOperation(params => b => {
+export const $gt = numericalOperation((params) => (b) => {
   return b != null && b > params;
 });
-export const $gte = numericalOperation(params => b => {
+export const $gte = numericalOperation((params) => (b) => {
   return b === params || b >= params;
 });
 export const $mod = (
   [mod, equalsValue]: number[],
   owneryQuery: Query<any>,
-  options: Options
+  options: Options,
 ) =>
   new EqualsOperation(
-    b => comparable(b) % mod === equalsValue,
+    (b) => comparable(b) % mod === equalsValue,
     owneryQuery,
-    options
+    options,
   );
 export const $exists = (
   params: boolean,
   owneryQuery: Query<any>,
   options: Options,
-  name: string
+  name: string,
 ) => new $Exists(params, owneryQuery, options, name);
 export const $regex = (
   pattern: string,
   owneryQuery: Query<any>,
-  options: Options
+  options: Options,
 ) =>
   new EqualsOperation(
     new RegExp(pattern, owneryQuery.$options),
     owneryQuery,
-    options
+    options,
   );
 export const $not = (
   params: any,
   owneryQuery: Query<any>,
   options: Options,
-  name: string
+  name: string,
 ) => new $Not(params, owneryQuery, options, name);
 
 const typeAliases = {
-  number: v => typeof v === "number",
-  string: v => typeof v === "string",
-  bool: v => typeof v === "boolean",
-  array: v => Array.isArray(v),
-  null: v => v === null,
-  timestamp: v => v instanceof Date
+  number: (v) => typeof v === "number",
+  string: (v) => typeof v === "string",
+  bool: (v) => typeof v === "boolean",
+  array: (v) => Array.isArray(v),
+  null: (v) => v === null,
+  timestamp: (v) => v instanceof Date,
 };
 
 export const $type = (
   clazz: Function | string,
   owneryQuery: Query<any>,
-  options: Options
+  options: Options,
 ) =>
   new EqualsOperation(
-    b => {
+    (b) => {
       if (typeof clazz === "string") {
         if (!typeAliases[clazz]) {
           throw new Error(`Type alias does not exist`);
@@ -380,31 +380,31 @@ export const $type = (
       return b != null ? b instanceof clazz || b.constructor === clazz : false;
     },
     owneryQuery,
-    options
+    options,
   );
 export const $and = (
   params: Query<any>[],
   ownerQuery: Query<any>,
   options: Options,
-  name: string
+  name: string,
 ) => new $And(params, ownerQuery, options, name);
 
 export const $all = (
   params: Query<any>[],
   ownerQuery: Query<any>,
   options: Options,
-  name: string
+  name: string,
 ) => new $All(params, ownerQuery, options, name);
 export const $size = (
   params: number,
   ownerQuery: Query<any>,
-  options: Options
+  options: Options,
 ) => new $Size(params, ownerQuery, options, "$size");
 export const $options = () => null;
 export const $where = (
   params: string | Function,
   ownerQuery: Query<any>,
-  options: Options
+  options: Options,
 ) => {
   let test;
 
@@ -414,9 +414,9 @@ export const $where = (
     test = new Function("obj", "return " + params);
   } else {
     throw new Error(
-      `In CSP mode, sift does not support strings in "$where" condition`
+      `In CSP mode, sift does not support strings in "$where" condition`,
     );
   }
 
-  return new EqualsOperation(b => test.bind(b)(b), ownerQuery, options);
+  return new EqualsOperation((b) => test.bind(b)(b), ownerQuery, options);
 };

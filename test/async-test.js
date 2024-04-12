@@ -6,15 +6,15 @@ describe(__filename + "#", () => {
     [
       "can use a simple async $eq filter",
       {
-        $eq: function(value) {
-          return new Promise(function(resolve) {
+        $eq: function (value) {
+          return new Promise(function (resolve) {
             resolve(value > 2);
           });
-        }
+        },
       },
       [1, 2, 3, 4, 5],
-      [3, 4, 5]
-    ]
+      [3, 4, 5],
+    ],
 
     // [
     //   "can use a simple async $or filter",
@@ -32,15 +32,15 @@ describe(__filename + "#", () => {
     //       }
     //     ]
     // }, [1, 2, 3, 4, 5], [3, 4]]
-  ].forEach(function([description, query, values, result]) {
-    xit(description, function() {
-      return new Promise(function(resolve, reject) {
+  ].forEach(function ([description, query, values, result]) {
+    xit(description, function () {
+      return new Promise(function (resolve, reject) {
         var filter = asyncFilter(sift(query));
-        filter(values).then(function(filteredValues) {
+        filter(values).then(function (filteredValues) {
           try {
             assert.equal(
               JSON.stringify(filteredValues),
-              JSON.stringify(result)
+              JSON.stringify(result),
             );
             resolve();
           } catch (e) {
@@ -53,9 +53,9 @@ describe(__filename + "#", () => {
 });
 
 function asyncFilter(filter) {
-  return function(values) {
-    return new Promise(function(resolve, reject) {
-      Promise.all(values.map(filter)).then(function(filtered) {
+  return function (values) {
+    return new Promise(function (resolve, reject) {
+      Promise.all(values.map(filter)).then(function (filtered) {
         resolve(values.filter((value, index) => filtered[index]));
       });
     });

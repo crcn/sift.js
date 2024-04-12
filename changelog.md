@@ -20,13 +20,11 @@
 
 - Fix https://github.com/crcn/sift.js/issues/231
 
-
 ## 14.0.0
 
 - Fix https://github.com/crcn/sift.js/issues/227
 - Fix https://github.com/crcn/sift.js/issues/228
-- 
-
+-
 
 ## 13.1.0
 
@@ -95,11 +93,11 @@
 
 ```javascript
 sift.use({
-  $operator: function(a) {
-    return function(b) {
+  $operator: function (a) {
+    return function (b) {
       // compare here
     };
-  }
+  },
 });
 ```
 

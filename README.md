@@ -24,7 +24,7 @@ import sift from "sift";
 
 // intersecting arrays
 const result1 = ["hello", "sifted", "array!"].filter(
-        sift({ $in: ["hello", "world"] })
+  sift({ $in: ["hello", "world"] }),
 ); // ['hello']
 
 // regexp filter
@@ -33,21 +33,21 @@ const result2 = ["craig", "john", "jake"].filter(sift(/^j/)); //['john','jake']
 // function filter
 const testFilter = sift({
   //you can also filter against functions
-  name: function(value) {
+  name: function (value) {
     return value.length == 5;
-  }
+  },
 });
 
 const result3 = [
   {
-    name: "craig"
+    name: "craig",
   },
   {
-    name: "john"
+    name: "john",
   },
   {
-    name: "jake"
-  }
+    name: "jake",
+  },
 ].filter(testFilter); // filtered: [{ name: 'craig' }]
 
 // you can test *single values* against your custom sifter
@@ -101,13 +101,13 @@ const filter = createQueryTester(
     operations: {
       $something(mod, ownerQuery, options) {
         return createEqualsOperation(
-          value => value % mod === 0,
+          (value) => value % mod === 0,
           ownerQuery,
-          options
+          options,
         );
-      }
-    }
-  }
+      },
+    },
+  },
 );
 filter(10); // true
 filter(11); // false
@@ -126,7 +126,7 @@ Intersecting two arrays:
 ```javascript
 // filtered: ['Brazil']
 ["Brazil", "Haiti", "Peru", "Chile"].filter(
-  sift({ $in: ["Costa Rica", "Brazil"] })
+  sift({ $in: ["Costa Rica", "Brazil"] }),
 );
 ```
 
@@ -134,7 +134,7 @@ Here's another example. This acts more like the \$or operator:
 
 ```javascript
 [{ name: "Craig", location: "Brazil" }].filter(
-  sift({ location: { $in: ["Costa Rica", "Brazil"] } })
+  sift({ location: { $in: ["Costa Rica", "Brazil"] } }),
 );
 ```
 
@@ -145,7 +145,7 @@ Opposite of \$in:
 ```javascript
 // filtered: ['Haiti','Peru','Chile']
 ["Brazil", "Haiti", "Peru", "Chile"].filter(
-  sift({ $nin: ["Costa Rica", "Brazil"] })
+  sift({ $nin: ["Costa Rica", "Brazil"] }),
 );
 ```
 
@@ -163,7 +163,7 @@ You can also filter out values that don't exist
 ```javascript
 // filtered: [{ name: "Tim" }]
 [{ name: "Craig", city: "Minneapolis" }, { name: "Tim" }].filter(
-  sift({ city: { $exists: false } })
+  sift({ city: { $exists: false } }),
 );
 ```
 
@@ -210,7 +210,7 @@ Checks if `query === value`. Note that **\$eq can be omitted**. For **\$eq**, an
 ```javascript
 // filtered: [{ state: 'MN' }]
 [{ state: "MN" }, { state: "CA" }, { state: "WI" }].filter(
-  sift({ state: { $eq: "MN" } })
+  sift({ state: { $eq: "MN" } }),
 );
 ```
 
@@ -219,7 +219,7 @@ Or:
 ```javascript
 // filtered: [{ state: 'MN' }]
 [{ state: "MN" }, { state: "CA" }, { state: "WI" }].filter(
-  sift({ state: "MN" })
+  sift({ state: "MN" }),
 );
 ```
 
@@ -230,7 +230,7 @@ Checks if `query !== value`.
 ```javascript
 // filtered: [{ state: 'CA' }, { state: 'WI'}]
 [{ state: "MN" }, { state: "CA" }, { state: "WI" }].filter(
-  sift({ state: { $ne: "MN" } })
+  sift({ state: { $ne: "MN" } }),
 );
 ```
 
@@ -251,7 +251,7 @@ values must match **everything** in array:
 // filtered: [ { tags: ['books','programming','travel' ]} ]
 [
   { tags: ["books", "programming", "travel"] },
-  { tags: ["travel", "cooking"] }
+  { tags: ["travel", "cooking"] },
 ].filter(sift({ tags: { $all: ["books", "programming"] } }));
 ```
 
@@ -265,7 +265,7 @@ ability to use an array of expressions. All expressions must test true.
 [
   { name: "Craig", state: "MN" },
   { name: "Tim", state: "MN" },
-  { name: "Joe", state: "CA" }
+  { name: "Joe", state: "CA" },
 ].filter(sift({ $and: [{ name: "Craig" }, { state: "MN" }] }));
 ```
 
@@ -278,7 +278,7 @@ OR array of expressions.
 [
   { name: "Craig", state: "MN" },
   { name: "Tim", state: "MN" },
-  { name: "Joe", state: "CA" }
+  { name: "Joe", state: "CA" },
 ].filter(sift({ $or: [{ name: "Craig" }, { state: "MN" }] }));
 ```
 
@@ -291,7 +291,7 @@ opposite of or:
 [
   { name: "Craig", state: "MN" },
   { name: "Tim", state: "MN" },
-  { name: "Joe", state: "CA" }
+  { name: "Joe", state: "CA" },
 ].filter(sift({ $nor: [{ name: "Craig" }, { state: "MN" }] }));
 ```
 
@@ -302,7 +302,7 @@ Matches an array - must match given size:
 ```javascript
 // filtered: ['food','cooking']
 [{ tags: ["food", "cooking"] }, { tags: ["traveling"] }].filter(
-  sift({ tags: { $size: 2 } })
+  sift({ tags: { $size: 2 } }),
 );
 ```
 
@@ -321,10 +321,10 @@ Matches values based on the given regular expression
 
 ```javascript
 ["frank", "fred", "sam", "frost"].filter(
-  sift({ $regex: /^f/i, $nin: ["frank"] })
+  sift({ $regex: /^f/i, $nin: ["frank"] }),
 ); // ["fred", "frost"]
 ["frank", "fred", "sam", "frost"].filter(
-  sift({ $regex: "^f", $options: "i", $nin: ["frank"] })
+  sift({ $regex: "^f", $options: "i", $nin: ["frank"] }),
 ); // ["fred", "frost"]
 ```
 
@@ -334,14 +334,14 @@ Matches based on some javascript comparison
 
 ```javascript
 [{ name: "frank" }, { name: "joe" }].filter(
-  sift({ $where: "this.name === 'frank'" })
+  sift({ $where: "this.name === 'frank'" }),
 ); // ["frank"]
 [{ name: "frank" }, { name: "joe" }].filter(
   sift({
-    $where: function() {
+    $where: function () {
       return this.name === "frank";
-    }
-  })
+    },
+  }),
 ); // ["frank"]
 ```
 
@@ -356,37 +356,37 @@ var bills = [
     casts: [
       {
         id: 1,
-        value: 200
+        value: 200,
       },
       {
         id: 2,
-        value: 1000
-      }
-    ]
+        value: 1000,
+      },
+    ],
   },
   {
     month: "august",
     casts: [
       {
         id: 3,
-        value: 1000
+        value: 1000,
       },
       {
         id: 4,
-        value: 4000
-      }
-    ]
-  }
+        value: 4000,
+      },
+    ],
+  },
 ];
 
 var result = bills.filter(
   sift({
     casts: {
       $elemMatch: {
-        value: { $gt: 1000 }
-      }
-    }
-  })
+        value: { $gt: 1000 },
+      },
+    },
+  }),
 ); // {month:'august', casts:[{id:3, value: 1000},{id: 4, value: 4000}]}
 ```
 
@@ -411,7 +411,7 @@ In Sift, you'll need to specify a Date object:
 
 ```javascript
 collection.find(
-  sift({ createdAt: { $gte: new Date("2018-03-22T06:00:00Z") } })
+  sift({ createdAt: { $gte: new Date("2018-03-22T06:00:00Z") } }),
 );
 ```
 
@@ -428,19 +428,19 @@ import sift, { createEqualsOperation } from "sift";
 
 var filter = sift(
   {
-    $customMod: 2
+    $customMod: 2,
   },
   {
     operations: {
       $customMod(params, ownerQuery, options) {
         return createEqualsOperation(
-          value => value % params !== 0,
+          (value) => value % params !== 0,
           ownerQuery,
-          options
+          options,
         );
-      }
-    }
-  }
+      },
+    },
+  },
 );
 
 [1, 2, 3, 4, 5].filter(filter); // [1, 3, 5]
@@ -454,9 +454,9 @@ You can create a filter function that omits the built-in operations like so:
 import { createQueryTester, $in, $all, $nin, $lt } from "sift";
 const test = createQueryTester(
   {
-    $eq: 10
+    $eq: 10,
   },
-  { operations: { $in, $all, $nin, $lt } }
+  { operations: { $in, $all, $nin, $lt } },
 );
 
 [1, 2, 3, 4, 10].filter(test);

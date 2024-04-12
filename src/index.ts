@@ -12,23 +12,23 @@ import {
   EqualsOperation,
   createQueryOperation,
   createEqualsOperation,
-  createOperationTester
+  createOperationTester,
 } from "./core";
 
 const createDefaultQueryOperation = <TItem, TSchema extends TItem = TItem>(
   query: Query<TSchema>,
   ownerQuery: any,
-  { compare, operations }: Partial<Options> = {}
+  { compare, operations }: Partial<Options> = {},
 ) => {
   return createQueryOperation(query, ownerQuery, {
     compare,
-    operations: Object.assign({}, defaultOperations, operations || {})
+    operations: Object.assign({}, defaultOperations, operations || {}),
   });
 };
 
 const createDefaultQueryTester = <TItem, TSchema extends TItem = TItem>(
   query: Query<TSchema>,
-  options: Partial<Options> = {}
+  options: Partial<Options> = {},
 ) => {
   const op = createDefaultQueryOperation(query, null, options);
   return createOperationTester(op);
@@ -47,7 +47,7 @@ export {
   createOperationTester,
   createDefaultQueryOperation,
   createEqualsOperation,
-  createQueryOperation
+  createQueryOperation,
 };
 export * from "./operations";
 

@@ -324,7 +324,7 @@ export const numericalOperationCreator =
     return createNumericalOperation(params, owneryQuery, options, name);
   };
 
-export const numericalOperation = (createTester: (any) => Tester) =>
+export const numericalOperation = (createTester: (value: any) => Tester) =>
   numericalOperationCreator(
     (params: any, owneryQuery: Query<any>, options: Options, name: string) => {
       const typeofParams = typeof comparable(params);

@@ -369,6 +369,7 @@ const throwUnsupportedOperation = (name: string) => {
 
 export const containsOperation = (query: any, options: Options) => {
   for (const key in query) {
+    if (!Object.prototype.hasOwnProperty.call(query, key)) continue;
     if (options.operations.hasOwnProperty(key) || key.charAt(0) === "$")
       return true;
   }
@@ -449,6 +450,7 @@ const createQueryOperations = (
     return [selfOperations, nestedOperations];
   }
   for (const key in query) {
+    if (!Object.prototype.hasOwnProperty.call(query, key)) continue;
     if (options.operations.hasOwnProperty(key)) {
       const op = createNamedOperation(key, query[key], query, options);
 

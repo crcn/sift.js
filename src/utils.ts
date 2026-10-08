@@ -38,6 +38,16 @@ export const isProperty = (item: any, key: any) => {
  */
 export const isMissingArrayProperty = (key: Key, owner: any) =>
   Array.isArray(owner) && !(key in owner) && isNaN(Number(key));
+/**
+ * `obj[key]`, ignoring a value that only comes from Object.prototype. Nothing
+ * sift reads this way (options, toJSON) lives there normally, so one showing up
+ * means the prototype was polluted (#276). Values defined by a class still count.
+ */
+export const getIgnoringObjectPrototype = (obj: any, key: string) =>
+  Object.prototype.hasOwnProperty.call(obj, key) ||
+  obj[key] !== Object.prototype[key]
+    ? obj[key]
+    : undefined;
 export const isVanillaObject = (value) => {
   return (
     value &&
@@ -45,7 +55,7 @@ export const isVanillaObject = (value) => {
       value.constructor === Array ||
       value.constructor.toString() === "function Object() { [native code] }" ||
       value.constructor.toString() === "function Array() { [native code] }") &&
-    !value.toJSON
+    !getIgnoringObjectPrototype(value, "toJSON")
   );
 };
 
@@ -74,6 +84,7 @@ export const equals = (a, b) => {
       return false;
     }
     for (const key in a) {
+      if (!Object.prototype.hasOwnProperty.call(a, key)) continue;
       if (!equals(a[key], b[key])) return false;
     }
     return true;

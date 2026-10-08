@@ -355,7 +355,12 @@ export const $regex = (
   options: Options,
 ) =>
   new EqualsOperation(
-    new RegExp(pattern, owneryQuery.$options),
+    new RegExp(
+      pattern,
+      Object.prototype.hasOwnProperty.call(owneryQuery, "$options")
+        ? owneryQuery.$options
+        : undefined,
+    ),
     owneryQuery,
     options,
   );
@@ -383,7 +388,7 @@ export const $type = (
   new EqualsOperation(
     (b) => {
       if (typeof clazz === "string") {
-        if (!typeAliases[clazz]) {
+        if (!Object.prototype.hasOwnProperty.call(typeAliases, clazz)) {
           throw new Error(`Type alias does not exist`);
         }
 

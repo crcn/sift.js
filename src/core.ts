@@ -7,6 +7,7 @@ import {
   equals,
   coercePotentiallyNull,
   isProperty,
+  getIgnoringObjectPrototype,
 } from "./utils";
 
 export interface Operation<TItem> {
@@ -428,8 +429,10 @@ const createNestedOperation = (
 export const createQueryOperation = <TItem, TSchema = TItem>(
   query: Query<TSchema>,
   owneryQuery: any = null,
-  { compare, operations }: Partial<Options> = {},
+  partialOptions: Partial<Options> = {},
 ): QueryOperation<TItem> => {
+  const compare = getIgnoringObjectPrototype(partialOptions, "compare");
+  const operations = getIgnoringObjectPrototype(partialOptions, "operations");
   const options = {
     compare: compare || equals,
     operations: Object.assign({}, operations || {}),

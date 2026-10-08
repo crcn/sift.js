@@ -740,4 +740,63 @@ describe(__filename + "#", function () {
       /CSP mode/,
     );
   });
+
+  // https://github.com/crcn/sift.js/issues/276
+  it("ignores inherited $options and type aliases", () => {
+    Object.prototype.$options = "invalid";
+    try {
+      assert.equal(sift({ $regex: "a" })("a"), true);
+    } finally {
+      delete Object.prototype.$options;
+    }
+
+    assert.throws(
+      () => sift({ $type: "constructor" })(1),
+      new Error("Type alias does not exist"),
+    );
+  });
+
+  it("ignores a polluted Object.prototype.compare, operations or toJSON", () => {
+    for (const [key, value] of [
+      ["compare", "not a function"],
+      ["operations", "x"],
+      ["operations", ["x"]],
+      ["toJSON", "x"],
+    ]) {
+      Object.prototype[key] = value;
+      try {
+        const label = `Object.prototype.${key} = ${JSON.stringify(value)}`;
+        assert.equal(sift({ a: 1 })({ a: 1 }), true, label);
+        assert.equal(sift({ a: [1] })({ a: [1] }), true, label);
+        assert.equal(sift({ a: { $gt: 1 } })({ a: 2 }), true, label);
+        assert.equal(sift({ a: { $in: [1, 2] } })({ a: 3 }), false, label);
+        assert.equal(createQueryTester({ a: 1 })({ a: 1 }), true, label);
+      } finally {
+        delete Object.prototype[key];
+      }
+    }
+  });
+
+  it("reads options and toJSON defined by a class", () => {
+    class CaseInsensitive {
+      compare(a, b) {
+        return String(a).toLowerCase() === String(b).toLowerCase();
+      }
+    }
+    assert.equal(
+      sift({ name: "CRAIG" }, new CaseInsensitive())({ name: "craig" }),
+      true,
+    );
+
+    class Id {
+      constructor(value) {
+        this.value = value;
+      }
+      toJSON() {
+        return this.value;
+      }
+    }
+    assert.equal(sift({ id: new Id("1") })({ id: new Id("1") }), true);
+    assert.equal(sift({ id: new Id("1") })({ id: new Id("2") }), false);
+  });
 });

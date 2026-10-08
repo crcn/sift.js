@@ -594,4 +594,31 @@ describe(__filename + "#", function () {
       },
     ]);
   });
+
+  // https://github.com/crcn/sift.js/issues/272
+  it("supports string $where where `process` isn't defined", () => {
+    const vm = require("vm");
+    const fs = require("fs");
+    const path = require("path");
+    const load = (file) => {
+      const context = vm.createContext({});
+      vm.runInContext(
+        fs.readFileSync(path.join(__dirname, "..", file), "utf8"),
+        context,
+      );
+      return context.sift.default;
+    };
+    const items = [{ a: 1 }, { a: 2 }];
+
+    assert.equal(
+      items.filter(load("lib/index.js")({ $where: "this.a === 1" })).length,
+      1,
+    );
+
+    // the CSP build still rejects strings
+    assert.throws(
+      () => load("sift.csp.min.js")({ $where: "this.a === 1" }),
+      /CSP mode/,
+    );
+  });
 });

@@ -401,6 +401,17 @@ export const $size = (
   options: Options,
 ) => new $Size(params, ownerQuery, options, "$size");
 export const $options = () => null;
+
+// `process` doesn't exist in browsers (#272). The CSP build replaces
+// `process.env.CSP_ENABLED` with `true`, so that expression must stay intact.
+const isCSPEnabled = () => {
+  try {
+    return Boolean(process.env.CSP_ENABLED);
+  } catch (e) {
+    return false;
+  }
+};
+
 export const $where = (
   params: string | Function,
   ownerQuery: Query<any>,
@@ -410,7 +421,7 @@ export const $where = (
 
   if (isFunction(params)) {
     test = params;
-  } else if (!process.env.CSP_ENABLED) {
+  } else if (!isCSPEnabled()) {
     test = new Function("obj", "return " + params);
   } else {
     throw new Error(

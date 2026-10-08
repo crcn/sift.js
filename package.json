@@ -2,7 +2,10 @@
   "name": "sift",
   "description": "MongoDB query filtering in JavaScript",
   "version": "17.1.4",
-  "repository": "crcn/sift.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crcn/sift.js.git"
+  },
   "sideEffects": false,
   "author": {
     "name": "Craig Condon",

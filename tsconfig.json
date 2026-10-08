@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2015",
     "sourceMap": true,
-    "moduleResolution": "node",
-    "module": "commonjs",
+    "rootDir": "./src",
+    "moduleResolution": "bundler",
+    "module": "esnext",
     "declaration": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "strict": false,
+    "types": ["node"]
   },
   "include": ["./src/**/*.ts"]
 }

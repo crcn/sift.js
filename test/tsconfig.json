@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": false,
+    "target": "es2015",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": []
+  },
+  "files": ["types.ts"]
+}

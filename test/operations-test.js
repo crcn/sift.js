@@ -1,7 +1,6 @@
 const assert = require("assert");
 var ObjectID = require("bson").ObjectId;
 const MongoClient = require("mongodb").MongoClient;
-const { promisify } = require("util");
 const {
   default: sift,
   createQueryTester,
@@ -830,32 +829,31 @@ describe(__filename + "#", function () {
 });
 
 async function testNativeQuery(filter, array, matchArray) {
-  const url = "mongodb://localhost:27017";
-  const client = await promisify(MongoClient.connect.bind(MongoClient))(url);
-  const db = client.db("sift--test");
+  const url = process.env.MONGODB_URL || "mongodb://localhost:27017";
+  const client = await MongoClient.connect(url);
+  try {
+    const db = client.db("sift--test");
+    await db.dropDatabase();
 
-  // console.log(db.dropDatabase);
+    // some items can't be inserted like [null]
+    const collection = await db.createCollection("items");
+    await collection.insertMany(array);
 
-  const collection = await promisify(db.createCollection.bind(db))("items");
+    const results = await collection.find(filter).toArray();
 
-  // some items can't be inserted like [null]
+    assert.equal(
+      JSON.stringify(
+        results.map((result) => {
+          const copy = { ...result };
+          delete copy._id;
+          return copy;
+        }),
+      ),
+      JSON.stringify(matchArray),
+    );
 
-  await promisify(collection.insertMany.bind(collection))(array);
-
-  const search = collection.find(filter);
-
-  const results = await promisify(search.toArray.bind(search))();
-
-  assert.equal(
-    JSON.stringify(
-      results.map((result) => {
-        const copy = { ...result };
-        delete copy._id;
-        return copy;
-      }),
-    ),
-    JSON.stringify(matchArray),
-  );
-
-  await promisify(db.dropDatabase.bind(db))();
+    await db.dropDatabase();
+  } finally {
+    await client.close();
+  }
 }

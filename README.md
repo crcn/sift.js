@@ -467,7 +467,7 @@ var filter = sift(
 
 #### Custom equality
 
-`compare` changes how sift decides two values are equal, everywhere it checks equality: `{ field: value }`, `$eq`, `$ne`, `$in`, `$nin` and `$all`, including inside `$elemMatch`, `$not`, `$and`, `$or` and `$nor`. It's called with the query value and the item value, after Dates are converted to timestamps and objects with a `toJSON` method to its result.
+`compare` changes how sift decides two values are equal, everywhere it checks equality: `{ field: value }`, `$eq`, `$ne`, `$in`, `$nin` and `$all`, including inside `$elemMatch`, `$not`, `$and`, `$or` and `$nor`. It's called with the query value and the item value. Dates (including those in arrays) are converted to timestamps first, and objects with a `toJSON` method to its result; values nested inside plain objects are passed as they are.
 
 ```javascript
 import sift from "sift";

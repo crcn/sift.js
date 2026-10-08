@@ -43,11 +43,15 @@ export const isMissingArrayProperty = (key: Key, owner: any) =>
  * sift reads this way (options, toJSON) lives there normally, so one showing up
  * means the prototype was polluted (#276). Values defined by a class still count.
  */
-export const getIgnoringObjectPrototype = (obj: any, key: string) =>
-  Object.prototype.hasOwnProperty.call(obj, key) ||
-  obj[key] !== Object.prototype[key]
-    ? obj[key]
+export const getIgnoringObjectPrototype = (obj: any, key: string) => {
+  const value = obj[key];
+  const inherited = Object.prototype[key];
+  return inherited === undefined ||
+    value !== inherited ||
+    Object.prototype.hasOwnProperty.call(obj, key)
+    ? value
     : undefined;
+};
 export const isVanillaObject = (value) => {
   return (
     value &&

@@ -1,4 +1,4 @@
-import sift, { createQueryTester, $in, $or, $eq } from "..";
+import sift, { createQueryTester, $in, $or, $eq, $nin } from "..";
 import type { Query } from "..";
 import { createQueryOperation, createOperationTester } from "../lib/core";
 
@@ -337,3 +337,6 @@ sift<Listing>({ tags: ["a", "b"] });
 sift<Listing>({ tags: { $in: [1] } });
 // @ts-expect-error - ids holds numbers
 sift<Listing>({ ids: { $elemMatch: { $gt: "1" } } });
+
+// operations keep their next() arity (root is optional)
+$nin([1], {}, {} as any, "$nin").next(1, 0, [1], true);

@@ -898,6 +898,29 @@ describe(__filename + "#", function () {
     ]);
   });
 
+  it("reads each option once, without inspecting unpolluted keys", () => {
+    let reads = 0;
+    class Options {
+      get compare() {
+        reads++;
+        return (a, b) => a === b;
+      }
+    }
+    sift({ a: 1 }, new Options())({ a: 1 });
+    assert.equal(reads, 1);
+
+    // e.g. a Proxy whose descriptor trap throws
+    const options = new Proxy(
+      {},
+      {
+        getOwnPropertyDescriptor() {
+          throw new Error("descriptor trap");
+        },
+      },
+    );
+    assert.equal(sift({ a: 1 }, options)({ a: 1 }), true);
+  });
+
   it("reads options and toJSON defined by a class", () => {
     class CaseInsensitive {
       compare(a, b) {

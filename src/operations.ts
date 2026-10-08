@@ -201,7 +201,7 @@ class $Nin extends BaseOperation<any> {
     super(params, ownerQuery, options, name);
     this._in = new $In(params, ownerQuery, options, name);
   }
-  next(item: any, key: Key, owner: any) {
+  next(item: any, key: Key, owner: any, root?: boolean) {
     // $nin is the complement of $in across every value on the path: a single
     // match anywhere (e.g. in any array element) fails it.
     this._in.next(item, key, owner);

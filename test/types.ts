@@ -1,4 +1,5 @@
-import sift, { createQueryTester, $in, $or, $eq } from "..";
+import sift, { createQueryTester, $in, $or, $eq, $nin } from "..";
+import type { Query } from "..";
 import { createQueryOperation, createOperationTester } from "../lib/core";
 
 sift<any>({ $gt: 10 });
@@ -304,3 +305,38 @@ var result = bills.filter(
 const o = createQueryOperation<Person>({ name: "a" });
 const t = createOperationTester(o);
 t(demoFriend);
+
+// https://github.com/crcn/sift.js/issues/275 - union-typed properties
+type Place = {
+  country: "AU" | "NZ";
+  active: boolean;
+  code: string | number;
+  tags: ("a" | "b")[];
+};
+
+const placeQuery: Query<Place> = { country: { $in: ["AU", "NZ"] } };
+sift<Place>({
+  country: { $nin: ["AU"], $ne: "NZ" },
+  active: { $in: [true, false] },
+  code: { $in: ["x", 1] },
+  tags: { $in: ["a", "b"], $all: ["a"] },
+});
+// @ts-expect-error - "US" isn't a country
+sift<Place>({ country: { $in: ["US"] } });
+// @ts-expect-error - $in expects an array of countries
+sift<Place>({ country: { $in: "AU" } });
+
+// readonly arrays
+type Listing = { tags: readonly string[]; ids: ReadonlyArray<number> };
+sift<Listing>({
+  tags: { $in: ["a"], $all: ["a", "b"], $size: 2 },
+  ids: { $elemMatch: { $gt: 1 } },
+});
+sift<Listing>({ tags: ["a", "b"] });
+// @ts-expect-error - tags holds strings
+sift<Listing>({ tags: { $in: [1] } });
+// @ts-expect-error - ids holds numbers
+sift<Listing>({ ids: { $elemMatch: { $gt: "1" } } });
+
+// operations keep their next() arity (root is optional)
+$nin([1], {}, {} as any, "$nin").next(1, 0, [1], true);

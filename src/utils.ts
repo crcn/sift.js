@@ -30,6 +30,28 @@ export const isFunction = typeChecker<Function>("Function");
 export const isProperty = (item: any, key: any) => {
   return item.hasOwnProperty(key) && !isFunction(item[key]);
 };
+/**
+ * The value at `a.b` on the array `a` itself, which the walker visits after each
+ * element's `b` (so getters on Array subclasses work). If the array has no `b`,
+ * it isn't a real value, and $ne/$in shouldn't treat it as null (#273).
+ * Missing indexes (`a.5`) aren't included.
+ */
+export const isMissingArrayProperty = (key: Key, owner: any) =>
+  Array.isArray(owner) && !(key in owner) && isNaN(Number(key));
+/**
+ * `obj[key]`, ignoring a value that only comes from Object.prototype. Nothing
+ * sift reads this way (options, toJSON) lives there normally, so one showing up
+ * means the prototype was polluted (#276). Values defined by a class still count.
+ */
+export const getIgnoringObjectPrototype = (obj: any, key: string) => {
+  const value = obj[key];
+  const inherited = Object.prototype[key];
+  return inherited === undefined ||
+    value !== inherited ||
+    Object.prototype.hasOwnProperty.call(obj, key)
+    ? value
+    : undefined;
+};
 export const isVanillaObject = (value) => {
   return (
     value &&
@@ -37,7 +59,7 @@ export const isVanillaObject = (value) => {
       value.constructor === Array ||
       value.constructor.toString() === "function Object() { [native code] }" ||
       value.constructor.toString() === "function Array() { [native code] }") &&
-    !value.toJSON
+    !getIgnoringObjectPrototype(value, "toJSON")
   );
 };
 
@@ -66,6 +88,7 @@ export const equals = (a, b) => {
       return false;
     }
     for (const key in a) {
+      if (!Object.prototype.hasOwnProperty.call(a, key)) continue;
       if (!equals(a[key], b[key])) return false;
     }
     return true;

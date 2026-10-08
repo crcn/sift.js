@@ -21,6 +21,8 @@ const config = (options) => {
         declaration: false,
         module: "es2015",
         target: options.target || "es5",
+        // TS 6 deprecates ES5 output (removed in TS 7); lib/ and es5m/ still ship it.
+        ignoreDeprecations: "6.0",
       }),
       ...(options.plugins || []),
     ],

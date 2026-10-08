@@ -64,7 +64,7 @@ Creates a filter with all the built-in MongoDB query operations.
 - `query` - the filter to use against the target array
 - `options`
   - `operations` - [custom operations](#custom-operations)
-  - `compare` - compares difference between two values
+  - `compare` - [custom equality](#custom-equality): `(queryValue, itemValue) => boolean`
 
 Example:
 
@@ -345,6 +345,25 @@ Matches based on some javascript comparison
 ); // ["frank"]
 ```
 
+**Security:** a string `$where` is compiled with `new Function`, so a query that contains one can run any code. Don't pass untrusted queries (e.g. from a request body) to sift unless you turn strings off. Function values aren't affected:
+
+```javascript
+import sift, { $where } from "sift";
+
+const test = sift(untrustedQuery, {
+  operations: {
+    $where(params, ownerQuery, options) {
+      if (typeof params !== "function") {
+        throw new Error("$where must be a function");
+      }
+      return $where(params, ownerQuery, options);
+    },
+  },
+});
+```
+
+The `sift.csp.min.js` browser build always rejects strings.
+
 ### \$elemMatch
 
 Matches elements of array
@@ -445,6 +464,23 @@ var filter = sift(
 
 [1, 2, 3, 4, 5].filter(filter); // [1, 3, 5]
 ```
+
+#### Custom equality
+
+`compare` changes how sift decides two values are equal, everywhere it checks equality: `{ field: value }`, `$eq`, `$ne`, `$in`, `$nin` and `$all`, including inside `$elemMatch`, `$not`, `$and`, `$or` and `$nor`. It's called with the query value and the item value. Dates (including those in arrays) are converted to timestamps first, and objects with a `toJSON` method to its result; values nested inside plain objects are passed as they are.
+
+```javascript
+import sift from "sift";
+
+const caseInsensitive = (a, b) =>
+  String(a).toLowerCase() === String(b).toLowerCase();
+
+[{ name: "Craig" }, { name: "Tim" }].filter(
+  sift({ name: { $in: ["craig"] } }, { compare: caseInsensitive }),
+); // [{ name: "Craig" }]
+```
+
+`compare` also receives arrays and plain objects for exact matches like `{ tags: ["a", "b"] }`, so handle those if your queries use them. A custom `$eq` operation only replaces the explicit `$eq` operator, not equality in general.
 
 #### Omitting built-in operations
 

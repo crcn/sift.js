@@ -12,7 +12,14 @@ import {
   numericalOperation,
   containsOperation,
 } from "./core";
-import { Key, comparable, isFunction, isArray } from "./utils";
+import {
+  Key,
+  comparable,
+  isFunction,
+  isArray,
+  isObject,
+  isMissingArrayProperty,
+} from "./utils";
 
 class $Ne extends BaseOperation<any> {
   readonly propop = true;
@@ -24,8 +31,8 @@ class $Ne extends BaseOperation<any> {
     super.reset();
     this.keep = true;
   }
-  next(item: any) {
-    if (this._test(item)) {
+  next(item: any, key?: Key, owner?: any) {
+    if (!isMissingArrayProperty(key, owner) && this._test(item)) {
       this.done = true;
       this.keep = false;
     }
@@ -49,7 +56,7 @@ class $ElemMatch extends BaseOperation<Query<any>> {
     super.reset();
     this._queryOperation.reset();
   }
-  next(item: any) {
+  next(item: any, key?: Key, owner?: any) {
     if (isArray(item)) {
       for (let i = 0, { length } = item; i < length; i++) {
         // reset query operation since item being tested needs to pass _all_ query
@@ -60,7 +67,10 @@ class $ElemMatch extends BaseOperation<Query<any>> {
         this._queryOperation.next(child, i, item, false);
         this.keep = this.keep || this._queryOperation.keep;
       }
-      this.done = true;
+      // An array that's a field of a document can be one of several candidates
+      // (each a[i].b for "a.b"), so keep looking until one matches. Arrays inside
+      // arrays still stop here, since MongoDB doesn't search them.
+      this.done = this.keep || !isObject(owner);
     } else {
       this.done = false;
       this.keep = false;
@@ -82,8 +92,8 @@ class $Not extends BaseOperation<Query<any>> {
     super.reset();
     this._queryOperation.reset();
   }
-  next(item: any, key: Key, owner: any, root: boolean) {
-    this._queryOperation.next(item, key, owner, root);
+  next(item: any, key: Key, owner: any, root: boolean, leaf?: boolean) {
+    this._queryOperation.next(item, key, owner, root, leaf);
     this.done = this._queryOperation.done;
     this.keep = !this._queryOperation.keep;
   }
@@ -126,12 +136,12 @@ class $Or extends BaseOperation<any> {
       this._ops[i].reset();
     }
   }
-  next(item: any, key: Key, owner: any) {
+  next(item: any, key: Key, owner: any, root?: boolean, leaf?: boolean) {
     let done = false;
     let success = false;
     for (let i = 0, { length } = this._ops; i < length; i++) {
       const op = this._ops[i];
-      op.next(item, key, owner);
+      op.next(item, key, owner, root, leaf);
       if (op.keep) {
         done = true;
         success = op.keep;
@@ -146,8 +156,8 @@ class $Or extends BaseOperation<any> {
 
 class $Nor extends $Or {
   readonly propop = false;
-  next(item: any, key: Key, owner: any) {
-    super.next(item, key, owner);
+  next(item: any, key: Key, owner: any, root?: boolean, leaf?: boolean) {
+    super.next(item, key, owner, root, leaf);
     this.keep = !this.keep;
   }
 }
@@ -165,6 +175,9 @@ class $In extends BaseOperation<any> {
     });
   }
   next(item: any, key: Key, owner: any) {
+    if (isMissingArrayProperty(key, owner)) {
+      return;
+    }
     let done = false;
     let success = false;
     for (let i = 0, { length } = this._testers; i < length; i++) {
@@ -188,37 +201,41 @@ class $Nin extends BaseOperation<any> {
     super(params, ownerQuery, options, name);
     this._in = new $In(params, ownerQuery, options, name);
   }
-  next(item: any, key: Key, owner: any, root: boolean) {
+  next(item: any, key: Key, owner: any, root?: boolean) {
+    // $nin is the complement of $in across every value on the path: a single
+    // match anywhere (e.g. in any array element) fails it.
     this._in.next(item, key, owner);
-
-    if (isArray(owner) && !root) {
-      if (this._in.keep) {
-        this.keep = false;
-        this.done = true;
-      } else if (key == owner.length - 1) {
-        this.keep = true;
-        this.done = true;
-      }
-    } else {
-      this.keep = !this._in.keep;
+    if (this._in.keep) {
+      this.keep = false;
       this.done = true;
     }
   }
   reset() {
     super.reset();
+    this.keep = true;
     this._in.reset();
   }
 }
 
 class $Exists extends BaseOperation<boolean> {
   readonly propop = true;
+  reset() {
+    super.reset();
+    // { $exists: false } holds until a value turns up.
+    this.keep = !this.params;
+  }
   next(item: any, key: Key, owner: any, root: boolean, leaf?: boolean) {
-    if (!leaf) {
+    // Only a key that's actually present at the end of the path settles the
+    // result. Intermediate nulls and missing keys don't, so the remaining
+    // array elements still get checked.
+    if (
+      leaf &&
+      (owner == null
+        ? item !== undefined // tester called directly on a value
+        : Object.prototype.hasOwnProperty.call(owner, key))
+    ) {
       this.done = true;
-      this.keep = !this.params;
-    } else if (owner.hasOwnProperty(key) === this.params) {
-      this.done = true;
-      this.keep = true;
+      this.keep = Boolean(this.params);
     }
   }
 }
@@ -241,8 +258,8 @@ class $And extends NamedGroupOperation {
 
     assertGroupNotEmpty(params);
   }
-  next(item: any, key: Key, owner: any, root: boolean) {
-    this.childrenNext(item, key, owner, root);
+  next(item: any, key: Key, owner: any, root: boolean, leaf?: boolean) {
+    this.childrenNext(item, key, owner, root, leaf);
   }
 }
 
@@ -262,8 +279,8 @@ class $All extends NamedGroupOperation {
       name,
     );
   }
-  next(item: any, key: Key, owner: any, root: boolean) {
-    this.childrenNext(item, key, owner, root);
+  next(item: any, key: Key, owner: any, root: boolean, leaf?: boolean) {
+    this.childrenNext(item, key, owner, root, leaf);
   }
 }
 
@@ -342,7 +359,12 @@ export const $regex = (
   options: Options,
 ) =>
   new EqualsOperation(
-    new RegExp(pattern, owneryQuery.$options),
+    new RegExp(
+      pattern,
+      Object.prototype.hasOwnProperty.call(owneryQuery, "$options")
+        ? owneryQuery.$options
+        : undefined,
+    ),
     owneryQuery,
     options,
   );
@@ -370,7 +392,7 @@ export const $type = (
   new EqualsOperation(
     (b) => {
       if (typeof clazz === "string") {
-        if (!typeAliases[clazz]) {
+        if (!Object.prototype.hasOwnProperty.call(typeAliases, clazz)) {
           throw new Error(`Type alias does not exist`);
         }
 
@@ -401,6 +423,17 @@ export const $size = (
   options: Options,
 ) => new $Size(params, ownerQuery, options, "$size");
 export const $options = () => null;
+
+// `process` doesn't exist in browsers (#272). The CSP build replaces
+// `process.env.CSP_ENABLED` with `true`, so that expression must stay intact.
+const isCSPEnabled = () => {
+  try {
+    return Boolean(process.env.CSP_ENABLED);
+  } catch (e) {
+    return false;
+  }
+};
+
 export const $where = (
   params: string | Function,
   ownerQuery: Query<any>,
@@ -410,7 +443,7 @@ export const $where = (
 
   if (isFunction(params)) {
     test = params;
-  } else if (!process.env.CSP_ENABLED) {
+  } else if (!isCSPEnabled()) {
     test = new Function("obj", "return " + params);
   } else {
     throw new Error(

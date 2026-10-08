@@ -1,3 +1,13 @@
+## 17.1.4
+
+- Fix https://github.com/crcn/sift.js/issues/276: ignore query keys and options inherited from a polluted `Object.prototype`, so pollution elsewhere in a process can no longer inject a string `$where` into queries (code execution) or break them (#277, thanks @sheanming-agmo). A string `$where` in the query itself still runs as code: see the README before passing untrusted queries to sift.
+- Fix https://github.com/crcn/sift.js/issues/273: `$ne`, `$in`, `$nin` and `$exists` on paths through arrays. Results change where 17.1.3 was wrong, e.g. `{ "a.b": { $nin: [2] } }` no longer matches `{ a: [{ b: 1 }, { b: 2 }] }`, and `{ "a.b": { $exists: false } }` no longer matches arrays whose elements have `b`. `$exists` also treats `1`/`0` like `true`/`false`.
+- Fix https://github.com/crcn/sift.js/issues/272: string `$where` where `process` isn't defined (browsers).
+- Fix https://github.com/crcn/sift.js/issues/275: types for union-typed and readonly array properties.
+- https://github.com/crcn/sift.js/issues/274: document the `compare` option for custom equality.
+- Fix `$elemMatch` only checking the first candidate array, e.g. each `a[i].b` for `"a.b"`.
+- Known issue: null checks (`$ne: null`, `$in: [null]`, `$exists: false`) on an index path below an array of documents, e.g. `{ "orders.items.0": { $ne: null } }`, can differ from MongoDB.
+
 ## 17.0.0
 
 - Fix https://github.com/crcn/sift.js/issues/243

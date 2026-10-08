@@ -7,6 +7,7 @@ import {
   equals,
   coercePotentiallyNull,
   isProperty,
+  getIgnoringObjectPrototype,
 } from "./utils";
 
 export interface Operation<TItem> {
@@ -36,6 +37,13 @@ export type OperationCreator<TItem> = (
   name: string,
 ) => Operation<TItem>;
 
+// Method signature so `$where` is bivariant. Otherwise a query typed for a
+// narrower value (e.g. BasicValueQuery<number> on an optional number field)
+// isn't assignable under strictFunctionTypes.
+type WhereFunction<TValue> = {
+  bivarianceHack(this: TValue, obj: TValue): boolean;
+}["bivarianceHack"];
+
 export type BasicValueQuery<TValue> = {
   $eq?: TValue;
   $ne?: TValue;
@@ -50,7 +58,7 @@ export type BasicValueQuery<TValue> = {
   $exists?: boolean;
   $regex?: string | RegExp;
   $size?: number;
-  $where?: ((this: TValue, obj: TValue) => boolean) | string;
+  $where?: WhereFunction<TValue> | string;
   $options?: "i" | "g" | "m" | "u";
   $type?: Function;
   $not?: NestedQuery<TValue>;
@@ -62,14 +70,18 @@ export type BasicValueQuery<TValue> = {
 export type ArrayValueQuery<TValue> = {
   $elemMatch?: Query<TValue>;
 } & BasicValueQuery<TValue>;
-type Unpacked<T> = T extends (infer U)[] ? U : T;
+type Unpacked<T> = T extends ReadonlyArray<infer U> ? U : T;
 
-export type ValueQuery<TValue> =
-  TValue extends Array<any>
-    ? ArrayValueQuery<Unpacked<TValue>>
-    : BasicValueQuery<TValue>;
+// Wrapped in a tuple so unions aren't distributed: `"AU" | "NZ"` must produce
+// BasicValueQuery<"AU" | "NZ">, not BasicValueQuery<"AU"> | BasicValueQuery<"NZ">,
+// otherwise `{ $in: ["AU", "NZ"] }` doesn't type check.
+export type ValueQuery<TValue> = [Extract<TValue, ReadonlyArray<any>>] extends [
+  never,
+]
+  ? BasicValueQuery<TValue>
+  : ArrayValueQuery<Unpacked<TValue>>;
 
-type NotObject = string | number | Date | boolean | Array<any>;
+type NotObject = string | number | Date | boolean | ReadonlyArray<any>;
 export type ShapeQuery<TItemSchema> = TItemSchema extends NotObject
   ? {}
   : { [k in keyof TItemSchema]?: TItemSchema[k] | ValueQuery<TItemSchema[k]> };
@@ -95,6 +107,9 @@ const walkKeyPathValues = (
   depth: number,
   key: Key,
   owner: any,
+  // false when the starting item is an intermediate null on an outer path
+  // (e.g. $not re-evaluating `a.b` where `a` is null), so nothing exists there.
+  leaf: boolean = true,
 ) => {
   const currentKey = keyPath[depth];
 
@@ -108,14 +123,20 @@ const walkKeyPathValues = (
     for (let i = 0, { length } = item; i < length; i++) {
       // if FALSE is returned, then terminate walker. For operations, this simply
       // means that the search critera was met.
-      if (!walkKeyPathValues(item[i], keyPath, next, depth, i, item)) {
+      if (!walkKeyPathValues(item[i], keyPath, next, depth, i, item, leaf)) {
         return false;
       }
     }
   }
 
   if (depth === keyPath.length || item == null) {
-    return next(item, key, owner, depth === 0, depth === keyPath.length);
+    return next(
+      item,
+      key,
+      owner,
+      depth === 0,
+      depth === keyPath.length && (depth > 0 || leaf),
+    );
   }
 
   return walkKeyPathValues(
@@ -236,8 +257,8 @@ export class QueryOperation<TItem> extends GroupOperation {
   /**
    */
 
-  next(item: TItem, key: Key, parent: any, root: boolean) {
-    this.childrenNext(item, key, parent, root);
+  next(item: TItem, key: Key, parent: any, root: boolean, leaf?: boolean) {
+    this.childrenNext(item, key, parent, root, leaf);
   }
 }
 
@@ -255,7 +276,7 @@ export class NestedOperation extends GroupOperation {
   /**
    */
 
-  next(item: any, key: Key, parent: any) {
+  next(item: any, key: Key, parent: any, root?: boolean, leaf?: boolean) {
     walkKeyPathValues(
       item,
       this.keyPath,
@@ -263,6 +284,7 @@ export class NestedOperation extends GroupOperation {
       0,
       key,
       parent,
+      leaf !== false,
     );
   }
 
@@ -369,6 +391,7 @@ const throwUnsupportedOperation = (name: string) => {
 
 export const containsOperation = (query: any, options: Options) => {
   for (const key in query) {
+    if (!Object.prototype.hasOwnProperty.call(query, key)) continue;
     if (options.operations.hasOwnProperty(key) || key.charAt(0) === "$")
       return true;
   }
@@ -408,8 +431,10 @@ const createNestedOperation = (
 export const createQueryOperation = <TItem, TSchema = TItem>(
   query: Query<TSchema>,
   owneryQuery: any = null,
-  { compare, operations }: Partial<Options> = {},
+  partialOptions: Partial<Options> = {},
 ): QueryOperation<TItem> => {
+  const compare = getIgnoringObjectPrototype(partialOptions, "compare");
+  const operations = getIgnoringObjectPrototype(partialOptions, "operations");
   const options = {
     compare: compare || equals,
     operations: Object.assign({}, operations || {}),
@@ -449,6 +474,7 @@ const createQueryOperations = (
     return [selfOperations, nestedOperations];
   }
   for (const key in query) {
+    if (!Object.prototype.hasOwnProperty.call(query, key)) continue;
     if (options.operations.hasOwnProperty(key)) {
       const op = createNamedOperation(key, query[key], query, options);
 

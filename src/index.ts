@@ -14,15 +14,20 @@ import {
   createEqualsOperation,
   createOperationTester,
 } from "./core";
+import { getIgnoringObjectPrototype } from "./utils";
 
 const createDefaultQueryOperation = <TItem, TSchema extends TItem = TItem>(
   query: Query<TSchema>,
   ownerQuery: any,
-  { compare, operations }: Partial<Options> = {},
+  options: Partial<Options> = {},
 ) => {
   return createQueryOperation(query, ownerQuery, {
-    compare,
-    operations: Object.assign({}, defaultOperations, operations || {}),
+    compare: getIgnoringObjectPrototype(options, "compare"),
+    operations: Object.assign(
+      {},
+      defaultOperations,
+      getIgnoringObjectPrototype(options, "operations") || {},
+    ),
   });
 };
 

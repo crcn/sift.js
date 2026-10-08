@@ -714,6 +714,49 @@ describe(__filename + "#", function () {
     }
   });
 
+  // https://github.com/crcn/sift.js/issues/274
+  it("customizes equality everywhere with the compare option", () => {
+    const eqOverride = (value, param) =>
+      String(value).toLowerCase() === String(param).toLowerCase();
+    // compare(queryValue, itemValue)
+    const options = { compare: (param, value) => eqOverride(value, param) };
+    const doc = { name: "CRAIG", tags: ["A", "b"], friends: [{ name: "TIM" }] };
+    for (const query of [
+      { name: "craig" },
+      { name: { $eq: "craig" } },
+      { name: { $in: ["craig"] } },
+      { name: { $ne: "tim" } },
+      { name: { $nin: ["tim"] } },
+      { tags: "a" },
+      { tags: { $all: ["a", "B"] } },
+      { friends: { $elemMatch: { name: "tim" } } },
+      { "friends.name": "tim" },
+      { $or: [{ name: "craig" }] },
+      { name: { $not: { $eq: "tim" } } },
+    ]) {
+      assert.equal(sift(query, options)(doc), true, JSON.stringify(query));
+    }
+    assert.equal(sift({ name: { $ne: "craig" } }, options)(doc), false);
+    assert.equal(sift({ name: { $nin: ["craig"] } }, options)(doc), false);
+  });
+
+  it("a custom $eq operation only overrides the $eq operator", () => {
+    const { createEqualsOperation } = require("../lib");
+    let calls = 0;
+    const operations = {
+      $eq: (params, ownerQuery, options) =>
+        createEqualsOperation(
+          (value) => (calls++, value === params),
+          ownerQuery,
+          options,
+        ),
+    };
+    sift({ name: "craig" }, { operations })({ name: "craig" });
+    assert.equal(calls, 0);
+    sift({ name: { $eq: "craig" } }, { operations })({ name: "craig" });
+    assert.equal(calls, 1);
+  });
+
   // https://github.com/crcn/sift.js/issues/272
   it("supports string $where where `process` isn't defined", () => {
     const vm = require("vm");
@@ -775,6 +818,33 @@ describe(__filename + "#", function () {
         delete Object.prototype[key];
       }
     }
+  });
+
+  it("can turn off string $where (README recipe)", () => {
+    const { $where } = require("../lib");
+    const safeSift = (query) =>
+      sift(query, {
+        operations: {
+          $where(params, ownerQuery, options) {
+            if (typeof params !== "function") {
+              throw new Error("$where must be a function");
+            }
+            return $where(params, ownerQuery, options);
+          },
+        },
+      });
+
+    assert.throws(() => safeSift({ $where: "true" }), /must be a function/);
+    assert.throws(
+      () => safeSift({ a: { $elemMatch: { $where: "true" } } }),
+      /must be a function/,
+    );
+    const isOne = function () {
+      return this.a === 1;
+    };
+    assert.deepEqual([{ a: 1 }, { a: 2 }].filter(safeSift({ $where: isOne })), [
+      { a: 1 },
+    ]);
   });
 
   it("reads options and toJSON defined by a class", () => {

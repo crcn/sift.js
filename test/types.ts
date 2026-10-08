@@ -325,3 +325,15 @@ sift<Place>({
 sift<Place>({ country: { $in: ["US"] } });
 // @ts-expect-error - $in expects an array of countries
 sift<Place>({ country: { $in: "AU" } });
+
+// readonly arrays
+type Listing = { tags: readonly string[]; ids: ReadonlyArray<number> };
+sift<Listing>({
+  tags: { $in: ["a"], $all: ["a", "b"], $size: 2 },
+  ids: { $elemMatch: { $gt: 1 } },
+});
+sift<Listing>({ tags: ["a", "b"] });
+// @ts-expect-error - tags holds strings
+sift<Listing>({ tags: { $in: [1] } });
+// @ts-expect-error - ids holds numbers
+sift<Listing>({ ids: { $elemMatch: { $gt: "1" } } });

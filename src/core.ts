@@ -70,16 +70,18 @@ export type BasicValueQuery<TValue> = {
 export type ArrayValueQuery<TValue> = {
   $elemMatch?: Query<TValue>;
 } & BasicValueQuery<TValue>;
-type Unpacked<T> = T extends (infer U)[] ? U : T;
+type Unpacked<T> = T extends ReadonlyArray<infer U> ? U : T;
 
 // Wrapped in a tuple so unions aren't distributed: `"AU" | "NZ"` must produce
 // BasicValueQuery<"AU" | "NZ">, not BasicValueQuery<"AU"> | BasicValueQuery<"NZ">,
 // otherwise `{ $in: ["AU", "NZ"] }` doesn't type check.
-export type ValueQuery<TValue> = [Extract<TValue, Array<any>>] extends [never]
+export type ValueQuery<TValue> = [Extract<TValue, ReadonlyArray<any>>] extends [
+  never,
+]
   ? BasicValueQuery<TValue>
   : ArrayValueQuery<Unpacked<TValue>>;
 
-type NotObject = string | number | Date | boolean | Array<any>;
+type NotObject = string | number | Date | boolean | ReadonlyArray<any>;
 export type ShapeQuery<TItemSchema> = TItemSchema extends NotObject
   ? {}
   : { [k in keyof TItemSchema]?: TItemSchema[k] | ValueQuery<TItemSchema[k]> };

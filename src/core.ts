@@ -36,6 +36,13 @@ export type OperationCreator<TItem> = (
   name: string,
 ) => Operation<TItem>;
 
+// Method signature so `$where` is bivariant. Otherwise a query typed for a
+// narrower value (e.g. BasicValueQuery<number> on an optional number field)
+// isn't assignable under strictFunctionTypes.
+type WhereFunction<TValue> = {
+  bivarianceHack(this: TValue, obj: TValue): boolean;
+}["bivarianceHack"];
+
 export type BasicValueQuery<TValue> = {
   $eq?: TValue;
   $ne?: TValue;
@@ -50,7 +57,7 @@ export type BasicValueQuery<TValue> = {
   $exists?: boolean;
   $regex?: string | RegExp;
   $size?: number;
-  $where?: ((this: TValue, obj: TValue) => boolean) | string;
+  $where?: WhereFunction<TValue> | string;
   $options?: "i" | "g" | "m" | "u";
   $type?: Function;
   $not?: NestedQuery<TValue>;
@@ -64,10 +71,12 @@ export type ArrayValueQuery<TValue> = {
 } & BasicValueQuery<TValue>;
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 
-export type ValueQuery<TValue> =
-  TValue extends Array<any>
-    ? ArrayValueQuery<Unpacked<TValue>>
-    : BasicValueQuery<TValue>;
+// Wrapped in a tuple so unions aren't distributed: `"AU" | "NZ"` must produce
+// BasicValueQuery<"AU" | "NZ">, not BasicValueQuery<"AU"> | BasicValueQuery<"NZ">,
+// otherwise `{ $in: ["AU", "NZ"] }` doesn't type check.
+export type ValueQuery<TValue> = [Extract<TValue, Array<any>>] extends [never]
+  ? BasicValueQuery<TValue>
+  : ArrayValueQuery<Unpacked<TValue>>;
 
 type NotObject = string | number | Date | boolean | Array<any>;
 export type ShapeQuery<TItemSchema> = TItemSchema extends NotObject

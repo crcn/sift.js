@@ -1,4 +1,5 @@
 import sift, { createQueryTester, $in, $or, $eq } from "..";
+import type { Query } from "..";
 import { createQueryOperation, createOperationTester } from "../lib/core";
 
 sift<any>({ $gt: 10 });
@@ -304,3 +305,23 @@ var result = bills.filter(
 const o = createQueryOperation<Person>({ name: "a" });
 const t = createOperationTester(o);
 t(demoFriend);
+
+// https://github.com/crcn/sift.js/issues/275 - union-typed properties
+type Place = {
+  country: "AU" | "NZ";
+  active: boolean;
+  code: string | number;
+  tags: ("a" | "b")[];
+};
+
+const placeQuery: Query<Place> = { country: { $in: ["AU", "NZ"] } };
+sift<Place>({
+  country: { $nin: ["AU"], $ne: "NZ" },
+  active: { $in: [true, false] },
+  code: { $in: ["x", 1] },
+  tags: { $in: ["a", "b"], $all: ["a"] },
+});
+// @ts-expect-error - "US" isn't a country
+sift<Place>({ country: { $in: ["US"] } });
+// @ts-expect-error - $in expects an array of countries
+sift<Place>({ country: { $in: "AU" } });

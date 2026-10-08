@@ -595,6 +595,125 @@ describe(__filename + "#", function () {
     ]);
   });
 
+  // https://github.com/crcn/sift.js/issues/273
+  it("$exists and $ne work on paths through arrays", () => {
+    const doc = {
+      _id: "6800f65219603a837cf2ba70",
+      companies: [
+        {
+          monthlySpend: 100,
+          customFields: { subscriptionStatus: "paid" },
+        },
+      ],
+      organizationId: "5febde12dc56d60012d47db6",
+    };
+
+    assert.equal(
+      sift({
+        _id: "6800f65219603a837cf2ba70",
+        "companies.monthlySpend": { $exists: true, $ne: null },
+        organizationId: "5febde12dc56d60012d47db6",
+      })(doc),
+      true,
+    );
+    assert.equal(sift({ "companies.monthlySpend": { $ne: null } })(doc), true);
+    assert.equal(
+      sift({ "companies.monthlySpend": { $exists: false } })(doc),
+      false,
+    );
+    assert.equal(sift({ "companies.missing": { $exists: false } })(doc), true);
+    assert.equal(sift({ "companies.missing": { $ne: null } })(doc), false);
+  });
+
+  it("$exists checks every array element", () => {
+    const doc = { a: [null, { b: 1 }] };
+    assert.equal(sift({ "a.b": { $exists: true } })(doc), true);
+    assert.equal(sift({ "a.b": { $exists: false } })(doc), false);
+    assert.equal(sift({ "a.b": { $exists: false } })({ a: [] }), true);
+    assert.equal(sift({ "a.b": { $exists: true } })({ a: [] }), false);
+    assert.equal(
+      sift({ "a.b.c": { $not: { $exists: false } } })({ a: [null] }),
+      false,
+    );
+    assert.equal(
+      sift({ "a.b.c": { $not: { $exists: true } } })({ a: null }),
+      true,
+    );
+  });
+
+  it("$nin checks every array element", () => {
+    const doc = { a: [{ b: 1 }, { b: 2 }] };
+    assert.equal(sift({ "a.b": { $nin: [2] } })(doc), false);
+    assert.equal(sift({ "a.b": { $nin: [3] } })(doc), true);
+    assert.equal(
+      sift({ "a.b": { $nin: [null] } })({ a: [{ b: 1 }, {}] }),
+      false,
+    );
+  });
+
+  it("$in/$nin [null] agree with $eq/$ne null on paths through arrays", () => {
+    const docs = [
+      { a: [{ b: 1 }] },
+      { a: [{ b: null }] },
+      { a: [{}] },
+      { a: [] },
+    ];
+    const matches = (query) => docs.map((doc) => sift(query)(doc));
+    assert.deepEqual(
+      matches({ "a.b": { $in: [null] } }),
+      matches({ "a.b": null }),
+    );
+    assert.deepEqual(
+      matches({ "a.b": { $nin: [null] } }),
+      matches({ "a.b": { $ne: null } }),
+    );
+    assert.deepEqual(matches({ "a.b": { $ne: null } }), [
+      true,
+      false,
+      false,
+      true,
+    ]);
+  });
+
+  it("$ne/$in/$nin see getters on Array subclasses", () => {
+    class Things extends Array {
+      get count() {
+        return this.length;
+      }
+      get first() {
+        return this[0];
+      }
+    }
+    const doc = { things: Things.from([{ id: 1 }, { id: 2 }]) };
+    assert.equal(sift({ "things.count": { $in: [2] } })(doc), true);
+    assert.equal(sift({ "things.count": { $ne: 2 } })(doc), false);
+    assert.equal(sift({ "things.count": { $nin: [2] } })(doc), false);
+    assert.equal(sift({ "things.first": { $ne: { id: 1 } } })(doc), false);
+  });
+
+  it("$ne: null on a missing array index", () => {
+    assert.equal(sift({ "a.1": { $ne: null } })({ a: [{ b: 1 }] }), false);
+  });
+
+  it("$exists works when the tester is called on a value", () => {
+    assert.equal(sift({ $exists: true })(5), true);
+    assert.equal(sift({ $exists: true })(undefined), false);
+    assert.equal(sift({ $exists: false })(5), false);
+  });
+
+  it("$not tracks intermediate nulls through $and/$or/$nor/$all", () => {
+    for (const query of [
+      { $and: [{ $exists: true }] },
+      { $or: [{ $exists: true }] },
+      { $nor: [{ $exists: false }] },
+      { $all: [{ $exists: true }] },
+    ]) {
+      const test = sift({ "a.b": { $not: query } });
+      assert.equal(test({ a: null }), true, JSON.stringify(query));
+      assert.equal(test({ a: { b: 1 } }), false, JSON.stringify(query));
+    }
+  });
+
   // https://github.com/crcn/sift.js/issues/272
   it("supports string $where where `process` isn't defined", () => {
     const vm = require("vm");

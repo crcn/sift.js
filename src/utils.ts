@@ -30,6 +30,14 @@ export const isFunction = typeChecker<Function>("Function");
 export const isProperty = (item: any, key: any) => {
   return item.hasOwnProperty(key) && !isFunction(item[key]);
 };
+/**
+ * The value at `a.b` on the array `a` itself, which the walker visits after each
+ * element's `b` (so getters on Array subclasses work). If the array has no `b`,
+ * it isn't a real value, and $ne/$in shouldn't treat it as null (#273).
+ * Missing indexes (`a.5`) aren't included.
+ */
+export const isMissingArrayProperty = (key: Key, owner: any) =>
+  Array.isArray(owner) && !(key in owner) && isNaN(Number(key));
 export const isVanillaObject = (value) => {
   return (
     value &&

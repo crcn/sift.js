@@ -95,6 +95,9 @@ const walkKeyPathValues = (
   depth: number,
   key: Key,
   owner: any,
+  // false when the starting item is an intermediate null on an outer path
+  // (e.g. $not re-evaluating `a.b` where `a` is null), so nothing exists there.
+  leaf: boolean = true,
 ) => {
   const currentKey = keyPath[depth];
 
@@ -108,14 +111,20 @@ const walkKeyPathValues = (
     for (let i = 0, { length } = item; i < length; i++) {
       // if FALSE is returned, then terminate walker. For operations, this simply
       // means that the search critera was met.
-      if (!walkKeyPathValues(item[i], keyPath, next, depth, i, item)) {
+      if (!walkKeyPathValues(item[i], keyPath, next, depth, i, item, leaf)) {
         return false;
       }
     }
   }
 
   if (depth === keyPath.length || item == null) {
-    return next(item, key, owner, depth === 0, depth === keyPath.length);
+    return next(
+      item,
+      key,
+      owner,
+      depth === 0,
+      depth === keyPath.length && (depth > 0 || leaf),
+    );
   }
 
   return walkKeyPathValues(
@@ -236,8 +245,8 @@ export class QueryOperation<TItem> extends GroupOperation {
   /**
    */
 
-  next(item: TItem, key: Key, parent: any, root: boolean) {
-    this.childrenNext(item, key, parent, root);
+  next(item: TItem, key: Key, parent: any, root: boolean, leaf?: boolean) {
+    this.childrenNext(item, key, parent, root, leaf);
   }
 }
 
@@ -255,7 +264,7 @@ export class NestedOperation extends GroupOperation {
   /**
    */
 
-  next(item: any, key: Key, parent: any) {
+  next(item: any, key: Key, parent: any, root?: boolean, leaf?: boolean) {
     walkKeyPathValues(
       item,
       this.keyPath,
@@ -263,6 +272,7 @@ export class NestedOperation extends GroupOperation {
       0,
       key,
       parent,
+      leaf !== false,
     );
   }
 

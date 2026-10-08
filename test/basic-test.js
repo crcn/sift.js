@@ -714,6 +714,57 @@ describe(__filename + "#", function () {
     }
   });
 
+  // MongoDB checks every array on the path, e.g. each a[i].b for "a.b"
+  it("$elemMatch checks every candidate array", () => {
+    const doc = { a: [{ b: [{ c: 1 }] }, { b: [{ c: 0 }] }] };
+    assert.equal(sift({ "a.b": { $elemMatch: { c: 0 } } })(doc), true);
+    assert.equal(sift({ "a.b": { $elemMatch: { c: 2 } } })(doc), false);
+    assert.equal(
+      sift({ "a.b": { $elemMatch: { c: 0 } } })({
+        a: [{ b: [{ c: 1 }] }, { b: [{ c: 2 }] }, { b: [{ c: 0 }] }],
+      }),
+      true,
+    );
+    assert.equal(
+      sift({ "a.b": { $all: [{ $elemMatch: { c: 0 } }] } })(doc),
+      true,
+    );
+    assert.equal(
+      sift({ "a.b": { $not: { $elemMatch: { c: 0 } } } })(doc),
+      false,
+    );
+    assert.equal(
+      sift({ "a.b": { $elemMatch: { $gt: 4 } } })({
+        a: [{ b: [1] }, { b: [5] }],
+      }),
+      true,
+    );
+  });
+
+  it("$elemMatch on nested arrays and at the root is unchanged", () => {
+    // MongoDB agrees: elements that are arrays aren't searched inside
+    assert.equal(
+      sift({ a: { $elemMatch: { $eq: 5 } } })({ a: [[1], [5]] }),
+      false,
+    );
+    // MongoDB matches this one (the element equals [3, 4]); 17.x doesn't, and
+    // this fix leaves it alone
+    assert.equal(
+      sift({ a: { $elemMatch: { $eq: [3, 4] } } })({
+        a: [
+          [1, 2],
+          [3, 4],
+        ],
+      }),
+      false,
+    );
+    assert.deepEqual(
+      [[{ c: 0 }], [{ c: 1 }]].filter(sift({ $elemMatch: { c: 0 } })),
+      [[{ c: 0 }]],
+    );
+    assert.equal(sift({ $elemMatch: { c: 0 } })([{ c: 1 }, { c: 0 }]), true);
+  });
+
   // https://github.com/crcn/sift.js/issues/274
   it("customizes equality everywhere with the compare option", () => {
     const eqOverride = (value, param) =>

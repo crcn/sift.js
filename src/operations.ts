@@ -17,6 +17,7 @@ import {
   comparable,
   isFunction,
   isArray,
+  isObject,
   isMissingArrayProperty,
 } from "./utils";
 
@@ -55,7 +56,7 @@ class $ElemMatch extends BaseOperation<Query<any>> {
     super.reset();
     this._queryOperation.reset();
   }
-  next(item: any) {
+  next(item: any, key?: Key, owner?: any) {
     if (isArray(item)) {
       for (let i = 0, { length } = item; i < length; i++) {
         // reset query operation since item being tested needs to pass _all_ query
@@ -66,7 +67,10 @@ class $ElemMatch extends BaseOperation<Query<any>> {
         this._queryOperation.next(child, i, item, false);
         this.keep = this.keep || this._queryOperation.keep;
       }
-      this.done = true;
+      // An array that's a field of a document can be one of several candidates
+      // (each a[i].b for "a.b"), so keep looking until one matches. Arrays inside
+      // arrays still stop here, since MongoDB doesn't search them.
+      this.done = this.keep || !isObject(owner);
     } else {
       this.done = false;
       this.keep = false;
